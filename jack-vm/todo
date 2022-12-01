@@ -1,0 +1,10 @@
+1. implement the memory array and get it displaying in the browser (seeing things makes me want to do more)
+    1a. implement the raw memory array and allow it to be displayed
+    1b. implement the ability for the frontend to write keys to the keyboard memory location
+    1c. 
+2. implement the arithmetic-logical commands
+3. implement the program control commands
+4. implement the function call and return commands
+5. add handling for multiple .vm files
+6. finish the jack -> vm parser
+7. add frontend for input of files

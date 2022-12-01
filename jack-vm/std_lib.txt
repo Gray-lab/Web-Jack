@@ -1,0 +1,72 @@
+Math // these should just pop the last two stack values and push the result
+    function int multiply(int x, int y)
+    function int multiply(int x, int y)
+    function int min(int x, int y)
+    function int max(int x, int y)
+    function int sqrt(int x, int y)
+
+String // could have a hashmap<identifier, String> to store strings/slices
+    // in Jack, the implementation is an object that stores:
+    // an array of char
+    // maxLength property
+    // a length property
+    constructor String new(int maxLength) // creates empty string object
+    method void dispose()
+    method int length()
+    method char charAt(int i)
+    method void setCharAt(int i, char c)
+    method String appendChar(char c)
+    method void eraseLastChar()
+    method int intValue() // returns integer value up until first non-int char. does not handle negative values
+    method void setInt(int val) // does not handle negative values
+    function char backSpace() // code 129
+    function char doubleQuote() // code 34
+    function char newLine() // code 128
+
+Array // 
+    constructor Array new(int size)
+    method void dispose()
+
+Output
+    Method for printing characters to screen. 
+    Screen is divided into 23 rows of 64 characters.
+    Each character is 11px high and 8px wide, including margins
+    A filled square should be located at the current cursor location
+
+    function void moveCursor(int i, int i)
+    function void printChar(char c)
+    function void printString(String s)
+    function void printInt(int i)
+    function void println() // advances to start of next line
+    function void backSpace()
+
+Screen
+    The Hack physical screen consists of 256 rows(0 to 255 top to bottom)
+    of 512 pixels(0 to 511 left to right). Top left pixel is (0,0).
+    function void clearScreen()
+    function void setColor(boolean) // true = black, false = white
+    function void drawPixel(int x, int y)
+    function void drawLine(int x1, int y1, int x2, int y2)
+    function void drawRectangle(int x1, int y1, int x2, int y2)
+    function void drawCircle(int x, int y, int r) // r <= 181
+
+Keyboard
+    function char keyPressed()  // returns 0 if no key pressed, otherwise returns int based
+                                // on the Hack keymap (appendix 5)
+    function char readChar() // waits until key is pressed and released
+    function String readLine(String message) // displays message and reads characters until newLine
+    function int readInt(String message) // displays message and reads until newline or non-int character
+
+Memory
+    function int peek(int address) // returns value of ram address
+    function void poke(int address, int value) // sets RAM[address] to given value
+    function Array alloc(int size) // finds available RAM block of given size and returns the base address
+    function void deAlloc(Array o) // Makes RAM block that starts at this address available
+
+Sys
+    function void halt() 
+    function void error(int errorCode) // diplays error code with format ERR<errorCode>
+    function void wait(int duration) // pauses execution for duration ms
+
+
+
