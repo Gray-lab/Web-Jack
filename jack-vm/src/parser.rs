@@ -1,4 +1,5 @@
 use web_sys::console;
+use crate::memory::WordSize;
 
 #[derive(Debug)]
 pub struct VMCommand {
@@ -12,16 +13,16 @@ impl VMCommand {
     }
 }
 
-pub type Index = usize;
-type NumVars = usize;
-type NumArgs = usize;
+pub type Offset = WordSize;
+type NumVars = WordSize;
+type NumArgs = WordSize;
 type LabelName = String;
 type FunctionName = String;
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum Command {
-    Pop(Segment, Index), 
-    Push(Segment, Index),
+    Pop(Segment, Offset), 
+    Push(Segment, Offset),
     Add,
     Sub,
     Neg,
@@ -39,7 +40,7 @@ pub enum Command {
     Return,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Copy, Clone)]
 pub enum Segment {
     // Stack Pointer
     Pointer,
@@ -68,6 +69,10 @@ fn parse_segment(seg_name: &str) -> Segment {
         }
     }
 }
+
+// struct Program {
+//      classes: HashMap<String, Class>,
+//}
 
 // struct Class {
 //     functions: HashMap<String, Function>,
@@ -135,7 +140,7 @@ pub(crate) fn parse_vm_code(text: &str) -> Vec<VMCommand>{
                 }
             }
             3 => {
-                match (line_words[0], line_words[1], line_words[2].parse::<usize>().expect("Second argument should be parsable to an i32")) {
+                match (line_words[0], line_words[1], line_words[2].parse::<WordSize>().expect("Second argument should be parsable to an i32")) {
                     ("pop", segment, index) => VMCommand::new(Command::Pop(parse_segment(segment), index), i),
                     ("push", segment, index) => VMCommand::new(Command::Push(parse_segment(segment), index), i),
                     ("function", fn_name, num_vars) => VMCommand::new(Command::Function(fn_name.to_string(), num_vars), i),
