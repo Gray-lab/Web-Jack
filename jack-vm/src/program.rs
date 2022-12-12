@@ -1,17 +1,22 @@
+use std::cell::RefCell;
 use std::collections::HashMap;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
 use crate::memory::{Memory, WordSize};
-use crate::parser::{parse_vm_code, Command, Segment, VMClass, VMCommand};
+use crate::parser::{parse_class, Command, Function, Segment, VMClass};
 
 #[wasm_bindgen]
 pub struct Program {
-    code: Vec<VMCommand>,
+    class: VMClass,
     memory: Memory,
+    call_stack: Vec<StackFrame>,
+}
+
+struct StackFrame {
+    function: Rc<RefCell<Function>>,
     next_line: usize,
-    label_table: HashMap<String, usize>,
-    // call_stack:
 }
 
 #[wasm_bindgen]
@@ -29,47 +34,36 @@ impl Program {
         let this = 3000;
         let that = 4000;
         let memory = Memory::new(sp, lcl, arg, this, that);
-        let next_line = 0;
 
-        let class = parse_vm_code(input);
-        // console::log_1(&"after class assignment".into());
+        let class = parse_class(input);
         let string = format!("{:?}", class);
         console::log_1(&string.into());
-        // Commands are cloned because borrow requires a lifetime specifier on Program, which wasmbindgen doesn't support.
-        let code = class
+
+        let main_function = class
             .functions
             .get("main")
-            .expect("Must have a main function")
-            .borrow()
-            .commands
-            .clone();
-
-        // console::log_1(&"after code".into());
-        // Print commands to console for debugging
-        for command in &code {
-            let string = format!("{:?}", command);
-            console::log_1(&string.into())
+            .cloned()
+            .expect("need to have a main function");
+        let main_frame = StackFrame {
+            function: main_function,
+            next_line: 0,
         };
-        // console::log_1(&"before label_table".into());
-        let label_table: HashMap<String, usize> = HashMap::new();
-        // console::log_1(&"before program".into());
+        let mut call_stack = Vec::new();
+        call_stack.push(main_frame);
+
         Program {
-            code,
+            class,
             memory,
-            next_line,
-            label_table,
+            call_stack,
         }
     }
 
     pub fn step(&mut self) {
         // Handle the end of program by doing nothing when step() is called
-        console::log_1(&self.next_line.into());
-        if &self.code.len() - 1 < self.next_line {
-            return;
-        }
+        let mut frame = self.call_stack.last_mut().unwrap();
 
-        let current_command = &self.code[self.next_line];
-        self.next_line += 1;
+        let current_command = &frame.function.borrow().commands[frame.next_line];
+        frame.next_line += 1;
 
         match &current_command.command {
             Command::Class(_) => panic!("Should not have a class command in the parsed code"),
@@ -139,40 +133,32 @@ impl Program {
                 self.memory.push(Segment::Constant, not);
             }
             Command::GoTo(label) => {
-                self.next_line = match self.label_table.get(label) {
+                frame.next_line = match frame.function.borrow().label_table.get(label) {
                     Some(line) => *line,
                     None => panic!(
                         "GoTo an unknown label encountered on line {}",
-                        self.next_line - 1
+                        frame.next_line - 1
                     ),
                 }
             }
             Command::IfGoTo(label) => {
                 if self.memory.pop(Segment::Temp, 0) != 0 {
-                    self.next_line = match self.label_table.get(label) {
+                    frame.next_line = match frame.function.borrow().label_table.get(label) {
                         Some(line) => *line,
                         None => panic!(
                             "GoTo an unknown label encountered on line {}",
-                            self.next_line - 1
+                            frame.next_line - 1
                         ),
                     }
                 }
             }
-            Command::Label(label) => {
-                if let Some(prev_label_location) =
-                    self.label_table.insert(label.clone(), self.next_line)
-                {
-                    console::log_1(&"Duplicate label {}".into());
-                    panic!(
-                        "Duplicate label {} encountered on lines {} and {}",
-                        label,
-                        self.next_line - 1,
-                        prev_label_location - 1
-                    );
-                }
-            }
-            Command::Function(name, num_vars) => console::log_1(&"Hi there! :D".into()),
-            Command::Call(name, num_args) => todo!(),
+            Command::Label(_) => (),
+            Command::Function(name, num_vars) => console::log_3(
+                &"Hi from function".into(),
+                &name.into(),
+                &num_vars.to_string().into(),
+            ),
+            Command::Call(name, num_args) => {}
             Command::Return => todo!(),
         }
     }

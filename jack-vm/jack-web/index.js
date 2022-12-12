@@ -9,7 +9,12 @@ const testProgram =`class Main
 function main 0
 push constant 5
 push constant 3
+call add 2
+function add 0
+push argument 0
+push argument 1
 add
+return
 `;
 
 // set lcl=260 so we can see it near sp at 256

@@ -85,9 +85,10 @@ pub struct VMClass {
 
 #[derive(Debug, Clone)]
 pub struct Function {
+    pub start_line: usize,
     pub num_vars: WordSize,
     pub commands: Vec<VMCommand>,
-    // label_table: HashMap<String, usize>
+    pub label_table: HashMap<String, usize>,
 }
 
 impl Function {
@@ -97,7 +98,7 @@ impl Function {
 }
 
 // Need help figuring out how to send errors back
-pub(crate) fn parse_vm_code(text: &str) -> VMClass {
+pub(crate) fn parse_class(text: &str) -> VMClass {
     // We will receive multiple classes in a single text string,
     // so each time Class... is encountered the previous class
     // needs to be closed and a new class initialized
@@ -163,7 +164,22 @@ pub(crate) fn parse_vm_code(text: &str) -> VMClass {
                 }
                 ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), i),
                 ("ifgoto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), i),
-                ("label", label) => VMCommand::new(Command::Label(label.to_string()), i),
+                ("label", label) => {
+                    let function = &current_function.clone().unwrap();
+                    let label_location: usize = i - function.borrow().start_line;
+                    if let Some(prev_label_location) =
+                    function.borrow_mut().label_table.insert(label.to_string(), label_location)
+                    {
+                        console::log_1(&"Duplicate label {}".into());
+                        panic!(
+                            "Duplicate label {} encountered on lines {} and {}",
+                            label,
+                            label_location,
+                            prev_label_location
+                        );
+                    }
+                    VMCommand::new(Command::Label(label.to_string()), i)
+                }        
                 (otherwise, _) => {
                     console::log_1(&"Invalid one argument command".into());
                     panic!("Invalid one argument command at line {}: {}", i, otherwise);
@@ -187,8 +203,10 @@ pub(crate) fn parse_vm_code(text: &str) -> VMClass {
                         
                         // Initialize a new function
                         let f = Rc::new(RefCell::new(Function {
+                            start_line: i,
                             num_vars: var_count,
                             commands: Vec::new(),
+                            label_table: HashMap::new(),
                         }));
 
                         current_class
