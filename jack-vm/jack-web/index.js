@@ -5,17 +5,11 @@ const BIT_ON_COLOR = "#000000";
 const BIT_OFF_COLOR = "#DFDFDF";
 const WORD_SIZE = 16; //bits
 
-const testProgram =
-    `label START
-    push constant 2
-    push constant 3
-    eq
-    ifgoto START
-    push constant 42
-    push constant 42
-    eq
-    ifgoto START
-    push constant 7
+const testProgram =`class Main
+function main 0
+push constant 5
+push constant 3
+add
 `;
 
 // set lcl=260 so we can see it near sp at 256
@@ -23,7 +17,7 @@ const program = new Program(testProgram, 265);
 
 // total memory size can be shown on a 768 x 512 grid. 
 // If each memory cell is represented as a 2x2 pixel on a grid, it might even be legible!
-
+console.log("before program")
 const displaySize = program.display_size();
 const displayPtr = program.display();
 
@@ -111,6 +105,7 @@ function renderLoop() {
     drawMemory(displayWidthPixels, displayHeightPixels, pixelSize, displayPtr, displaySize);
     updateRamList(256, 270, ramSize, ramPtr)
     program.step()
+
 }
 setInterval(() => requestAnimationFrame(renderLoop), 1000)
 

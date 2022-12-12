@@ -1,14 +1,17 @@
-use web_sys::console;
 use crate::memory::WordSize;
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::collections::HashMap;
+use web_sys::console;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct VMCommand {
     pub command: Command,
     pub line: usize,
 }
 
 impl VMCommand {
-    fn new(command:Command, line:usize) -> VMCommand {
+    fn new(command: Command, line: usize) -> VMCommand {
         VMCommand { command, line }
     }
 }
@@ -17,11 +20,11 @@ pub type Offset = WordSize;
 type NumVars = WordSize;
 type NumArgs = WordSize;
 type LabelName = String;
-type FunctionName = String;
+type Identifier = String;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(Eq, PartialEq, Debug, Clone)]
 pub enum Command {
-    Pop(Segment, Offset), 
+    Pop(Segment, Offset),
     Push(Segment, Offset),
     Add,
     Sub,
@@ -29,18 +32,19 @@ pub enum Command {
     Eq,
     Gt,
     Lt,
-    And, 
-    Or, 
+    And,
+    Or,
     Not,
     GoTo(LabelName),
     IfGoTo(LabelName),
     Label(LabelName),
-    Function(FunctionName, NumVars),
-    Call(FunctionName, NumArgs),
+    Function(Identifier, NumVars),
+    Call(Identifier, NumArgs),
+    Class(Identifier),
     Return,
 }
 
-#[derive(PartialEq, Debug, Copy, Clone)]
+#[derive(Eq, PartialEq, Debug, Copy, Clone)]
 pub enum Segment {
     // Stack Pointer
     Pointer,
@@ -63,7 +67,7 @@ fn parse_segment(seg_name: &str) -> Segment {
         "this" => Segment::This,
         "that" => Segment::That,
         "temp" => Segment::Temp,
-        otherwise => { 
+        otherwise => {
             console::log_2(&otherwise.into(), &" is an invalid segment name".into());
             panic!("{} is not a valid segment name", otherwise);
         }
@@ -74,37 +78,59 @@ fn parse_segment(seg_name: &str) -> Segment {
 //      classes: HashMap<String, Class>,
 //}
 
-// struct Class {
-//     functions: HashMap<String, Function>,
-// }
+#[derive(Debug, Clone)]
+pub struct VMClass {
+    pub functions: HashMap<String, Rc<RefCell<Function>>>,
+}
 
-// struct Function {
-//     arg_count: usize,
-//     commands: Vec<VMCommand>,
-//     label_table: HashMap<String, usize>
-// }
+#[derive(Debug, Clone)]
+pub struct Function {
+    pub num_vars: WordSize,
+    pub commands: Vec<VMCommand>,
+    // label_table: HashMap<String, usize>
+}
+
+impl Function {
+    pub fn add_command(&mut self, command: VMCommand) {
+        self.commands.push(command);
+    }
+}
 
 // Need help figuring out how to send errors back
-pub(crate) fn parse_vm_code(text: &str) -> Vec<VMCommand>{
+pub(crate) fn parse_vm_code(text: &str) -> VMClass {
+    // We will receive multiple classes in a single text string,
+    // so each time Class... is encountered the previous class
+    // needs to be closed and a new class initialized
 
-    let mut tokens = Vec::new();
+    // Initialize class and function to be empty
+    let mut current_class = VMClass {
+        functions: HashMap::new(),
+    };
 
-    for (i, line) in text.lines().map(|line| {
-        // remove comments: delete any text between '//' and end of line'
-        if let Some(i) = line.find("//") {
-            &line[..i]
-        } else {
-            line
-        }
-    }).enumerate() {
-        // console.log the line
-        console::log_1(&line.into());
+    // Initialized to bring into scope. Var_count = -1 to allow for filtering.
+    let mut current_function: Option<Rc<RefCell<Function>>> = None;
+
+    // let mut current_function_name = "Undefined";
+
+    for (i, line) in text
+        .lines()
+        .map(|line| {
+            // remove comments: delete any text between '//' and end of line'
+            if let Some(i) = line.find("//") {
+                &line[..i]
+            } else {
+                line
+            }
+        })
+        .enumerate()
+    {
+        // console::log_1(&line.into());
 
         if line.trim().is_empty() {
             continue;
         }
-        
-        let line_words: Vec<&str> = line.trim().split(" ").collect();
+
+        let line_words: Vec<&str> = line.trim().split(' ').collect();
         // Check the number of arguments in each line
         // The nested match statements could be factored out into VMCommand implementations.
         // Does Rust support polymorphic functions?
@@ -128,38 +154,73 @@ pub(crate) fn parse_vm_code(text: &str) -> Vec<VMCommand>{
                     }
                 }
             }
-            2 => {
-                match (line_words[0], line_words[1]) {
-                    ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), i),
-                    ("ifgoto", label) => VMCommand::new(Command::IfGoTo(label.to_string()),i),
-                    ("label", label) => VMCommand::new(Command::Label(label.to_string()),i),
-                    (otherwise, _) => {
-                        console::log_1(&"Invalid one argument command".into());
-                        panic!("Invalid one argument command at line {}: {}", i, otherwise);
-                    }
+            2 => match (line_words[0], line_words[1]) {
+                ("class", label) => {
+                    // current_class = VMClass {
+                    //     functions: HashMap::new(),
+                    // };
+                    VMCommand::new(Command::Class(label.to_string()), i)
                 }
-            }
+                ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), i),
+                ("ifgoto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), i),
+                ("label", label) => VMCommand::new(Command::Label(label.to_string()), i),
+                (otherwise, _) => {
+                    console::log_1(&"Invalid one argument command".into());
+                    panic!("Invalid one argument command at line {}: {}", i, otherwise);
+                }
+            },
             3 => {
-                match (line_words[0], line_words[1], line_words[2].parse::<WordSize>().expect("Second argument should be parsable to an i32")) {
-                    ("pop", segment, index) => VMCommand::new(Command::Pop(parse_segment(segment), index), i),
-                    ("push", segment, index) => VMCommand::new(Command::Push(parse_segment(segment), index), i),
-                    ("function", fn_name, num_vars) => VMCommand::new(Command::Function(fn_name.to_string(), num_vars), i),
-                    ("call", fn_name, num_args) => VMCommand::new(Command::Call(fn_name.to_string(), num_args), i),
+                match (
+                    line_words[0],
+                    line_words[1],
+                    line_words[2]
+                        .parse::<WordSize>()
+                        .expect("Second argument should be parsable to an i32"),
+                ) {
+                    ("pop", segment, index) => {
+                        VMCommand::new(Command::Pop(parse_segment(segment), index), i)
+                    }
+                    ("push", segment, index) => {
+                        VMCommand::new(Command::Push(parse_segment(segment), index), i)
+                    }
+                    ("function", fn_name, var_count) => {
+                        
+                        // Initialize a new function
+                        let f = Rc::new(RefCell::new(Function {
+                            num_vars: var_count,
+                            commands: Vec::new(),
+                        }));
+
+                        current_class
+                            .functions
+                            .insert(fn_name.to_string(), f);
+                        
+                        current_function = current_class.functions.get(fn_name).cloned();
+                        VMCommand::new(Command::Function(fn_name.to_string(), var_count), i)
+                    }
+                    ("call", fn_name, num_args) => {
+                        VMCommand::new(Command::Call(fn_name.to_string(), num_args), i)
+                    }
                     (otherwise, _, _) => {
                         console::log_1(&"Invalid two argument command".into());
                         panic!("Invalid two argument command at line {}: {}", i, otherwise);
                     }
-                } 
-
+                }
             }
             otherwise => {
                 console::log_2(&"Invalid syntax at line:".into(), &i.into());
-                panic!("Invalid syntax at line {}. Expecting 0, 1, or two arguments, but was given {}", i, otherwise);
+                panic!(
+                    "Invalid syntax at line {}. Expecting 0, 1, or two arguments, but was given {}",
+                    i, otherwise
+                );
             }
         };
-        tokens.push(parsed_line);
+
+        if let Some(f) = &current_function {
+            f.borrow_mut().add_command(parsed_line);
+        }
+        
     }
 
-    tokens
-    
+    current_class
 }

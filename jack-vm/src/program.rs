@@ -1,13 +1,12 @@
+use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
-use std::collections::HashMap;
 
 use crate::memory::{Memory, WordSize};
-use crate::parser::{parse_vm_code, Command, Segment, VMCommand};
+use crate::parser::{parse_vm_code, Command, Segment, VMClass, VMCommand};
 
 #[wasm_bindgen]
 pub struct Program {
-    //code: Vec<Class>,
     code: Vec<VMCommand>,
     memory: Memory,
     next_line: usize,
@@ -21,7 +20,8 @@ impl Program {
      * Initializes the program given a set of code and a configuration
      */
     #[wasm_bindgen(constructor)]
-    pub fn new(input: &str, lcl:i16) -> Program {
+    pub fn new(input: &str, lcl: i16) -> Program {
+        // console::log_1(&"at start of program::new".into());
         // intialize segment pointers for the main stack frame
         let sp = 256;
         // let lcl = 300;
@@ -31,19 +31,33 @@ impl Program {
         let memory = Memory::new(sp, lcl, arg, this, that);
         let next_line = 0;
 
-        let code = parse_vm_code(input);
+        let class = parse_vm_code(input);
+        // console::log_1(&"after class assignment".into());
+        let string = format!("{:?}", class);
+        console::log_1(&string.into());
+        // Commands are cloned because borrow requires a lifetime specifier on Program, which wasmbindgen doesn't support.
+        let code = class
+            .functions
+            .get("main")
+            .expect("Must have a main function")
+            .borrow()
+            .commands
+            .clone();
+
+        // console::log_1(&"after code".into());
+        // Print commands to console for debugging
         for command in &code {
             let string = format!("{:?}", command);
             console::log_1(&string.into())
-        
-        }
+        };
+        // console::log_1(&"before label_table".into());
         let label_table: HashMap<String, usize> = HashMap::new();
-
+        // console::log_1(&"before program".into());
         Program {
             code,
             memory,
             next_line,
-            label_table
+            label_table,
         }
     }
 
@@ -58,6 +72,7 @@ impl Program {
         self.next_line += 1;
 
         match &current_command.command {
+            Command::Class(_) => panic!("Should not have a class command in the parsed code"),
             Command::Pop(seg, idx) => {
                 self.memory.pop(*seg, *idx);
             }
@@ -78,7 +93,7 @@ impl Program {
                 let val = self.memory.pop(Segment::Temp, 0);
                 let neg = -val;
                 self.memory.push(Segment::Constant, neg);
-            },
+            }
             Command::Eq => {
                 let first = self.memory.pop(Segment::Temp, 0);
                 let second = self.memory.pop(Segment::Temp, 0);
@@ -96,7 +111,7 @@ impl Program {
                 } else {
                     self.memory.push(Segment::Constant, 0);
                 }
-            },
+            }
             Command::Lt => {
                 let first = self.memory.pop(Segment::Temp, 0);
                 let second = self.memory.pop(Segment::Temp, 0);
@@ -105,48 +120,58 @@ impl Program {
                 } else {
                     self.memory.push(Segment::Constant, 0);
                 }
-            },
+            }
             Command::And => {
                 let first = self.memory.pop(Segment::Temp, 0);
                 let second = self.memory.pop(Segment::Temp, 0);
                 let and = first & second;
                 self.memory.push(Segment::Constant, and);
-            },
+            }
             Command::Or => {
                 let first = self.memory.pop(Segment::Temp, 0);
                 let second = self.memory.pop(Segment::Temp, 0);
                 let or = first | second;
                 self.memory.push(Segment::Constant, or);
-            },
+            }
             Command::Not => {
                 let val = self.memory.pop(Segment::Temp, 0);
                 let not = !val;
                 self.memory.push(Segment::Constant, not);
-            },
+            }
             Command::GoTo(label) => {
                 self.next_line = match self.label_table.get(label) {
                     Some(line) => *line,
-                    None => panic!("GoTo an unknown label encountered on line {}", self.next_line - 1),
+                    None => panic!(
+                        "GoTo an unknown label encountered on line {}",
+                        self.next_line - 1
+                    ),
                 }
-            },
+            }
             Command::IfGoTo(label) => {
                 if self.memory.pop(Segment::Temp, 0) != 0 {
                     self.next_line = match self.label_table.get(label) {
                         Some(line) => *line,
-                        None => panic!("GoTo an unknown label encountered on line {}", self.next_line - 1),
+                        None => panic!(
+                            "GoTo an unknown label encountered on line {}",
+                            self.next_line - 1
+                        ),
                     }
                 }
-            },
+            }
             Command::Label(label) => {
-                match self.label_table.insert(label.clone(), self.next_line) {
-                    Some(prev_label_location) => {
-                        console::log_1(&"Duplicate label {}".into());
-                        panic!("Duplicate label {} encountered on lines {} and {}", label, self.next_line - 1, prev_label_location - 1);
-                    }
-                    None => ()
+                if let Some(prev_label_location) =
+                    self.label_table.insert(label.clone(), self.next_line)
+                {
+                    console::log_1(&"Duplicate label {}".into());
+                    panic!(
+                        "Duplicate label {} encountered on lines {} and {}",
+                        label,
+                        self.next_line - 1,
+                        prev_label_location - 1
+                    );
                 }
-            },
-            Command::Function(name, num_vars) => todo!(),
+            }
+            Command::Function(name, num_vars) => console::log_1(&"Hi there! :D".into()),
             Command::Call(name, num_args) => todo!(),
             Command::Return => todo!(),
         }
