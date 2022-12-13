@@ -18,7 +18,7 @@ return
 `;
 
 // set lcl=260 so we can see it near sp at 256
-const program = new Program(testProgram, 265);
+const program = new Program(testProgram, 300);
 
 // total memory size can be shown on a 768 x 512 grid. 
 // If each memory cell is represented as a 2x2 pixel on a grid, it might even be legible!

@@ -1,4 +1,4 @@
-use std::ops::{Index, IndexMut};
+use std::{ops::{Index, IndexMut}, num};
 use crate::parser::{Segment, Offset};
 
 pub type WordSize = i16;
@@ -59,6 +59,10 @@ const LCL: WordSize = 1;
 const ARG: WordSize = 2;
 const THIS: WordSize = 3;
 const THAT: WordSize = 4;
+const STATIC: WordSize = 15;
+const STATIC_MAX: WordSize = 255;
+const TEMP: WordSize = 5;
+const TEMP_MAX: WordSize = 12;
 
 
 impl Memory {
@@ -90,10 +94,10 @@ impl Memory {
             Segment::Constant => offset.to_owned(), 
             Segment::Local => self.get_value(LCL, offset),
             Segment::Argument => self.get_value(ARG, offset),
-            Segment::Static => todo!(),
+            Segment::Static => self.get_value(STATIC, offset),
             Segment::This => self.get_value(THIS, offset),
             Segment::That => self.get_value(THAT, offset),
-            Segment::Temp => todo!(),
+            Segment::Temp => self.get_value(TEMP, offset)
         };
 
         let stack_pointer = self.get_pointer(SP);
@@ -116,10 +120,22 @@ impl Memory {
             Segment::Constant => panic!("Constant can only be pushed"),
             Segment::Local => self.get_pointer(LCL) + offset,
             Segment::Argument => self.get_pointer(ARG) + offset,
-            Segment::Static => todo!(),
+            Segment::Static => {
+                if STATIC + offset <= STATIC_MAX {
+                    STATIC + offset
+                } else {
+                    panic!("Static memory segment overflow.")
+                }
+            }
             Segment::This => self.get_pointer(THIS) + offset,
             Segment::That => self.get_pointer(THAT) + offset,
-            Segment::Temp => 13 // use register 13 to discard value,
+            Segment::Temp => {
+                if TEMP + offset <= TEMP_MAX {
+                    TEMP + offset
+                } else {
+                    panic!("Static memory segment overflow.")
+                }
+            }
         };
 
         self.ram[address] = value;
@@ -130,8 +146,40 @@ impl Memory {
         self.ram[pointer]
     }
 
+    fn set_pointer(&mut self, pointer:WordSize, value:WordSize) {
+        self.ram[pointer] = value;
+    }
+
     fn get_value(&self, pointer:WordSize, offset:WordSize) -> WordSize {
         self.ram[self.ram[pointer] + offset] 
+    }
+
+    pub fn push_stack_frame(&mut self, num_args: WordSize, line_num: WordSize) {
+        self.set_pointer(ARG, self.get_pointer(SP) - num_args);
+
+        // Save return address (not used)
+        self.push(Segment::Constant, line_num);
+
+        // Build caller stack
+        self.push(Segment::Constant, self.get_pointer(LCL));
+        self.push(Segment::Constant, self.get_pointer(ARG));
+        self.push(Segment::Constant, self.get_pointer(THIS));
+        self.push(Segment::Constant, self.get_pointer(THAT));
+
+        // Set Local Pointer
+        self.set_pointer(LCL, self.get_pointer(SP));
+    }
+
+    pub fn pop_stack_frame(&mut self) {
+        // save return value
+
+        // pop locals
+
+        // reset memory pointers based on call stack
+
+        // pop return address
+
+        // set return value
     }
 
     pub fn peek(&self, index: WordSize) -> WordSize {

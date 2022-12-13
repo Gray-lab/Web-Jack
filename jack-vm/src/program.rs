@@ -1,5 +1,4 @@
 use std::cell::RefCell;
-use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
@@ -7,16 +6,25 @@ use web_sys::console;
 use crate::memory::{Memory, WordSize};
 use crate::parser::{parse_class, Command, Function, Segment, VMClass};
 
+struct StackFrame {
+    function: Rc<RefCell<Function>>,
+    next_line: usize,
+}
+
+impl StackFrame {
+    fn new(function: Rc<RefCell<Function>>) -> StackFrame {
+        StackFrame {
+            function,
+            next_line: 0,
+        }
+    }
+}
+
 #[wasm_bindgen]
 pub struct Program {
     class: VMClass,
     memory: Memory,
     call_stack: Vec<StackFrame>,
-}
-
-struct StackFrame {
-    function: Rc<RefCell<Function>>,
-    next_line: usize,
 }
 
 #[wasm_bindgen]
@@ -26,7 +34,6 @@ impl Program {
      */
     #[wasm_bindgen(constructor)]
     pub fn new(input: &str, lcl: i16) -> Program {
-        // console::log_1(&"at start of program::new".into());
         // intialize segment pointers for the main stack frame
         let sp = 256;
         // let lcl = 300;
@@ -44,10 +51,9 @@ impl Program {
             .get("main")
             .cloned()
             .expect("need to have a main function");
-        let main_frame = StackFrame {
-            function: main_function,
-            next_line: 0,
-        };
+
+        let main_frame = StackFrame::new(main_function);
+
         let mut call_stack = Vec::new();
         call_stack.push(main_frame);
 
@@ -62,7 +68,9 @@ impl Program {
         // Handle the end of program by doing nothing when step() is called
         let mut frame = self.call_stack.last_mut().unwrap();
 
-        let current_command = &frame.function.borrow().commands[frame.next_line];
+        // The current command is cloned so that the stack frame can later be mutated
+        // For example during a call or return command
+        let current_command = &frame.function.borrow().commands[frame.next_line].to_owned();
         frame.next_line += 1;
 
         match &current_command.command {
@@ -153,13 +161,36 @@ impl Program {
                 }
             }
             Command::Label(_) => (),
-            Command::Function(name, num_vars) => console::log_3(
-                &"Hi from function".into(),
-                &name.into(),
-                &num_vars.to_string().into(),
-            ),
-            Command::Call(name, num_args) => {}
-            Command::Return => todo!(),
+            Command::Function(name, num_vars) => {
+                console::log_3(
+                    &"In function".into(),
+                    &name.into(),
+                    &num_vars.to_string().into(),
+                );
+                // Push local variables
+                for _i in 0..*num_vars {
+                    self.memory.push(Segment::Constant, 0);
+                }
+            }
+            Command::Call(name, num_args) => {
+                // find the correct function
+                let callee = self
+                    .class
+                    .functions
+                    .get(name)
+                    .cloned()
+                    .expect("Hopefully we aren't missing any functions :(");
+                // build a stack frame for it in memory
+                let global_line_num = callee.borrow().start_line + frame.next_line - 1;
+                self.memory
+                    .push_stack_frame(*num_args, global_line_num as WordSize);
+                // build and push a stack frame for the virtual call stack
+                self.call_stack.push(StackFrame::new(callee));
+            }
+            Command::Return => {
+                self.memory.pop_stack_frame();
+                self.call_stack.pop();
+            }
         }
     }
 

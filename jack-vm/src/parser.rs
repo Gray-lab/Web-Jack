@@ -1,7 +1,7 @@
 use crate::memory::WordSize;
 use std::cell::RefCell;
-use std::rc::Rc;
 use std::collections::HashMap;
+use std::rc::Rc;
 use web_sys::console;
 
 #[derive(Debug, Clone)]
@@ -108,12 +108,10 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
         functions: HashMap::new(),
     };
 
-    // Initialized to bring into scope. Var_count = -1 to allow for filtering.
+    // Initialized to bring into scope
     let mut current_function: Option<Rc<RefCell<Function>>> = None;
 
-    // let mut current_function_name = "Undefined";
-
-    for (i, line) in text
+    for (line_num, line) in text
         .lines()
         .map(|line| {
             // remove comments: delete any text between '//' and end of line'
@@ -125,64 +123,58 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
         })
         .enumerate()
     {
-        // console::log_1(&line.into());
-
         if line.trim().is_empty() {
             continue;
         }
 
         let line_words: Vec<&str> = line.trim().split(' ').collect();
         // Check the number of arguments in each line
-        // The nested match statements could be factored out into VMCommand implementations.
-        // Does Rust support polymorphic functions?
         let parsed_line = match line_words.len() {
             1 => {
                 match line_words[0] {
                     // I bet this could be a macro...
-                    "add" => VMCommand::new(Command::Add, i),
-                    "sub" => VMCommand::new(Command::Sub, i),
-                    "neg" => VMCommand::new(Command::Neg, i),
-                    "eq" => VMCommand::new(Command::Eq, i),
-                    "gt" => VMCommand::new(Command::Gt, i),
-                    "lt" => VMCommand::new(Command::Lt, i),
-                    "and" => VMCommand::new(Command::And, i),
-                    "or" => VMCommand::new(Command::Or, i),
-                    "not" => VMCommand::new(Command::Not, i),
-                    "return" => VMCommand::new(Command::Return, i),
+                    "add" => VMCommand::new(Command::Add, line_num),
+                    "sub" => VMCommand::new(Command::Sub, line_num),
+                    "neg" => VMCommand::new(Command::Neg, line_num),
+                    "eq" => VMCommand::new(Command::Eq, line_num),
+                    "gt" => VMCommand::new(Command::Gt, line_num),
+                    "lt" => VMCommand::new(Command::Lt, line_num),
+                    "and" => VMCommand::new(Command::And, line_num),
+                    "or" => VMCommand::new(Command::Or, line_num),
+                    "not" => VMCommand::new(Command::Not, line_num),
+                    "return" => VMCommand::new(Command::Return, line_num),
                     otherwise => {
                         console::log_1(&"Invalid zero argument command".into());
-                        panic!("Invalid zero argument command at line {}: {}", i, otherwise);
+                        panic!("Invalid zero argument command at line {}: {}", line_num, otherwise);
                     }
                 }
             }
             2 => match (line_words[0], line_words[1]) {
                 ("class", label) => {
-                    // current_class = VMClass {
-                    //     functions: HashMap::new(),
-                    // };
-                    VMCommand::new(Command::Class(label.to_string()), i)
+                    // We return the VM command, but it is ultimately not used by the VM after compilation
+                    VMCommand::new(Command::Class(label.to_string()), line_num)
                 }
-                ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), i),
-                ("ifgoto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), i),
+                ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), line_num),
+                ("ifgoto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), line_num),
                 ("label", label) => {
                     let function = &current_function.clone().unwrap();
-                    let label_location: usize = i - function.borrow().start_line;
-                    if let Some(prev_label_location) =
-                    function.borrow_mut().label_table.insert(label.to_string(), label_location)
+                    let label_location: usize = line_num - function.borrow().start_line;
+                    if let Some(prev_label_location) = function
+                        .borrow_mut()
+                        .label_table
+                        .insert(label.to_string(), label_location)
                     {
                         console::log_1(&"Duplicate label {}".into());
                         panic!(
                             "Duplicate label {} encountered on lines {} and {}",
-                            label,
-                            label_location,
-                            prev_label_location
+                            label, label_location, prev_label_location
                         );
                     }
-                    VMCommand::new(Command::Label(label.to_string()), i)
-                }        
+                    VMCommand::new(Command::Label(label.to_string()), line_num)
+                }
                 (otherwise, _) => {
                     console::log_1(&"Invalid one argument command".into());
-                    panic!("Invalid one argument command at line {}: {}", i, otherwise);
+                    panic!("Invalid one argument command at line {}: {}", line_num, otherwise);
                 }
             },
             3 => {
@@ -194,42 +186,39 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
                         .expect("Second argument should be parsable to an i32"),
                 ) {
                     ("pop", segment, index) => {
-                        VMCommand::new(Command::Pop(parse_segment(segment), index), i)
+                        VMCommand::new(Command::Pop(parse_segment(segment), index), line_num)
                     }
                     ("push", segment, index) => {
-                        VMCommand::new(Command::Push(parse_segment(segment), index), i)
+                        VMCommand::new(Command::Push(parse_segment(segment), index), line_num)
                     }
                     ("function", fn_name, var_count) => {
-                        
                         // Initialize a new function
                         let f = Rc::new(RefCell::new(Function {
-                            start_line: i,
+                            start_line: line_num,
                             num_vars: var_count,
                             commands: Vec::new(),
                             label_table: HashMap::new(),
                         }));
 
-                        current_class
-                            .functions
-                            .insert(fn_name.to_string(), f);
-                        
+                        current_class.functions.insert(fn_name.to_string(), f);
+
                         current_function = current_class.functions.get(fn_name).cloned();
-                        VMCommand::new(Command::Function(fn_name.to_string(), var_count), i)
+                        VMCommand::new(Command::Function(fn_name.to_string(), var_count), line_num)
                     }
                     ("call", fn_name, num_args) => {
-                        VMCommand::new(Command::Call(fn_name.to_string(), num_args), i)
+                        VMCommand::new(Command::Call(fn_name.to_string(), num_args), line_num)
                     }
                     (otherwise, _, _) => {
                         console::log_1(&"Invalid two argument command".into());
-                        panic!("Invalid two argument command at line {}: {}", i, otherwise);
+                        panic!("Invalid two argument command at line {}: {}", line_num, otherwise);
                     }
                 }
             }
             otherwise => {
-                console::log_2(&"Invalid syntax at line:".into(), &i.into());
+                console::log_2(&"Invalid syntax at line:".into(), &line_num.into());
                 panic!(
                     "Invalid syntax at line {}. Expecting 0, 1, or two arguments, but was given {}",
-                    i, otherwise
+                    line_num, otherwise
                 );
             }
         };
@@ -237,7 +226,6 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
         if let Some(f) = &current_function {
             f.borrow_mut().add_command(parsed_line);
         }
-        
     }
 
     current_class
