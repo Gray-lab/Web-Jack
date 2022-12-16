@@ -74,12 +74,8 @@ fn parse_segment(seg_name: &str) -> Segment {
     }
 }
 
-// struct Program {
-//      classes: HashMap<String, Class>,
-//}
-
 #[derive(Debug, Clone)]
-pub struct VMClass {
+pub struct Bytecode {
     pub functions: HashMap<String, Rc<RefCell<Function>>>,
 }
 
@@ -98,15 +94,18 @@ impl Function {
 }
 
 // Need help figuring out how to send errors back
-pub(crate) fn parse_class(text: &str) -> VMClass {
+pub(crate) fn parse_class(text: &str) -> Bytecode {
     // We will receive multiple classes in a single text string,
     // so each time Class... is encountered the previous class
     // needs to be closed and a new class initialized
 
     // Initialize class and function to be empty
-    let mut current_class = VMClass {
+    let mut program = Bytecode {
         functions: HashMap::new(),
     };
+
+    // Initialize class to none
+    let mut current_class = "";
 
     // Initialized to bring into scope
     let mut current_function: Option<Rc<RefCell<Function>>> = None;
@@ -145,17 +144,20 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
                     "return" => VMCommand::new(Command::Return, line_num),
                     otherwise => {
                         console::log_1(&"Invalid zero argument command".into());
-                        panic!("Invalid zero argument command at line {}: {}", line_num, otherwise);
+                        panic!(
+                            "Invalid zero argument command at line {}: {}",
+                            line_num, otherwise
+                        );
                     }
                 }
             }
             2 => match (line_words[0], line_words[1]) {
-                ("class", label) => {
-                    // We return the VM command, but it is ultimately not used by the VM after compilation
-                    VMCommand::new(Command::Class(label.to_string()), line_num)
+                ("class", identifier) => {
+                    current_class = identifier;
+                    VMCommand::new(Command::Class(identifier.to_string()), line_num)
                 }
                 ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), line_num),
-                ("ifgoto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), line_num),
+                ("if-goto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), line_num),
                 ("label", label) => {
                     let function = &current_function.clone().unwrap();
                     let label_location: usize = line_num - function.borrow().start_line;
@@ -174,7 +176,10 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
                 }
                 (otherwise, _) => {
                     console::log_1(&"Invalid one argument command".into());
-                    panic!("Invalid one argument command at line {}: {}", line_num, otherwise);
+                    panic!(
+                        "Invalid one argument command at line {}: {}",
+                        line_num, otherwise
+                    );
                 }
             },
             3 => {
@@ -200,17 +205,22 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
                             label_table: HashMap::new(),
                         }));
 
-                        current_class.functions.insert(fn_name.to_string(), f);
+                        let name = format!("{}.{}", current_class, fn_name);
 
-                        current_function = current_class.functions.get(fn_name).cloned();
-                        VMCommand::new(Command::Function(fn_name.to_string(), var_count), line_num)
+                        program.functions.insert(name.to_string(), f);
+
+                        current_function = program.functions.get(&name).cloned();
+                        VMCommand::new(Command::Function(name.to_string(), var_count), line_num)
                     }
                     ("call", fn_name, num_args) => {
                         VMCommand::new(Command::Call(fn_name.to_string(), num_args), line_num)
                     }
                     (otherwise, _, _) => {
                         console::log_1(&"Invalid two argument command".into());
-                        panic!("Invalid two argument command at line {}: {}", line_num, otherwise);
+                        panic!(
+                            "Invalid two argument command at line {}: {}",
+                            line_num, otherwise
+                        );
                     }
                 }
             }
@@ -228,5 +238,5 @@ pub(crate) fn parse_class(text: &str) -> VMClass {
         }
     }
 
-    current_class
+    program
 }

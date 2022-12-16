@@ -1,9 +1,0 @@
-function main 
-push constant 5
-push constant 3
-call add 2
-function add 0
-push arguments 0
-push arguments 1
-add
-return

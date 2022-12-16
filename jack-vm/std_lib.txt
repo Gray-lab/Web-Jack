@@ -33,7 +33,7 @@ Output
     Each character is 11px high and 8px wide, including margins
     A filled square should be located at the current cursor location
 
-    function void moveCursor(int i, int i)
+    function void moveCursor(int i, int ij)
     function void printChar(char c)
     function void printString(String s)
     function void printInt(int i)
@@ -66,7 +66,7 @@ Memory
 Sys
     function void halt() 
     function void error(int errorCode) // diplays error code with format ERR<errorCode>
-    function void wait(int duration) // pauses execution for duration ms
+    function void wait(int duration) // pauses execution for duration ms - try using step length to do a loop of x cycles
 
 
 

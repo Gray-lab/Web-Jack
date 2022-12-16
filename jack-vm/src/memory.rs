@@ -1,12 +1,12 @@
-use std::{ops::{Index, IndexMut}, num};
-use crate::parser::{Segment, Offset};
+use crate::parser::{Offset, Segment};
+use std::ops::{Index, IndexMut};
 
 pub type WordSize = i16;
 
 /**
  * Memory array:
  * 0-16383 16 bit main memory (0x0000-0x3fff)
- * 16384-24575 16 bit screen (0x4000-0x5fff) -> pixel (r, c) is mapped onto the c%16 bit of the 
+ * 16384-24575 16 bit screen (0x4000-0x5fff) -> pixel (r, c) is mapped onto the c%16 bit of the
  * 16 bit word stored at Screen \[r * 32 + c / 16\]
  * This needs to be exposed to javascript to allow for screen display
  * 24576 is 16 bit value for keyboard press (0x6000)
@@ -15,19 +15,19 @@ pub type WordSize = i16;
 pub struct Memory {
     ram: MemoryVec,
     display: MemoryVec,
-    keyboard: WordSize,   // something to keep track of allocations on heap for when objects are implemented
+    keyboard: WordSize, // something to keep track of allocations on heap for when objects are implemented
 }
 
 struct MemoryVec(Vec<WordSize>);
 
 impl MemoryVec {
-    fn new(vector:Vec<WordSize>) -> MemoryVec {
+    fn new(vector: Vec<WordSize>) -> MemoryVec {
         MemoryVec(vector)
     }
 
     fn len(&self) -> WordSize {
         self.0.len() as WordSize
-    } 
+    }
 
     fn as_ptr(&self) -> *const WordSize {
         self.0.as_ptr()
@@ -36,13 +36,13 @@ impl MemoryVec {
 
 impl Index<WordSize> for MemoryVec {
     type Output = WordSize;
-    fn index(&self, index:WordSize) -> &Self::Output {
+    fn index(&self, index: WordSize) -> &Self::Output {
         &(self.0[index as usize]) as &Self::Output
     }
 }
 
 impl IndexMut<WordSize> for MemoryVec {
-    fn index_mut(&mut self, index:WordSize) -> &mut Self::Output {
+    fn index_mut(&mut self, index: WordSize) -> &mut Self::Output {
         &mut (self.0[index as usize]) as &mut Self::Output
     }
 }
@@ -64,11 +64,16 @@ const STATIC_MAX: WordSize = 255;
 const TEMP: WordSize = 5;
 const TEMP_MAX: WordSize = 12;
 
-
 impl Memory {
-    pub fn new(sp:WordSize, local:WordSize, arg:WordSize, this:WordSize, that:WordSize) -> Memory {
+    pub fn new(
+        sp: WordSize,
+        local: WordSize,
+        arg: WordSize,
+        this: WordSize,
+        that: WordSize,
+    ) -> Memory {
         let mut ram = MemoryVec::new(vec![0; RAM_SIZE as usize]);
-        let display = MemoryVec::new(vec![25000; DISPLAY_SIZE as usize]);
+        let display = MemoryVec::new(vec![0; DISPLAY_SIZE as usize]);
         let keyboard = 0;
 
         ram[SP] = sp;
@@ -77,27 +82,34 @@ impl Memory {
         ram[THIS] = this;
         ram[THAT] = that;
 
-        Memory { 
-            ram, 
-            display, 
-            keyboard, 
+        Memory {
+            ram,
+            display,
+            keyboard,
         }
     }
 
     /**
      * Pushes to the global stack the value described by segment and index
      */
-    pub fn push(&mut self, segment:Segment, offset:Offset) {
-        
+    pub fn push(&mut self, segment: Segment, offset: Offset) {
         let value = match segment {
-            Segment::Pointer => todo!(),
-            Segment::Constant => offset.to_owned(), 
+            Segment::Pointer => {
+                if offset == 0 {
+                    self.get_pointer(THIS)
+                } else if offset == 1 {
+                    self.get_pointer(THAT)
+                } else {
+                    panic!("Pointer can only have offset of 0 or 1")
+                }
+            }
+            Segment::Constant => offset.to_owned(),
             Segment::Local => self.get_value(LCL, offset),
             Segment::Argument => self.get_value(ARG, offset),
             Segment::Static => self.get_value(STATIC, offset),
             Segment::This => self.get_value(THIS, offset),
             Segment::That => self.get_value(THAT, offset),
-            Segment::Temp => self.get_value(TEMP, offset)
+            Segment::Temp => self.get_value(TEMP, offset),
         };
 
         let stack_pointer = self.get_pointer(SP);
@@ -110,13 +122,21 @@ impl Memory {
      * Moves to memory location described by segment and index the item at the top of the global stack
      * Returns the value that was popped
      */
-    pub fn pop(&mut self, segment: Segment, offset:Offset) -> WordSize{
+    pub fn pop(&mut self, segment: Segment, offset: Offset) -> WordSize {
         // Decrement SP
         self.ram[SP] -= 1;
         let value = self.get_value(SP, 0);
 
         let address = match segment {
-            Segment::Pointer => todo!(),
+            Segment::Pointer => {
+                if offset == 0 {
+                    THIS
+                } else if offset == 1 {
+                    THAT
+                } else {
+                    panic!("Pointer can only have offset of 0 or 1")
+                }
+            }
             Segment::Constant => panic!("Constant can only be pushed"),
             Segment::Local => self.get_pointer(LCL) + offset,
             Segment::Argument => self.get_pointer(ARG) + offset,
@@ -142,44 +162,46 @@ impl Memory {
         value
     }
 
-    fn get_pointer(&self, pointer:WordSize) -> WordSize {
+    fn get_pointer(&self, pointer: WordSize) -> WordSize {
         self.ram[pointer]
     }
 
-    fn set_pointer(&mut self, pointer:WordSize, value:WordSize) {
+    fn set_pointer(&mut self, pointer: WordSize, value: WordSize) {
         self.ram[pointer] = value;
     }
 
-    fn get_value(&self, pointer:WordSize, offset:WordSize) -> WordSize {
-        self.ram[self.ram[pointer] + offset] 
+    fn get_value(&self, pointer: WordSize, offset: WordSize) -> WordSize {
+        self.ram[self.ram[pointer] + offset]
     }
 
     pub fn push_stack_frame(&mut self, num_args: WordSize, line_num: WordSize) {
-        self.set_pointer(ARG, self.get_pointer(SP) - num_args);
-
         // Save return address (not used)
         self.push(Segment::Constant, line_num);
-
         // Build caller stack
         self.push(Segment::Constant, self.get_pointer(LCL));
         self.push(Segment::Constant, self.get_pointer(ARG));
         self.push(Segment::Constant, self.get_pointer(THIS));
         self.push(Segment::Constant, self.get_pointer(THAT));
-
         // Set Local Pointer
+        self.set_pointer(ARG, self.get_pointer(SP) - num_args - 5);
         self.set_pointer(LCL, self.get_pointer(SP));
     }
 
     pub fn pop_stack_frame(&mut self) {
-        // save return value
-
-        // pop locals
-
+        // move return value to where it can be accessed by caller
+        self.pop(Segment::Argument, 0);
+        // reposition SP
+        self.set_pointer(SP, self.get_pointer(ARG) + 1);
         // reset memory pointers based on call stack
-
-        // pop return address
-
-        // set return value
+        let that = self.get_value(LCL, -1);
+        self.set_pointer(THAT, that);
+        let this = self.get_value(LCL, -2);
+        self.set_pointer(THIS, this);
+        let arg = self.get_value(LCL, -3);
+        self.set_pointer(ARG, arg);
+        let lcl = self.get_value(LCL, -4);
+        self.set_pointer(LCL, lcl);
+        // Return address isn't used
     }
 
     pub fn peek(&self, index: WordSize) -> WordSize {
@@ -190,7 +212,10 @@ impl Memory {
         } else if index == KEYBOARD {
             self.keyboard
         } else {
-            panic!("Index out of bounds. Valid indexes range from 0 to {}", KEYBOARD);
+            panic!(
+                "Index out of bounds. Valid indexes range from 0 to {}",
+                KEYBOARD
+            );
         }
     }
 
@@ -202,7 +227,10 @@ impl Memory {
         } else if index == KEYBOARD {
             self.keyboard = value;
         } else {
-            panic!("Index out of bounds. Valid indexes range from 0 to {}", KEYBOARD);
+            panic!(
+                "Index out of bounds. Valid indexes range from 0 to {}",
+                KEYBOARD
+            );
         };
     }
 
@@ -218,34 +246,9 @@ impl Memory {
         self.keyboard
     }
 
-    // pub fn test_display(&mut self) {
-    //     if self.display(self.display.len() - 1) != 0 {
-    //     }
-    //     let sp_pointer = self.display[SP] as usize;
-    //     match self.display[sp_pointer] {
-    //         0x0000 => self.display[sp_pointer] = 0x0001,
-    //         0x0001 => self.display[sp_pointer] = 0x0003,
-    //         0x0003 => self.display[sp_pointer] = 0x0007,
-    //         0x0007 => self.display[sp_pointer] = 0x000F,
-    //         0x000F => self.display[sp_pointer] = 0x001F,
-    //         0x001F => self.display[sp_pointer] = 0x003F,
-    //         0x003F => self.display[sp_pointer] = 0x007F,
-    //         0x007F => self.display[sp_pointer] = 0x00FF,
-    //         0x00FF => self.display[sp_pointer] = 0x01FF,
-    //         0x01FF => self.display[sp_pointer] = 0x03FF,
-    //         0x03FF => self.display[sp_pointer] = 0x07FF,
-    //         0x07FF => self.display[sp_pointer] = 0x0FFF,
-    //         0x0FFF => self.display[sp_pointer] = 0x1FFF,
-    //         0x1FFF => self.display[sp_pointer] = 0x3FFF,
-    //         0x3FFF => self.display[sp_pointer] = 0x7FFF,
-    //         0x7FFF => self.display[sp_pointer] = 0xFFFF,
-    //         0xFFFF => {
-    //             self.ram[SP] += 1;
-    //             self.display[sp_pointer] = 0x0001;
-    //         }
-    //         _ => panic!("This is all wrong!")
-    //     }
-    // }
+    pub fn set_display(&mut self, value: WordSize, offset: WordSize) {
+        self.display[offset] = value;
+    }
 
     pub fn ram_size(&self) -> WordSize {
         self.ram.len()
@@ -257,17 +260,16 @@ impl Memory {
 
     /**
      * Allocates a block of memory of at least 'size' words
-     * Returns the pointer to the block 
+     * Returns the pointer to the block
      */
     fn allocate(size: u16) -> u16 {
         todo!()
     }
 
-    /** 
+    /**
      * Frees block of memory pointed to by 'pointer'
      */
     fn deallocate(pointer: u16) {
         todo!()
     }
-
 }

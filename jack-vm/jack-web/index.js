@@ -7,18 +7,36 @@ const WORD_SIZE = 16; //bits
 
 const testProgram =`class Main
 function main 0
-push constant 5
-push constant 3
-call add 2
-function add 0
+push constant 7
+call Fibonacci.fibonacci 1
+label WHILE
+goto WHILE
+
+class Fibonacci
+function fibonacci 0
 push argument 0
-push argument 1
-add
+push constant 2
+lt                     // checks if n<2
+if-goto IF_TRUE
+goto IF_FALSE
+label IF_TRUE          // if n<2, return n
+push argument 0        
+return
+label IF_FALSE         // if n>=2, returns fib(n-2)+fib(n-1)
+push argument 0
+push constant 2
+sub
+call Fibonacci.fibonacci 1  // computes fib(n-2)
+push argument 0
+push constant 1
+sub
+call Fibonacci.fibonacci 1  // computes fib(n-1)
+add                    // returns fib(n-1) + fib(n-2)
 return
 `;
 
 // set lcl=260 so we can see it near sp at 256
-const program = new Program(testProgram, 300);
+const program = new Program(testProgram, 265);
 
 // total memory size can be shown on a 768 x 512 grid. 
 // If each memory cell is represented as a 2x2 pixel on a grid, it might even be legible!
@@ -64,8 +82,8 @@ function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
 
     for (let i = 0; i < memSize * 16; i++) {
         if (bitIsSet(i, memArray)) {
-            // set corresponding virtual pixel to green
-            drawVirtualPixel(pixels, i, pixelSize, widthPixels, 255, 55, 100, 255)
+            // set corresponding virtual pixel to red
+            drawVirtualPixel(pixels, i, pixelSize, widthPixels, 0, 255, 0, 255)
         } else {
             // set corresponding virtual pixel to black
             drawVirtualPixel(pixels, i, pixelSize, widthPixels, 10, 10, 10, 255)
@@ -77,10 +95,11 @@ function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
 }
 
 function drawVirtualPixel(pixels, index, pixelSize, widthPixels, r, g, b, a) {
+    // index 0 ->
     for (let y = 0; y < pixelSize; y++) {
         for (let x = 0; x < pixelSize; x++) {
             const x_shift = x * 4
-            const y_shift = Math.floor(index / widthPixels) * widthPixels * 4 * pixelSize + y * widthPixels * 4 * pixelSize
+            const y_shift = Math.floor(index / widthPixels) * widthPixels * 4 * (pixelSize == 1? 0 : pixelSize) + y * widthPixels * 4 * pixelSize
             const offset = index * 4 * pixelSize + x_shift + y_shift// 4 values per pixel
             pixels[offset] = r
             pixels[offset + 1] = g
@@ -95,24 +114,39 @@ function updateRamList(start, end, memSize, memPtr) {
     if (document.getElementById("ram-list")) {
         document.getElementById("ram-list").remove();
     }
-    const ol = document.createElement('ul');
+    const outer = document.createElement('div');
     const memArray = new Int16Array(memory.buffer, memPtr, memSize)
-    ol.setAttribute('id', 'ram-list')
+    outer.setAttribute('id', 'ram-list')
     for (let i = start; i <= end; i++) {
-        const li = document.createElement('li');
-        li.innerHTML = `ram[${i}] = ${memArray[i]}`
-        ol.appendChild(li);
+        const inner = document.createElement('div');
+        inner.innerHTML = `ram[${i}]:\t ${memArray[i]}`
+        outer.appendChild(inner);
     }
-    ramContainer.appendChild(ol)
+    ramContainer.appendChild(outer)
 }
 
+
+let i = 0
+// let do_log = true
+// setTimeout(() => {
+//     do_log = false
+// }, 10000)
 function renderLoop() {
     drawMemory(displayWidthPixels, displayHeightPixels, pixelSize, displayPtr, displaySize);
-    updateRamList(256, 270, ramSize, ramPtr)
+    updateRamList(256, 300, ramSize, ramPtr)
+    program.set_display(i, i)
+    i++
     program.step()
-
+    if (i < displaySize) {
+        // requestAnimationFrame(renderLoop)
+    }
+    
+    // if (do_log) {
+    //     console.log(1)
+    // }
 }
-setInterval(() => requestAnimationFrame(renderLoop), 1000)
+// requestAnimationFrame(renderLoop)
+setInterval(() => requestAnimationFrame(renderLoop), 50)
 
 
 
