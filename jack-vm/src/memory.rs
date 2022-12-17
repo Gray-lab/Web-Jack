@@ -61,8 +61,8 @@ impl IndexMut<WordSize> for MemoryVec {
 // }
 
 const RAM_SIZE: WordSize = 16384;
-const DISPLAY_WIDTH: WordSize = 512;
-const DISPLAY_HEIGHT: WordSize = 256;
+pub(crate) const DISPLAY_WIDTH: WordSize = 512;
+pub(crate) const DISPLAY_HEIGHT: WordSize = 256;
 pub(crate) const SP: WordSize = 0;
 pub(crate) const LCL: WordSize = 1;
 pub(crate) const ARG: WordSize = 2;
@@ -230,7 +230,6 @@ impl Memory {
 
     pub fn set_display_index(&mut self, x: WordSize, y: WordSize) {
         let display_word = y * (DISPLAY_WIDTH / 16) + x / 16;
-        console::log_1(&display_word.into());
         let bit = x % 16;
         let mask: WordSize = 1 << bit;
         if self.screen_color == 0 {

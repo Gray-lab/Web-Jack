@@ -22,6 +22,16 @@ push constant 450
 push constant 150
 call Screen.drawRectangle 4
 pop temp 0
+push constant 20
+push constant 20
+push constant 15
+call Screen.drawCircle 3
+pop temp 0
+push constant 500
+push constant 250
+push constant 200
+call Screen.drawCircle 3
+pop temp 0
 label END
 goto END
 `;

@@ -60,7 +60,7 @@ impl Program {
         native_functions.insert("Screen.drawLine".into(), jacklib::draw_line);
         native_functions.insert("Screen.drawRectangleOutline".into(), jacklib::draw_rectangle_outline);
         native_functions.insert("Screen.drawRectangle".into(), jacklib::draw_rectangle);
-
+        native_functions.insert("Screen.drawCircle".into(), jacklib::draw_circle);
 
         let main_function = code
             .functions
