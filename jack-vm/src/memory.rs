@@ -1,5 +1,6 @@
 use crate::parser::{Offset, Segment};
 use std::ops::{Index, IndexMut};
+use web_sys::console;
 
 pub type WordSize = i16;
 
@@ -15,7 +16,11 @@ pub type WordSize = i16;
 pub struct Memory {
     ram: MemoryVec,
     display: MemoryVec,
-    keyboard: WordSize, // something to keep track of allocations on heap for when objects are implemented
+    pub keyboard: WordSize,
+    pub cursor_line: WordSize,
+    pub cursor_col: WordSize,
+    pub screen_color: WordSize,
+    // something to keep track of allocations on heap for when objects are implemented
 }
 
 struct MemoryVec(Vec<WordSize>);
@@ -31,6 +36,10 @@ impl MemoryVec {
 
     fn as_ptr(&self) -> *const WordSize {
         self.0.as_ptr()
+    }
+
+    fn fill(&mut self, value:WordSize) {
+        self.0.iter_mut().for_each(|m| *m = value);
     }
 }
 
@@ -52,13 +61,13 @@ impl IndexMut<WordSize> for MemoryVec {
 // }
 
 const RAM_SIZE: WordSize = 16384;
-const DISPLAY_SIZE: WordSize = 8192; // 256x512
-const KEYBOARD: WordSize = 24576;
-const SP: WordSize = 0;
-const LCL: WordSize = 1;
-const ARG: WordSize = 2;
-const THIS: WordSize = 3;
-const THAT: WordSize = 4;
+const DISPLAY_WIDTH: WordSize = 512;
+const DISPLAY_HEIGHT: WordSize = 256;
+pub(crate) const SP: WordSize = 0;
+pub(crate) const LCL: WordSize = 1;
+pub(crate) const ARG: WordSize = 2;
+pub(crate) const THIS: WordSize = 3;
+pub(crate) const THAT: WordSize = 4;
 const STATIC: WordSize = 15;
 const STATIC_MAX: WordSize = 255;
 const TEMP: WordSize = 5;
@@ -72,9 +81,8 @@ impl Memory {
         this: WordSize,
         that: WordSize,
     ) -> Memory {
-        let mut ram = MemoryVec::new(vec![0; RAM_SIZE as usize]);
-        let display = MemoryVec::new(vec![0; DISPLAY_SIZE as usize]);
-        let keyboard = 0;
+        let mut ram = MemoryVec::new(vec![0; Memory::ram_size() as usize]);
+        let display = MemoryVec::new(vec![0; Memory::display_size() as usize]);
 
         ram[SP] = sp;
         ram[LCL] = local;
@@ -85,7 +93,10 @@ impl Memory {
         Memory {
             ram,
             display,
-            keyboard,
+            keyboard: 0,
+            cursor_line: 0,
+            cursor_col: 0,
+            screen_color: 0,
         }
     }
 
@@ -162,16 +173,21 @@ impl Memory {
         value
     }
 
-    fn get_pointer(&self, pointer: WordSize) -> WordSize {
+    pub fn get_pointer(&self, pointer: WordSize) -> WordSize {
         self.ram[pointer]
     }
 
-    fn set_pointer(&mut self, pointer: WordSize, value: WordSize) {
+    pub fn set_pointer(&mut self, pointer: WordSize, value: WordSize) {
         self.ram[pointer] = value;
     }
 
-    fn get_value(&self, pointer: WordSize, offset: WordSize) -> WordSize {
+    pub fn get_value(&self, pointer: WordSize, offset: WordSize) -> WordSize {
         self.ram[self.ram[pointer] + offset]
+    }
+
+    pub fn set_value_by_pointer(&mut self, pointer: WordSize, offset: WordSize, value: WordSize) {
+        let address = self.ram[pointer] + offset;
+        self.ram[address] = value;
     }
 
     pub fn push_stack_frame(&mut self, num_args: WordSize, line_num: WordSize) {
@@ -204,42 +220,26 @@ impl Memory {
         // Return address isn't used
     }
 
-    pub fn peek(&self, index: WordSize) -> WordSize {
-        if index < RAM_SIZE {
-            self.ram[index]
-        } else if index < RAM_SIZE + DISPLAY_SIZE {
-            self.display[index]
-        } else if index == KEYBOARD {
-            self.keyboard
-        } else {
-            panic!(
-                "Index out of bounds. Valid indexes range from 0 to {}",
-                KEYBOARD
-            );
-        }
-    }
-
-    pub fn poke(&mut self, index: WordSize, value: WordSize) {
-        if index < RAM_SIZE {
-            self.ram[index] = value;
-        } else if index < RAM_SIZE + DISPLAY_SIZE {
-            self.display[index] = value;
-        } else if index == KEYBOARD {
-            self.keyboard = value;
-        } else {
-            panic!(
-                "Index out of bounds. Valid indexes range from 0 to {}",
-                KEYBOARD
-            );
-        };
-    }
-
     pub fn ram(&self) -> *const WordSize {
         self.ram.as_ptr()
     }
 
     pub fn display(&self) -> *const WordSize {
         self.display.as_ptr()
+    }
+
+    pub fn set_display_index(&mut self, x: WordSize, y: WordSize) {
+        let display_word = y * (DISPLAY_WIDTH / 16) + x / 16;
+        console::log_1(&display_word.into());
+        let bit = x % 16;
+        let mask: WordSize = 1 << bit;
+        if self.screen_color == 0 {
+            // and with inverse of mask
+            self.display[display_word] &= !mask;
+        } else {
+            // or with mask
+            self.display[display_word] |= mask;
+        }
     }
 
     pub fn keyboard(&self) -> WordSize {
@@ -250,12 +250,24 @@ impl Memory {
         self.display[offset] = value;
     }
 
-    pub fn ram_size(&self) -> WordSize {
-        self.ram.len()
+    pub fn ram_size() -> WordSize {
+        RAM_SIZE
     }
 
-    pub fn display_size(&self) -> WordSize {
-        self.display.len()
+    pub fn display_size() -> WordSize {
+        (DISPLAY_HEIGHT) * (DISPLAY_WIDTH / 16)
+    }
+
+    pub fn get_arg(&self, arg_num: WordSize) -> WordSize {
+        self.get_value(ARG, arg_num)
+    }
+
+    pub fn clear_display(&mut self) {
+        self.display.fill(0);
+    }
+
+    pub fn fill_display(&mut self) {
+        self.display.fill(-1);
     }
 
     /**

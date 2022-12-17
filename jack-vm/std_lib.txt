@@ -33,7 +33,7 @@ Output
     Each character is 11px high and 8px wide, including margins
     A filled square should be located at the current cursor location
 
-    function void moveCursor(int i, int ij)
+    function void moveCursor(int i, int j)
     function void printChar(char c)
     function void printString(String s)
     function void printInt(int i)

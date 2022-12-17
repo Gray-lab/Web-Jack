@@ -1,11 +1,12 @@
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
+use crate::jacklib::{NativeFunction, self};
 use crate::memory::{Memory, WordSize};
 use crate::parser::{parse_class, Bytecode, Command, Function, Segment};
-use crate::display;
 
 struct StackFrame {
     function: Rc<RefCell<Function>>,
@@ -24,6 +25,7 @@ impl StackFrame {
 #[wasm_bindgen]
 pub struct Program {
     code: Bytecode,
+    native_functions: HashMap<String, NativeFunction>,
     memory: Memory,
     call_stack: Vec<StackFrame>,
 }
@@ -50,6 +52,16 @@ impl Program {
         let string = format!("{:?}", code);
         console::log_1(&string.into());
 
+        let mut native_functions:HashMap<String, NativeFunction> = HashMap::new();
+        native_functions.insert("Screen.setColor".into(), jacklib::set_color);
+        native_functions.insert("Screen.drawPixel".into(), jacklib::draw_pixel);
+        native_functions.insert("Screen.clearScreen".into(), jacklib::clear_screen);
+        native_functions.insert("Screen.fillScreen".into(), jacklib::fill_screen);
+        native_functions.insert("Screen.drawLine".into(), jacklib::draw_line);
+        native_functions.insert("Screen.drawRectangleOutline".into(), jacklib::draw_rectangle_outline);
+        native_functions.insert("Screen.drawRectangle".into(), jacklib::draw_rectangle);
+
+
         let main_function = code
             .functions
             .get("Main.main")
@@ -61,8 +73,10 @@ impl Program {
         let mut call_stack = Vec::new();
         call_stack.push(main_frame);
 
+
         Program {
             code,
+            native_functions,
             memory,
             call_stack,
         }
@@ -191,23 +205,32 @@ impl Program {
                 }
             }
             Command::Call(name, num_args) => {
+                // self.code holds all jack code, including user and library functions written in Jack
                 if self.code.functions.contains_key(name) {
-                    // find the correct function
+                    // Find the correct function
                     let callee = self
                         .code
                         .functions
                         .get(name)
                         .cloned()
-                        .expect("Hopefully we aren't missing any functions :(");
-                    // build a stack frame for it in memory
+                        .unwrap();
+                    // Build a stack frame for it in memory
                     let global_line_num = callee.borrow().start_line + frame.next_line - 1;
                     self.memory
                         .push_stack_frame(*num_args, global_line_num as WordSize);
-                    // build and push a stack frame for the virtual call stack
+                    // Build and push a stack frame for the virtual call stack
                     self.call_stack.push(StackFrame::new(callee));
+                } else if self.native_functions.contains_key(name) {
+                    // All other functions are native rust
+                    let callee = self.native_functions.get(name).unwrap();         
+                    self.memory
+                        .push_stack_frame(*num_args, 0 as WordSize);
+                    let return_value = callee(&mut self.memory, *num_args);
+                    // Jack expects a return value for every function
+                    self.memory.push(Segment::Constant, return_value);
+                    self.memory.pop_stack_frame();
                 } else {
-                    panic!("Funcion {} not found", name);
-                    // todo!("Check if the function exists in the standard library and call that function")
+                    panic!("Function {} not found", name);
                 }
             }
             Command::Return => {
@@ -219,7 +242,7 @@ impl Program {
     }
 
     pub fn ram_size(&self) -> usize {
-        self.memory.ram_size() as usize
+        Memory::ram_size() as usize
     }
 
     /**
@@ -240,7 +263,7 @@ impl Program {
      * returns the length of the display memory array
      */
     pub fn display_size(&self) -> usize {
-        self.memory.display_size() as usize
+        Memory::display_size() as usize
     }
 
     /**
@@ -267,32 +290,3 @@ impl Program {
         self.memory.keyboard()
     }
 }
-
-// Global Stack
-// There is a main frame where execution begins
-// Before a function call, arguments are pushed to the current function's
-// working stack.
-// At a function/method call, the VM takes 5 words of memory to create a saved caller frame
-// 1. return address
-// 2. saved LCL
-// 3. saved ARG
-// 4. saved THIS
-// 5. saved THAT
-// Sets the argument segment to start at the first argument
-// Sets the local segment to begin immediatelly after the saved frame
-// Sets the working stack to begin immediatelly after that
-// Transfers control to the callee
-
-// classes
-// static variables map to memory segment 'static'
-// field variables map to memory segment 'this'
-// pointer 0 is a pointer to the current objects 'this' segment
-// pointer 1 is a pointer to 'that' segment
-
-// So, each object has a pointer that either lives in static or local
-
-// class instances
-// they are mapped to memory
-// as long as the memory mapping is correct, the pointers will work out
-
-// how to handle standard library calls - ultimately just functions that

@@ -7,32 +7,23 @@ const WORD_SIZE = 16; //bits
 
 const testProgram =`class Main
 function main 0
-push constant 7
-call Fibonacci.fibonacci 1
-label WHILE
-goto WHILE
-
-class Fibonacci
-function fibonacci 0
-push argument 0
-push constant 2
-lt                     // checks if n<2
-if-goto IF_TRUE
-goto IF_FALSE
-label IF_TRUE          // if n<2, return n
-push argument 0        
-return
-label IF_FALSE         // if n>=2, returns fib(n-2)+fib(n-1)
-push argument 0
-push constant 2
-sub
-call Fibonacci.fibonacci 1  // computes fib(n-2)
-push argument 0
 push constant 1
-sub
-call Fibonacci.fibonacci 1  // computes fib(n-1)
-add                    // returns fib(n-1) + fib(n-2)
-return
+call Screen.setColor 1
+pop temp 0
+push constant 400
+push constant 100
+push constant 450
+push constant 120
+call Screen.drawRectangleOutline 4
+pop temp 0
+push constant 400
+push constant 130
+push constant 450
+push constant 150
+call Screen.drawRectangle 4
+pop temp 0
+label END
+goto END
 `;
 
 // set lcl=260 so we can see it near sp at 256
@@ -126,27 +117,27 @@ function updateRamList(start, end, memSize, memPtr) {
 }
 
 
-let i = 0
+// let i = 0
 // let do_log = true
 // setTimeout(() => {
 //     do_log = false
 // }, 10000)
 function renderLoop() {
     drawMemory(displayWidthPixels, displayHeightPixels, pixelSize, displayPtr, displaySize);
-    updateRamList(256, 300, ramSize, ramPtr)
-    program.set_display(i, i)
-    i++
+    updateRamList(256, 270, ramSize, ramPtr)
+    // program.set_display(i, i)
+    // i++
     program.step()
-    if (i < displaySize) {
+    // if (i < displaySize) {
         // requestAnimationFrame(renderLoop)
-    }
+    // }
     
     // if (do_log) {
     //     console.log(1)
     // }
 }
 // requestAnimationFrame(renderLoop)
-setInterval(() => requestAnimationFrame(renderLoop), 50)
+setInterval(() => requestAnimationFrame(renderLoop), 100)
 
 
 

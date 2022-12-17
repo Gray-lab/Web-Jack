@@ -2,6 +2,7 @@ mod memory;
 mod parser;
 mod program;
 mod utils;
+mod jacklib;
 
 use wasm_bindgen::prelude::*;
 

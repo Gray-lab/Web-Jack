@@ -1,0 +1,9 @@
+class Main
+function main 0
+push constant 1
+call Screen.setColor 1
+push constant 0
+push constant 0
+call Screen.drawPixel 2
+label END
+goto END
