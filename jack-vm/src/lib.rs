@@ -3,6 +3,7 @@ mod parser;
 mod program;
 mod utils;
 mod jacklib;
+mod charmap;
 
 use wasm_bindgen::prelude::*;
 

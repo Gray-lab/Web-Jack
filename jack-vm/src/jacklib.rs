@@ -10,11 +10,17 @@ const COLS: WordSize = 64;
 const VOID: WordSize = 0;
 
 // OUTPUT
+/// The screen is mapped to 24 rows of 64 characters, with each character 
+/// being 8 pixels wide and 11 pixels high, including margins
+/// 
+/// 
+/// 
+
 /**
  * Moves cursor to line and col specified
  * arg0: line
  * arg1: col
- * returns VOID
+ * returns: VOID
  */
 pub fn moveCursor(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 2);
@@ -26,8 +32,15 @@ pub fn moveCursor(memory: &mut Memory, args: WordSize) -> WordSize {
     VOID
 }
 
+/**
+ * Prints character c
+ * arg0: character
+ * returns: VOID
+ */
 pub fn printChar(memory: &mut Memory, args: WordSize) -> WordSize {
-    todo!()
+
+
+    VOID
 }
 
 pub fn printString(memory: &mut Memory, args: WordSize) -> WordSize {
@@ -51,10 +64,9 @@ pub fn backSpace(memory: &mut Memory, args: WordSize) -> WordSize {
 }
 
 // SCREEN
-
 /**
  * Draws line given coordinates x1, y1, x2, y2
- * Returns void
+ * Returns: void
  */
 fn draw_line_helper(memory: &mut Memory, x1: WordSize, y1: WordSize, x2: WordSize, y2: WordSize) {
     let dx = x2 - x1;
