@@ -1,9 +1,9 @@
 Math // these should just pop the last two stack values and push the result
     function int multiply(int x, int y)
-    function int multiply(int x, int y)
+    function int divide(int x, int y)
     function int min(int x, int y)
     function int max(int x, int y)
-    function int sqrt(int x, int y)
+    function int sqrt(int x)
 
 String // could have a hashmap<identifier, String> to store strings/slices
     // in Jack, the implementation is an object that stores:

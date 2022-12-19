@@ -4,7 +4,7 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
-use crate::jacklib::{NativeFunction, self};
+use crate::jacklib::{self, NativeFunction};
 use crate::memory::{Memory, WordSize};
 use crate::parser::{parse_class, Bytecode, Command, Function, Segment};
 
@@ -52,15 +52,59 @@ impl Program {
         let string = format!("{:?}", code);
         console::log_1(&string.into());
 
-        let mut native_functions:HashMap<String, NativeFunction> = HashMap::new();
+        let mut native_functions: HashMap<String, NativeFunction> = HashMap::new();
+        // Populate with standard library fuctions
+        // Math library
+        native_functions.insert("Math.multiply".into(), jacklib::multiply);
+        native_functions.insert("Math.divide".into(), jacklib::divide);
+        native_functions.insert("Math.min".into(), jacklib::jack_min);
+        native_functions.insert("Math.max".into(), jacklib::jack_max);
+        native_functions.insert("Math.sqrt".into(), jacklib::jack_sqrt);
+        native_functions.insert("Math.pow".into(), jacklib::jack_pow);
+
+        // String library
+        native_functions.insert("String.new".into(), jacklib::string_new);
+        native_functions.insert("String.new".into(), jacklib::string_new);
+
+        // Array library
+
+        // Output library
+        native_functions.insert("Output.moveCursor".into(), jacklib::move_cursor);
+        native_functions.insert("Output.printChar".into(), jacklib::print_char);
+        native_functions.insert("Output.printString".into(), jacklib::print_string);
+        native_functions.insert("Output.printInt".into(), jacklib::print_int);
+        native_functions.insert("Output.println".into(), jacklib::println);
+        native_functions.insert("Output.backSpace".into(), jacklib::move_cursor);
+
+        // Screen library
         native_functions.insert("Screen.setColor".into(), jacklib::set_color);
         native_functions.insert("Screen.drawPixel".into(), jacklib::draw_pixel);
         native_functions.insert("Screen.clearScreen".into(), jacklib::clear_screen);
         native_functions.insert("Screen.fillScreen".into(), jacklib::fill_screen);
         native_functions.insert("Screen.drawLine".into(), jacklib::draw_line);
-        native_functions.insert("Screen.drawRectangleOutline".into(), jacklib::draw_rectangle_outline);
+        native_functions.insert(
+            "Screen.drawRectangleOutline".into(),
+            jacklib::draw_rectangle_outline,
+        );
         native_functions.insert("Screen.drawRectangle".into(), jacklib::draw_rectangle);
         native_functions.insert("Screen.drawCircle".into(), jacklib::draw_circle);
+
+        // Keyboard library
+        native_functions.insert("Keyboard.keyPressed".into(), jacklib::key_pressed);
+        native_functions.insert("Keyboard.readChar".into(), jacklib::read_char);
+        native_functions.insert("Keyboard.readLine".into(), jacklib::read_line);
+        native_functions.insert("Keyboard.readInt".into(), jacklib::read_int);
+
+        // Memory library
+        native_functions.insert("Memory.peek".into(), jacklib::peek);
+        native_functions.insert("Memory.poke".into(), jacklib::poke);
+        native_functions.insert("Memory.alloc".into(), jacklib::alloc);
+        native_functions.insert("Memory.deAlloc".into(), jacklib::de_alloc);
+
+        // System library
+        native_functions.insert("System.wait".into(), jacklib::wait);
+        native_functions.insert("System.halt".into(), jacklib::halt);
+        native_functions.insert("System.error".into(), jacklib::error);
 
         let main_function = code
             .functions
@@ -72,7 +116,6 @@ impl Program {
 
         let mut call_stack = Vec::new();
         call_stack.push(main_frame);
-
 
         Program {
             code,
@@ -208,12 +251,7 @@ impl Program {
                 // self.code holds all jack code, including user and library functions written in Jack
                 if self.code.functions.contains_key(name) {
                     // Find the correct function
-                    let callee = self
-                        .code
-                        .functions
-                        .get(name)
-                        .cloned()
-                        .unwrap();
+                    let callee = self.code.functions.get(name).cloned().unwrap();
                     // Build a stack frame for it in memory
                     let global_line_num = callee.borrow().start_line + frame.next_line - 1;
                     self.memory
@@ -222,9 +260,8 @@ impl Program {
                     self.call_stack.push(StackFrame::new(callee));
                 } else if self.native_functions.contains_key(name) {
                     // All other functions are native rust
-                    let callee = self.native_functions.get(name).unwrap();         
-                    self.memory
-                        .push_stack_frame(*num_args, 0 as WordSize);
+                    let callee = self.native_functions.get(name).unwrap();
+                    self.memory.push_stack_frame(*num_args, 0 as WordSize);
                     let return_value = callee(&mut self.memory, *num_args);
                     // Jack expects a return value for every function
                     self.memory.push(Segment::Constant, return_value);

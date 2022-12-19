@@ -16,12 +16,12 @@ impl Char {
     }
 }
 
-struct CharMap {
+pub struct CharMap {
     cmap: HashMap<WordSize, Char>
 }
 
 impl CharMap {
-    fn new() -> CharMap {
+    pub fn new() -> CharMap {
         let mut cmap: HashMap<WordSize, Char> = HashMap::new();
         cmap.insert(0, Char::new('█', vec![63,63,63,63,63,63,63,63,63,0,0]));
         cmap.insert(32,Char::new(' ', vec![0,0,0,0,0,0,0,0,0,0,0]));
@@ -121,5 +121,17 @@ impl CharMap {
         cmap.insert(125, Char::new('}', vec![7,12,12,12,56,12,12,12,7,0,0]));  
         cmap.insert(126, Char::new('~', vec![38,45,25,0,0,0,0,0,0,0,0]));      
         CharMap { cmap }
+    }
+
+    /**
+     * Returns the bitmap for a valid character. 
+     * Returns bitmap for black square for any invalid characters.
+     */
+    pub fn get_bitmap(&self, character: &WordSize) -> &Vec<u8> {
+        if self.cmap.contains_key(character) {
+            self.cmap.get(character).unwrap().bitmap.as_ref()
+        } else {
+            self.cmap.get(&(0 as i16)).unwrap().bitmap.as_ref()
+        }
     }
 }

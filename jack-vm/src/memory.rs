@@ -1,4 +1,7 @@
-use crate::parser::{Offset, Segment};
+use crate::{
+    charmap::CharMap,
+    parser::{Offset, Segment},
+};
 use std::ops::{Index, IndexMut};
 use web_sys::console;
 
@@ -20,6 +23,8 @@ pub struct Memory {
     pub cursor_line: WordSize,
     pub cursor_col: WordSize,
     pub screen_color: WordSize,
+    pub char_map: CharMap,
+    heap_alloc: Vec<HeapAllocation>,
     // something to keep track of allocations on heap for when objects are implemented
 }
 
@@ -38,7 +43,7 @@ impl MemoryVec {
         self.0.as_ptr()
     }
 
-    fn fill(&mut self, value:WordSize) {
+    fn fill(&mut self, value: WordSize) {
         self.0.iter_mut().for_each(|m| *m = value);
     }
 }
@@ -63,6 +68,7 @@ impl IndexMut<WordSize> for MemoryVec {
 const RAM_SIZE: WordSize = 16384;
 pub(crate) const DISPLAY_WIDTH: WordSize = 512;
 pub(crate) const DISPLAY_HEIGHT: WordSize = 256;
+pub(crate) const WORDSIZE: WordSize = 16;
 pub(crate) const SP: WordSize = 0;
 pub(crate) const LCL: WordSize = 1;
 pub(crate) const ARG: WordSize = 2;
@@ -97,6 +103,8 @@ impl Memory {
             cursor_line: 0,
             cursor_col: 0,
             screen_color: 0,
+            char_map: CharMap::new(),
+            heap_alloc: Vec::new(),
         }
     }
 
@@ -273,14 +281,73 @@ impl Memory {
      * Allocates a block of memory of at least 'size' words
      * Returns the pointer to the block
      */
-    fn allocate(size: u16) -> u16 {
-        todo!()
+    pub(crate) fn alloc(&mut self, requested_size: WordSize) -> WordSize {
+        // Walk through the HeapAllocations and return the first one that is big enough
+        for allocation in self
+            .heap_alloc
+            .iter_mut()
+            .filter(|a| a.status == MemoryStatus::Free && a.size >= requested_size)
+        {
+            allocation.status = MemoryStatus::Used;
+            return allocation.pointer;
+        }
+
+        // Otherwise make a new allocation
+        let next_free = self
+            .heap_alloc
+            .last()
+            .map(|a| a.pointer)
+            .unwrap_or(RAM_SIZE - 1);
+        let new_pointer = next_free - requested_size;
+        self.heap_alloc
+            .push(HeapAllocation::new(new_pointer, requested_size));
+        new_pointer
     }
 
     /**
      * Frees block of memory pointed to by 'pointer'
      */
-    fn deallocate(pointer: u16) {
-        todo!()
+    pub fn de_alloc(&mut self, pointer: WordSize) {
+        match self.heap_alloc.iter_mut().find(|a| a.pointer == pointer) {
+            Some(a) => match a.status {
+                MemoryStatus::Used => a.status = MemoryStatus::Free,
+                MemoryStatus::Free => (),
+            },
+            None => (),
+        }
+    }
+}
+
+struct HeapAllocation {
+    pointer: WordSize,
+    size: WordSize,
+    status: MemoryStatus,
+}
+
+#[derive(PartialEq, Eq)]
+enum MemoryStatus {
+    Used,
+    Free,
+}
+
+impl HeapAllocation {
+    fn new(pointer: WordSize, size: WordSize) -> HeapAllocation {
+        HeapAllocation {
+            pointer,
+            size,
+            status: MemoryStatus::Used,
+        }
+    }
+
+    fn combine(piece1: HeapAllocation, piece2: HeapAllocation) -> HeapAllocation {
+        // must be adjacent
+        // combine sizes and return the lower value pointer
+        let new_pointer = i16::min(piece1.pointer, piece2.pointer);
+        let new_size = piece1.size + piece2.size;
+        HeapAllocation {
+            pointer: new_pointer,
+            size: new_size,
+            status: MemoryStatus::Free,
+        }
     }
 }
