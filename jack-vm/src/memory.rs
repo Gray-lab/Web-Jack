@@ -3,9 +3,61 @@ use crate::{
     parser::{Offset, Segment},
 };
 use std::ops::{Index, IndexMut};
-use web_sys::console;
 
 pub type WordSize = i16;
+
+// Memory sizes
+pub(crate) const WORDSIZE: WordSize = 16;
+const RAM_SIZE: WordSize = 16384;
+const RAM_MAX_INDEX: WordSize = RAM_SIZE - 1;
+const DISPLAY_MAX_INDEX: WordSize = 24575;
+pub(crate) const DISPLAY_WIDTH: WordSize = 512;
+pub(crate) const DISPLAY_HEIGHT: WordSize = 256;
+pub(crate) const KEYBOARD_MEM: WordSize = 24576;
+// Segment pointer locations
+pub(crate) const SP: WordSize = 0;
+pub(crate) const LCL: WordSize = 1;
+pub(crate) const ARG: WordSize = 2;
+pub(crate) const THIS: WordSize = 3;
+pub(crate) const THAT: WordSize = 4;
+const STATIC: WordSize = 15;
+const STATIC_MAX: WordSize = 255;
+const TEMP: WordSize = 5;
+const TEMP_MAX: WordSize = 12;
+
+struct HeapAllocation {
+    pointer: WordSize,
+    size: WordSize,
+    status: MemoryStatus,
+}
+
+#[derive(PartialEq, Eq)]
+enum MemoryStatus {
+    Used,
+    Free,
+}
+
+impl HeapAllocation {
+    fn new(pointer: WordSize, size: WordSize) -> HeapAllocation {
+        HeapAllocation {
+            pointer,
+            size,
+            status: MemoryStatus::Used,
+        }
+    }
+
+    fn combine(piece1: HeapAllocation, piece2: HeapAllocation) -> HeapAllocation {
+        // must be adjacent
+        // combine sizes and return the lower value pointer
+        let new_pointer = i16::min(piece1.pointer, piece2.pointer);
+        let new_size = piece1.size + piece2.size;
+        HeapAllocation {
+            pointer: new_pointer,
+            size: new_size,
+            status: MemoryStatus::Free,
+        }
+    }
+}
 
 /**
  * Memory array:
@@ -60,24 +112,6 @@ impl IndexMut<WordSize> for MemoryVec {
         &mut (self.0[index as usize]) as &mut Self::Output
     }
 }
-// struct Block {
-//     pointer: u16,
-//     size: u16,
-// }
-
-const RAM_SIZE: WordSize = 16384;
-pub(crate) const DISPLAY_WIDTH: WordSize = 512;
-pub(crate) const DISPLAY_HEIGHT: WordSize = 256;
-pub(crate) const WORDSIZE: WordSize = 16;
-pub(crate) const SP: WordSize = 0;
-pub(crate) const LCL: WordSize = 1;
-pub(crate) const ARG: WordSize = 2;
-pub(crate) const THIS: WordSize = 3;
-pub(crate) const THAT: WordSize = 4;
-const STATIC: WordSize = 15;
-const STATIC_MAX: WordSize = 255;
-const TEMP: WordSize = 5;
-const TEMP_MAX: WordSize = 12;
 
 impl Memory {
     pub fn new(
@@ -123,12 +157,12 @@ impl Memory {
                 }
             }
             Segment::Constant => offset.to_owned(),
-            Segment::Local => self.get_value(LCL, offset),
-            Segment::Argument => self.get_value(ARG, offset),
-            Segment::Static => self.get_value(STATIC, offset),
-            Segment::This => self.get_value(THIS, offset),
-            Segment::That => self.get_value(THAT, offset),
-            Segment::Temp => self.get_value(TEMP, offset),
+            Segment::Local => self.get_value_by_pointer(LCL, offset),
+            Segment::Argument => self.get_value_by_pointer(ARG, offset),
+            Segment::Static => self.get_value_by_pointer(STATIC, offset),
+            Segment::This => self.get_value_by_pointer(THIS, offset),
+            Segment::That => self.get_value_by_pointer(THAT, offset),
+            Segment::Temp => self.get_value_by_pointer(TEMP, offset),
         };
 
         let stack_pointer = self.get_pointer(SP);
@@ -144,7 +178,7 @@ impl Memory {
     pub fn pop(&mut self, segment: Segment, offset: Offset) -> WordSize {
         // Decrement SP
         self.ram[SP] -= 1;
-        let value = self.get_value(SP, 0);
+        let value = self.get_value_by_pointer(SP, 0);
 
         let address = match segment {
             Segment::Pointer => {
@@ -189,13 +223,48 @@ impl Memory {
         self.ram[pointer] = value;
     }
 
-    pub fn get_value(&self, pointer: WordSize, offset: WordSize) -> WordSize {
+    pub fn get_value_by_pointer(&self, pointer: WordSize, offset: WordSize) -> WordSize {
         self.ram[self.ram[pointer] + offset]
     }
 
     pub fn set_value_by_pointer(&mut self, pointer: WordSize, offset: WordSize, value: WordSize) {
         let address = self.ram[pointer] + offset;
         self.ram[address] = value;
+    }
+
+    /**
+     * Returns a reference to the value of memory at the index, using the HACK computer memory mapping
+     * ram: 0-16383
+     * display: 16384-24575
+     * keyboard: 24576
+     */
+    pub fn peek(&self, index:WordSize) -> &WordSize {
+        match index {
+            0..=RAM_MAX_INDEX => &self.ram[index],
+            RAM_SIZE..=DISPLAY_MAX_INDEX => &self.display[index],
+            KEYBOARD_MEM => &self.keyboard, 
+            _ => panic!("Invalid memory index: {}", index),
+        }
+    }
+
+    /**
+     * Changes at the index to the provided value, using the HACK computer memory mapping
+     * ram: 0-16383
+     * display: 16384-24575
+     * keyboard: 24576
+     * Returns: Void
+     */
+    pub fn poke(&mut self, index: WordSize, value: WordSize) {
+        match index {
+            0..=RAM_MAX_INDEX => self.ram[index] = value,
+            RAM_SIZE..=DISPLAY_MAX_INDEX => self.display[index] = value,
+            KEYBOARD_MEM => self.keyboard = value, 
+            _ => panic!("Invalid memory index: {}", index),
+        };
+    }
+
+    pub fn get_arg(&self, arg_num: WordSize) -> WordSize {
+        self.get_value_by_pointer(ARG, arg_num)
     }
 
     pub fn push_stack_frame(&mut self, num_args: WordSize, line_num: WordSize) {
@@ -217,19 +286,23 @@ impl Memory {
         // reposition SP
         self.set_pointer(SP, self.get_pointer(ARG) + 1);
         // reset memory pointers based on call stack
-        let that = self.get_value(LCL, -1);
+        let that = self.get_value_by_pointer(LCL, -1);
         self.set_pointer(THAT, that);
-        let this = self.get_value(LCL, -2);
+        let this = self.get_value_by_pointer(LCL, -2);
         self.set_pointer(THIS, this);
-        let arg = self.get_value(LCL, -3);
+        let arg = self.get_value_by_pointer(LCL, -3);
         self.set_pointer(ARG, arg);
-        let lcl = self.get_value(LCL, -4);
+        let lcl = self.get_value_by_pointer(LCL, -4);
         self.set_pointer(LCL, lcl);
         // Return address isn't used
     }
 
     pub fn ram(&self) -> *const WordSize {
         self.ram.as_ptr()
+    }
+
+    pub fn ram_size() -> WordSize {
+        RAM_SIZE
     }
 
     pub fn display(&self) -> *const WordSize {
@@ -249,24 +322,12 @@ impl Memory {
         }
     }
 
-    pub fn keyboard(&self) -> WordSize {
-        self.keyboard
-    }
-
-    pub fn set_display(&mut self, value: WordSize, offset: WordSize) {
-        self.display[offset] = value;
-    }
-
-    pub fn ram_size() -> WordSize {
-        RAM_SIZE
-    }
-
     pub fn display_size() -> WordSize {
         (DISPLAY_HEIGHT) * (DISPLAY_WIDTH / 16)
     }
 
-    pub fn get_arg(&self, arg_num: WordSize) -> WordSize {
-        self.get_value(ARG, arg_num)
+    pub fn set_display(&mut self, value: WordSize, offset: WordSize) {
+        self.display[offset] = value;
     }
 
     pub fn clear_display(&mut self) {
@@ -275,6 +336,10 @@ impl Memory {
 
     pub fn fill_display(&mut self) {
         self.display.fill(-1);
+    }
+
+    pub fn keyboard(&self) -> WordSize {
+        self.keyboard
     }
 
     /**
@@ -307,47 +372,13 @@ impl Memory {
     /**
      * Frees block of memory pointed to by 'pointer'
      */
-    pub fn de_alloc(&mut self, pointer: WordSize) {
+    pub(crate) fn de_alloc(&mut self, pointer: WordSize) {
         match self.heap_alloc.iter_mut().find(|a| a.pointer == pointer) {
             Some(a) => match a.status {
                 MemoryStatus::Used => a.status = MemoryStatus::Free,
                 MemoryStatus::Free => (),
             },
             None => (),
-        }
-    }
-}
-
-struct HeapAllocation {
-    pointer: WordSize,
-    size: WordSize,
-    status: MemoryStatus,
-}
-
-#[derive(PartialEq, Eq)]
-enum MemoryStatus {
-    Used,
-    Free,
-}
-
-impl HeapAllocation {
-    fn new(pointer: WordSize, size: WordSize) -> HeapAllocation {
-        HeapAllocation {
-            pointer,
-            size,
-            status: MemoryStatus::Used,
-        }
-    }
-
-    fn combine(piece1: HeapAllocation, piece2: HeapAllocation) -> HeapAllocation {
-        // must be adjacent
-        // combine sizes and return the lower value pointer
-        let new_pointer = i16::min(piece1.pointer, piece2.pointer);
-        let new_size = piece1.size + piece2.size;
-        HeapAllocation {
-            pointer: new_pointer,
-            size: new_size,
-            status: MemoryStatus::Free,
         }
     }
 }
