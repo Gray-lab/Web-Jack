@@ -64,7 +64,7 @@ impl Program {
 
         // String library
         native_functions.insert("String.new".into(), jacklib::string_new);
-        native_functions.insert("String.new".into(), jacklib::string_new);
+        native_functions.insert("String.dispose".into(), jacklib::string_dispose);
 
         // Array library
 
@@ -96,8 +96,8 @@ impl Program {
         native_functions.insert("Keyboard.readInt".into(), jacklib::read_int);
 
         // Memory library
-        native_functions.insert("Memory.peek".into(), jacklib::peek);
-        native_functions.insert("Memory.poke".into(), jacklib::poke);
+        native_functions.insert("Memory.peek".into(), jacklib::jack_peek);
+        native_functions.insert("Memory.poke".into(), jacklib::jack_poke);
         native_functions.insert("Memory.alloc".into(), jacklib::alloc);
         native_functions.insert("Memory.deAlloc".into(), jacklib::de_alloc);
 

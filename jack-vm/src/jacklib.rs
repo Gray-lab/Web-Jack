@@ -55,6 +55,10 @@ pub fn jack_pow(memory: &mut Memory, args: WordSize) -> WordSize {
 }
 
 // STRING
+// Strings are heap allocated objects with the following fields:
+// length: current length of the char array
+// max_length: maximum length of the char array
+// string: an array of chars
 /**
  * Allocates a new string of length max_length
  * arg0: max_length
@@ -62,14 +66,36 @@ pub fn jack_pow(memory: &mut Memory, args: WordSize) -> WordSize {
  */
 pub fn string_new(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
-    panic!("String.new is not implemented");
+    let max_length = memory.get_arg(0);
+    let req_size = max_length + 2;
+    let string_pointer = memory.alloc(req_size);
+    // set length to 0
+    memory.poke(string_pointer, 0);
+    // set max length
+    memory.poke(string_pointer + 1, max_length);
+    string_pointer
 }
 
-pub fn dispose(memory: &mut Memory, args: WordSize) -> WordSize {
+/**
+ * Disposes of the string
+ * returns: VOID
+ */
+pub fn string_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
     let string_pointer = memory.get_arg(0);
     memory.de_alloc(string_pointer);
     VOID
+}
+
+/**
+ * Get number of characters in the string
+ * returns: number of characters in string
+ */
+pub fn string_length(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 0);
+    let string_pointer = memory.get_arg(0);
+    // length value is located at the 0th position from the string pointer
+    *memory.peek(string_pointer)
 }
 
 // OUTPUT
@@ -372,14 +398,30 @@ pub fn read_int(memory: &mut Memory, args: WordSize) -> WordSize {
 
 
 // MEMORY
-pub fn peek(memory: &mut Memory, args: WordSize) -> WordSize {
+/**
+ * Returns a reference to the value of memory at the index, using the HACK computer memory mapping
+ * ram: 0-16383
+ * display: 16384-24575
+ * keyboard: 24576
+ */
+pub fn jack_peek(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
-    panic!("peek is not implemented")
+    let index = memory.get_arg(0);
+    *memory.peek(index)
 }
-
-pub fn poke(memory: &mut Memory, args: WordSize) -> WordSize {
+ /**
+ * Changes at the index to the provided value, using the HACK computer memory mapping
+ * ram: 0-16383
+ * display: 16384-24575
+ * keyboard: 24576
+ * Returns: Void
+ */
+pub fn jack_poke(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 2);
-    panic!("poke is not implemented")
+    let index = memory.get_arg(0);
+    let value = memory.get_arg(1);
+    memory.poke(index, value);
+    VOID
 }
 
 /**
