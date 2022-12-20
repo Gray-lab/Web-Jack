@@ -309,7 +309,7 @@ impl Memory {
         self.display.as_ptr()
     }
 
-    pub fn set_display_index(&mut self, x: WordSize, y: WordSize) {
+    pub fn set_display_xy(&mut self, x: WordSize, y: WordSize) {
         let display_word = y * (DISPLAY_WIDTH / 16) + x / 16;
         let bit = x % 16;
         let mask: WordSize = 1 << bit;
@@ -320,6 +320,14 @@ impl Memory {
             // or with mask
             self.display[display_word] |= mask;
         }
+    }
+
+    pub fn set_display_word(&mut self, index:WordSize, value:WordSize) {
+        self.display[index] = value;
+    }
+
+    pub fn get_display_value(&self, index: WordSize) -> WordSize {
+        self.display[index]
     }
 
     pub fn display_size() -> WordSize {

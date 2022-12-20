@@ -2,8 +2,28 @@ class Main
 function main 0
 push constant 1
 call Screen.setColor 1
-push constant 0
-push constant 0
-call Screen.drawPixel 2
+pop temp 0
+push constant 400
+push constant 100
+push constant 450
+push constant 120
+call Screen.drawRectangleOutline 4
+pop temp 0
+push constant 400
+push constant 130
+push constant 450
+push constant 150
+call Screen.drawRectangle 4
+pop temp 0
+push constant 20
+push constant 20
+push constant 15
+call Screen.drawCircle 3
+pop temp 0
+push constant 500
+push constant 250
+push constant 200
+call Screen.drawCircle 3
+pop temp 0
 label END
 goto END

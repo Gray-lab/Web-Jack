@@ -1,0 +1,4 @@
+class Main
+function main 0
+push constant 72
+call Output.printChar 1

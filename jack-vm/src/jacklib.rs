@@ -102,20 +102,38 @@ pub fn string_length(memory: &mut Memory, args: WordSize) -> WordSize {
 // The screen is mapped to 24 rows of 64 characters, with each character
 // being 8 pixels wide and 11 pixels high, including margins
 fn print_char_helper(memory: &mut Memory, character: &WordSize) {
-    let bitmap = memory.char_map.get_bitmap(character);
+    let bitmap = memory.char_map.get_bitmap(character).clone();
     // 32 words in a display line
     // each cursor line covers 11 display lines
 
-    for char_row in 0..=11 {
+    for char_row in 0..11 {
         let address = (DISPLAY_WIDTH / WORDSIZE) * (memory.cursor_line * CHAR_HEIGHT + char_row)
             + memory.cursor_col / 2;
         // even cursor colums change the first half of the word (marked by X) -> 00000000XXXXXXXX
         // odd cursor colums change the second half of the word (marked by X) -> XXXXXXXX00000000
+        let value = memory.get_display_value(address).to_le_bytes();
+
         if memory.cursor_col % 2 == 0 {
-            todo!();
+            let new_value = (((value[1] as  u16) << 8) | bitmap[char_row as usize] as u16) as i16;
+            memory.set_display_word(address, new_value);
         } else {
-            todo!();
+            let new_value = (((bitmap[char_row as usize] as  u16) << 8) | value[0] as u16) as i16;
+            memory.set_display_word(address, new_value);
         }
+    }
+    step_cursor_helper(memory);
+}
+
+/**
+ * Steps cursor one location, moving to next line at end of current line
+ * returns: Void
+ */
+fn step_cursor_helper(memory: &mut Memory) {
+    if memory.cursor_col == COLS - 1 {
+        memory.cursor_col = 0;
+        memory.cursor_line = (memory.cursor_line + 1) % (LINES - 1);
+    } else {
+        memory.cursor_col += 1;
     }
 }
 
@@ -144,7 +162,6 @@ pub fn print_char(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let c = &memory.get_arg(0);
     print_char_helper(memory, c);
-    // set values at correct half of word to values in bitmap
     VOID
 }
 
@@ -205,19 +222,19 @@ fn draw_line_helper(memory: &mut Memory, x1: WordSize, y1: WordSize, x2: WordSiz
     match (dx, dy) {
         (_, 0) => {
             while i16::abs(a) <= abs_dx {
-                memory.set_display_index(x1 + a, y1);
+                memory.set_display_xy(x1 + a, y1);
                 a += delta_x;
             }
         }
         (0, _) => {
             while i16::abs(b) <= abs_dy {
-                memory.set_display_index(x1, y1 + b);
+                memory.set_display_xy(x1, y1 + b);
                 b += delta_y;
             }
         }
         (_, _) => {
             while i16::abs(a) <= abs_dx && i16::abs(b) <= abs_dy {
-                memory.set_display_index(x1 + a, y1 + b);
+                memory.set_display_xy(x1 + a, y1 + b);
                 if diff < 0 {
                     a += delta_x;
                     diff += abs_dy;
@@ -272,7 +289,7 @@ pub fn draw_pixel(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 2);
     let x = memory.get_arg(0);
     let y = memory.get_arg(1);
-    memory.set_display_index(x, y);
+    memory.set_display_xy(x, y);
     VOID
 }
 
@@ -377,7 +394,7 @@ pub fn draw_circle(memory: &mut Memory, args: WordSize) -> WordSize {
 
 //KEYBOARD
 pub fn key_pressed(memory: &mut Memory, args: WordSize) -> WordSize {
-    assert!(args ==0);
+    assert!(args == 0);
     memory.keyboard
 }
 
@@ -396,7 +413,6 @@ pub fn read_int(memory: &mut Memory, args: WordSize) -> WordSize {
     panic!("readInt is not implemented")
 }
 
-
 // MEMORY
 /**
  * Returns a reference to the value of memory at the index, using the HACK computer memory mapping
@@ -409,7 +425,7 @@ pub fn jack_peek(memory: &mut Memory, args: WordSize) -> WordSize {
     let index = memory.get_arg(0);
     *memory.peek(index)
 }
- /**
+/**
  * Changes at the index to the provided value, using the HACK computer memory mapping
  * ram: 0-16383
  * display: 16384-24575
