@@ -3,10 +3,11 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
+use wasm_bindgen_test::console_log;
 
 use crate::jacklib::{self, NativeFunction};
 use crate::memory::{Memory, WordSize};
-use crate::parser::{parse_class, Bytecode, Command, Function, Segment};
+use crate::parser::{parse_bytecode, Bytecode, Command, Function, Segment};
 
 struct StackFrame {
     function: Rc<RefCell<Function>>,
@@ -48,9 +49,15 @@ impl Program {
         let that = 4000;
         let memory = Memory::new(sp, lcl, arg, this, that);
 
-        let code = parse_class(input);
-        let string = format!("{:?}", code);
-        console::log_1(&string.into());
+        // some library functions are implemented in jack
+        // we append their bytecode to the input
+        // Keyboard.readChar
+        // Keyboard.readLine
+        // Keyboard.readInt
+
+        let code = parse_bytecode(input);
+        // let string = format!("{:?}", code);
+        // console::log_1(&string.into());
 
         let mut native_functions: HashMap<String, NativeFunction> = HashMap::new();
         // Populate with standard library fuctions
@@ -65,6 +72,16 @@ impl Program {
         // String library
         native_functions.insert("String.new".into(), jacklib::string_new);
         native_functions.insert("String.dispose".into(), jacklib::string_dispose);
+        native_functions.insert("String.length".into(), jacklib::string_length);
+        native_functions.insert("String.charAt".into(), jacklib::char_at);
+        native_functions.insert("String.setCharAt".into(), jacklib::set_char_at);
+        native_functions.insert("String.appendChar".into(), jacklib::append_char);
+        native_functions.insert("String.eraseLastChar".into(), jacklib::erase_last_char);
+        native_functions.insert("String.intValue".into(), jacklib::int_value);
+        native_functions.insert("String.setInt".into(), jacklib::set_int);
+        native_functions.insert("String.backSpace".into(), jacklib::string_backspace);
+        native_functions.insert("String.doubleQuote".into(), jacklib::double_quote);
+        native_functions.insert("String.newLine".into(), jacklib::new_line);
 
         // Array library
 
@@ -74,7 +91,7 @@ impl Program {
         native_functions.insert("Output.printString".into(), jacklib::print_string);
         native_functions.insert("Output.printInt".into(), jacklib::print_int);
         native_functions.insert("Output.println".into(), jacklib::println);
-        native_functions.insert("Output.backSpace".into(), jacklib::move_cursor);
+        native_functions.insert("Output.backSpace".into(), jacklib::output_backspace);
 
         // Screen library
         native_functions.insert("Screen.setColor".into(), jacklib::set_color);
@@ -130,21 +147,29 @@ impl Program {
      * Returns true at a successful step and false if no more commands are available
      */
     pub fn step(&mut self, key: WordSize) -> bool {
-        let mut frame = self.call_stack.last_mut().unwrap();
-
+        let mut frame = match self.call_stack.last_mut() {
+            Some(frame) => frame,
+            None => return false,
+        };
+ 
         // If there are no more instructions, return false and take no other action
         let length = frame.function.borrow().commands.len();
         if length <= frame.next_line {
             // console::log_1(&"Ding! Program is finished.".into());
             return false;
         }
+        self.memory.display_updated = false;
+
+        // console_log!("key: {}", key);
+        self.memory.keyboard = key;
+
         // The current command is cloned so that the stack frame can later be mutated
         // For example during a call or return command
         let current_command = &frame.function.borrow().commands[frame.next_line].clone();
         frame.next_line += 1;
 
-        let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
-        console::log_1(&command_string.into());
+        // let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
+        // console::log_1(&command_string.into());
 
         match &current_command.command {
             Command::Class(_identifier) => {
@@ -237,11 +262,6 @@ impl Program {
             }
             Command::Label(_) => (),
             Command::Function(name, num_vars) => {
-                console::log_3(
-                    &"In function".into(),
-                    &name.into(),
-                    &num_vars.to_string().into(),
-                );
                 // Push local variables
                 for _i in 0..*num_vars {
                     self.memory.push(Segment::Constant, 0);
@@ -275,7 +295,7 @@ impl Program {
                 self.call_stack.pop();
             }
         }
-        true
+        self.memory.display_updated
     }
 
     pub fn ram_size(&self) -> usize {

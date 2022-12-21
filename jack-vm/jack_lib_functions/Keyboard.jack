@@ -1,0 +1,50 @@
+class Keyboard {
+    function char readChar() {
+        var char captured;
+//        // Display cursor
+//        do Output.printChar(0);
+//        // Wait until a key is pressed
+//        while (Keyboard.keyPressed() = 0) { }
+//        let captured = Keyboard.keyPressed();
+//
+//        while (~(Keyboard.keyPressed() = 0)) { }
+//        do Output.backSpace();
+//        do Output.printChar(captured);
+
+        var char startKey;
+        let startKey = Keyboard.keyPressed();
+        let captured = startKey;
+        if (~(startKey = 0)) {
+            while (startKey = captured) {
+                let captured = Keyboard.keyPressed();
+            }
+        }
+        while (captured = 0) {
+            let captured = Keyboard.keyPressed();
+        }
+        while (Keyboard.keyPressed() = captured) {
+        }
+        do Output.printChar(captured);
+        return captured;
+    }
+
+    function String readLine(String message) {
+        var String input;
+        var char currentChar;
+        do Output.printString(message);
+        // todo: Accepts up to 64 characters
+        let input = String.new(64);
+        let currentChar = Keyboard.readChar();
+        while (~(currentChar = String.newLine())) {
+            if (currentChar = String.backSpace()) {
+                do Output.backSpace();
+                do input.eraseLastChar();
+            } else {
+                do input.appendChar(currentChar);
+            }
+            
+            let currentChar = Keyboard.readChar();
+        }
+        return input;
+    }
+}

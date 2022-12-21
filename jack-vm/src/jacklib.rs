@@ -1,6 +1,5 @@
-use core::panic;
 use std::cmp::{max, min};
-use web_sys::console::{self, assert};
+use wasm_bindgen_test::console_log;
 
 use crate::memory::{Memory, WordSize, DISPLAY_HEIGHT, DISPLAY_WIDTH, WORDSIZE};
 
@@ -78,10 +77,11 @@ pub fn string_new(memory: &mut Memory, args: WordSize) -> WordSize {
 
 /**
  * Disposes of the string
+ * arg0: object pointer
  * returns: VOID
  */
 pub fn string_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
-    assert!(args == 0);
+    assert!(args == 1);
     let string_pointer = memory.get_arg(0);
     memory.de_alloc(string_pointer);
     VOID
@@ -89,14 +89,119 @@ pub fn string_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
 
 /**
  * Get number of characters in the string
+ * arg0: object pointer
  * returns: number of characters in string
  */
 pub fn string_length(memory: &mut Memory, args: WordSize) -> WordSize {
-    assert!(args == 0);
+    assert!(args == 1);
     let string_pointer = memory.get_arg(0);
     // length value is located at the 0th position from the string pointer
     *memory.peek(string_pointer)
 }
+
+/**
+ * Return character at index
+ * arg0: object pointer
+ * arg1: index
+ * returns: character value
+ */
+pub fn char_at(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 2);
+    let string_pointer = memory.get_arg(0);
+    let index = memory.get_arg(1);
+    *memory.peek(string_pointer + index + 2)
+}
+
+/**
+ * Sets char at index to value
+ * arg0: object pointer
+ * arg1: index
+ * arg2: value
+ * returns: VOID
+ */
+pub fn set_char_at(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 3);
+    let string_pointer = memory.get_arg(0);
+    let index = memory.get_arg(1);
+    let chararcter = memory.get_arg(2);
+    memory.poke(string_pointer + index + 2, chararcter);
+    VOID
+}
+
+/**
+ * Appends character to end of string
+ * arg0: string pointer
+ * arg1: character
+ * returns: string pointer
+ */
+pub fn append_char(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 2);
+    let string_pointer = memory.get_arg(0);
+    let character = memory.get_arg(1);
+    let length = memory.peek(string_pointer).clone();
+    memory.poke(string_pointer + 2 + length, character);
+    memory.poke(string_pointer, length + 1);
+    string_pointer
+}
+
+/**
+ * Erases last character in string
+ * arg0: string pointer
+ * returns: VOID
+ */
+pub fn erase_last_char(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
+    let string_pointer = memory.get_arg(0);
+    let length = memory.peek(string_pointer).clone();
+    memory.poke(string_pointer, length - 1);
+    VOID
+}
+
+/**
+ * Returns the integer value of a string, until the first non-numeric character
+ * arg0: string pointer
+ * returns: integer as WordSize
+ */
+pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
+    let string_pointer = memory.get_arg(0);
+    panic!("not implemented");
+}
+
+/**
+ * Sets value of string to the string representation of an integer
+ * arg0: string pointer
+ * arg1: value
+ * returns: VOID
+ */
+pub fn set_int(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 2);
+    let string_pointer = memory.get_arg(0);
+    panic!("not implemented");
+    VOID
+}
+
+/**
+ * returns backspace character (129)
+ */
+pub fn string_backspace(memory: &mut Memory, args: WordSize) -> WordSize {
+    129
+}
+
+/**
+ * returns double quote character (34)
+ */
+pub fn double_quote(memory: &mut Memory, args: WordSize) -> WordSize {
+    34
+}
+
+/**
+ * returns newline character (128)
+ */
+pub fn new_line(memory: &mut Memory, args: WordSize) -> WordSize {
+    128
+}
+
 
 // OUTPUT
 // The screen is mapped to 24 rows of 64 characters, with each character
@@ -114,14 +219,13 @@ fn print_char_helper(memory: &mut Memory, character: &WordSize) {
         let value = memory.get_display_value(address).to_le_bytes();
 
         if memory.cursor_col % 2 == 0 {
-            let new_value = (((value[1] as  u16) << 8) | bitmap[char_row as usize] as u16) as i16;
+            let new_value = (((value[1] as u16) << 8) | bitmap[char_row as usize] as u16) as i16;
             memory.set_display_word(address, new_value);
         } else {
-            let new_value = (((bitmap[char_row as usize] as  u16) << 8) | value[0] as u16) as i16;
+            let new_value = (((bitmap[char_row as usize] as u16) << 8) | value[0] as u16) as i16;
             memory.set_display_word(address, new_value);
         }
     }
-    step_cursor_helper(memory);
 }
 
 /**
@@ -162,12 +266,26 @@ pub fn print_char(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let c = &memory.get_arg(0);
     print_char_helper(memory, c);
+    step_cursor_helper(memory);
     VOID
 }
 
+/**
+ * Prints string
+ * arg0: string pointer
+ * returns: VOID
+ */
 pub fn print_string(memory: &mut Memory, args: WordSize) -> WordSize {
     //s is a pointer to a string object in memory
-    todo!()
+    assert!(args == 1);
+    let string_pointer = memory.get_arg(0);
+    let length = memory.peek(string_pointer).clone();
+    for character_pointer in (string_pointer + 2)..(string_pointer + 2 + length) {
+        let character = memory.peek(character_pointer).clone();
+        print_char_helper(memory, &character);
+        step_cursor_helper(memory);
+    };
+    VOID
 }
 
 pub fn print_int(memory: &mut Memory, args: WordSize) -> WordSize {
@@ -189,12 +307,11 @@ pub fn println(memory: &mut Memory, args: WordSize) -> WordSize {
  * Deletes previous character
  * returns: VOID
  */
-pub fn backspace(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn output_backspace(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
-    memory.cursor_col = i16::min(0, memory.cursor_col - 1);
-    todo!();
-    // print blank space
-
+    memory.cursor_col = i16::max(0, memory.cursor_col - 1);
+    // print blank space without advancing cursor
+    print_char_helper(memory, &32);
     VOID
 }
 
@@ -372,14 +489,11 @@ pub fn draw_circle(memory: &mut Memory, args: WordSize) -> WordSize {
     let top = min(y1 - r, DISPLAY_HEIGHT - 1);
     let left = max(x1 - r, 0);
     let right = min(x1 + r, DISPLAY_WIDTH - 1);
-    console::log_1(&top.into());
-    console::log_1(&bottom.into());
+
     for row in top..bottom {
         let dy = row - y1;
         let offset = ((i32::pow(r as i32, 2) - i32::pow(dy as i32, 2)) as f32).sqrt() as WordSize;
         if offset > 0 {
-            console::log_1(&row.into());
-            console::log_1(&offset.into());
             draw_line_helper(
                 memory,
                 max(left, x1 - offset),
@@ -393,24 +507,60 @@ pub fn draw_circle(memory: &mut Memory, args: WordSize) -> WordSize {
 }
 
 //KEYBOARD
+/**
+ * Returns the character of the currently pressed key on the keyboard;
+ * if no key is currently pressed, returns 0.
+ *
+ * Recognizes all ASCII characters, as well as the following keys:
+ * new line = 128 = String.newline()
+ * backspace = 129 = String.backspace()
+ * left arrow = 130
+ * up arrow = 131
+ * right arrow = 132
+ * down arrow = 133
+ * home = 134
+ * End = 135
+ * page up = 136
+ * page down = 137
+ * insert = 138
+ * delete = 139
+ * ESC = 140
+ * F1 - F12 = 141 - 152
+ */
 pub fn key_pressed(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
     memory.keyboard
 }
 
+/**								
+ * Waits until a key is pressed on the keyboard and released,
+ * then echoes the key to the screen, and returns the character 
+ * of the pressed key.
+ */
 pub fn read_char(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
-    panic!("readChar is not implemented")
+    panic!("readChar is implemented as a jack function, so don't look here for it")
 }
 
+/**								
+ * Displays the message on the screen, reads from the keyboard the entered
+ * text until a newline character is detected, echoes the text to the screen,
+ * and returns its value. Also handles user backspaces.
+ */
 pub fn read_line(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
-    panic!("readLine is not implemented")
+    panic!("readLine is implemented as a jack function, so don't look here for it")
 }
 
+/**								
+ * Displays the message on the screen, reads from the keyboard the entered
+ * text until a newline character is detected, echoes the text to the screen,
+ * and returns its integer value (until the first non-digit character in the
+ * entered text is detected). Also handles user backspaces. 
+ */
 pub fn read_int(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
-    panic!("readInt is not implemented")
+    panic!("readInt is implemented as a jack function, so don't look here for it")
 }
 
 // MEMORY
