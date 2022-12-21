@@ -94,7 +94,7 @@ impl Function {
 }
 
 // Need help figuring out how to send errors back
-pub(crate) fn parse_class(text: &str) -> Bytecode {
+pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
     // We will receive multiple classes in a single text string,
     // so each time Class... is encountered the previous class
     // needs to be closed and a new class initialized
