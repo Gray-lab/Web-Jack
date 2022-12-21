@@ -47,7 +47,7 @@ impl HeapAllocation {
     }
 
     fn combine(piece1: HeapAllocation, piece2: HeapAllocation) -> HeapAllocation {
-        // must be adjacent
+        // must be adjacent and free
         // combine sizes and return the lower value pointer
         let new_pointer = i16::min(piece1.pointer, piece2.pointer);
         let new_size = piece1.size + piece2.size;
@@ -77,7 +77,7 @@ pub struct Memory {
     pub screen_color: WordSize,
     pub char_map: CharMap,
     heap_alloc: Vec<HeapAllocation>,
-    // something to keep track of allocations on heap for when objects are implemented
+    pub display_updated: bool,
 }
 
 struct MemoryVec(Vec<WordSize>);
@@ -139,6 +139,7 @@ impl Memory {
             screen_color: 0,
             char_map: CharMap::new(),
             heap_alloc: Vec::new(),
+            display_updated: false,
         }
     }
 
@@ -238,11 +239,11 @@ impl Memory {
      * display: 16384-24575
      * keyboard: 24576
      */
-    pub fn peek(&self, index:WordSize) -> &WordSize {
+    pub fn peek(&self, index: WordSize) -> &WordSize {
         match index {
             0..=RAM_MAX_INDEX => &self.ram[index],
             RAM_SIZE..=DISPLAY_MAX_INDEX => &self.display[index],
-            KEYBOARD_MEM => &self.keyboard, 
+            KEYBOARD_MEM => &self.keyboard,
             _ => panic!("Invalid memory index: {}", index),
         }
     }
@@ -258,7 +259,7 @@ impl Memory {
         match index {
             0..=RAM_MAX_INDEX => self.ram[index] = value,
             RAM_SIZE..=DISPLAY_MAX_INDEX => self.display[index] = value,
-            KEYBOARD_MEM => self.keyboard = value, 
+            KEYBOARD_MEM => self.keyboard = value,
             _ => panic!("Invalid memory index: {}", index),
         };
     }
@@ -310,6 +311,7 @@ impl Memory {
     }
 
     pub fn set_display_xy(&mut self, x: WordSize, y: WordSize) {
+        self.display_updated = true;
         let display_word = y * (DISPLAY_WIDTH / 16) + x / 16;
         let bit = x % 16;
         let mask: WordSize = 1 << bit;
@@ -322,7 +324,8 @@ impl Memory {
         }
     }
 
-    pub fn set_display_word(&mut self, index:WordSize, value:WordSize) {
+    pub fn set_display_word(&mut self, index: WordSize, value: WordSize) {
+        self.display_updated = true;
         self.display[index] = value;
     }
 
@@ -335,14 +338,17 @@ impl Memory {
     }
 
     pub fn set_display(&mut self, value: WordSize, offset: WordSize) {
+        self.display_updated = true;
         self.display[offset] = value;
     }
 
     pub fn clear_display(&mut self) {
+        self.display_updated = true;
         self.display.fill(0);
     }
 
     pub fn fill_display(&mut self) {
+        self.display_updated = true;
         self.display.fill(-1);
     }
 
