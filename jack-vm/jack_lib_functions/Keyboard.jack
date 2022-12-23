@@ -24,7 +24,9 @@ class Keyboard {
         }
         while (Keyboard.keyPressed() = captured) {
         }
-        do Output.printChar(captured);
+        if (captured < 128) {
+            do Output.printChar(captured);  
+        }
         return captured;
     }
 
@@ -39,12 +41,34 @@ class Keyboard {
             if (currentChar = String.backSpace()) {
                 do Output.backSpace();
                 do input.eraseLastChar();
-            } else {
+            } 
+            if (currentChar < 128) {
                 do input.appendChar(currentChar);
             }
             
             let currentChar = Keyboard.readChar();
         }
+        do Output.println();
         return input;
+    }
+
+    function int readInt(String message) {
+        var String input;
+        var char currentChar;
+        do Output.printString(message);
+        // todo: Accepts up to 64 characters
+        let input = String.new(64);
+        let currentChar = Keyboard.readChar();
+        while (((currentChar > 47) & (currentChar < 58)) | (currentChar = 129)) {
+            if (currentChar = 129) {
+                do Output.backSpace();
+                do input.eraseLastChar();
+            } else {
+                do input.appendChar(currentChar);
+            }
+            let currentChar = Keyboard.readChar();
+        }
+        do Output.println();
+        return String.intValue(input);
     }
 }
