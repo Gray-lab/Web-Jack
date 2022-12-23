@@ -1,0 +1,435 @@
+function Ball.new 0
+push constant 15 //pass num_fields to Memory.alloc for allocation in heap
+call Memory.alloc 1
+pop pointer 0 //Set 'this' to object base address
+push argument 0 //value of Ax
+pop this 0 //bind topmost stack value to x
+push argument 1 //value of Ay
+pop this 1 //bind topmost stack value to y
+push argument 2 //value of AleftWall
+pop this 10 //bind topmost stack value to leftWall
+push argument 3 //value of ArightWall
+push constant 6 
+sub
+pop this 11 //bind topmost stack value to rightWall
+push argument 4 //value of AtopWall
+pop this 12 //bind topmost stack value to topWall
+push argument 5 //value of AbottomWall
+push constant 6 
+sub
+pop this 13 //bind topmost stack value to bottomWall
+push constant 0 
+pop this 14 //bind topmost stack value to wall
+push pointer 0 //Push current object to stack for method call
+call Ball.show 1
+pop temp 0 //remove return value from stack after do statement
+push pointer 0 //'this'
+return
+function Ball.dispose 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push pointer 0 //'this'
+call Memory.deAlloc 1
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return
+function Ball.show 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push constant 1 
+neg //'true'
+call Screen.setColor 1
+pop temp 0 //remove return value from stack after do statement
+push pointer 0 //Push current object to stack for method call
+call Ball.draw 1
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return
+function Ball.hide 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push constant 0 //'null' or 'false'
+call Screen.setColor 1
+pop temp 0 //remove return value from stack after do statement
+push pointer 0 //Push current object to stack for method call
+call Ball.draw 1
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return
+function Ball.draw 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push this 0 //value of x
+push this 1 //value of y
+push this 0 //value of x
+push constant 5 
+add
+push this 1 //value of y
+push constant 5 
+add
+call Screen.drawRectangle 4
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return
+function Ball.getLeft 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push this 0 //value of x
+return
+function Ball.getRight 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push this 0 //value of x
+push constant 5 
+add
+return
+function Ball.setDestination 3
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push argument 1 //value of destx
+push this 0 //value of x
+sub
+pop this 2 //bind topmost stack value to lengthx
+push argument 2 //value of desty
+push this 1 //value of y
+sub
+pop this 3 //bind topmost stack value to lengthy
+push this 2 //value of lengthx
+call Math.abs 1
+pop local 0 //bind topmost stack value to dx
+push this 3 //value of lengthy
+call Math.abs 1
+pop local 1 //bind topmost stack value to dy
+push local 0 //value of dx
+push local 1 //value of dy
+lt
+pop this 7 //bind topmost stack value to invert
+push this 7 //value of invert
+not
+if-goto IF_FALSEIF0
+push local 0 //value of dx
+pop local 2 //bind topmost stack value to temp
+push local 1 //value of dy
+pop local 0 //bind topmost stack value to dx
+push local 2 //value of temp
+pop local 1 //bind topmost stack value to dy
+push this 1 //value of y
+push argument 2 //value of desty
+lt
+pop this 8 //bind topmost stack value to positivex
+push this 0 //value of x
+push argument 1 //value of destx
+lt
+pop this 9 //bind topmost stack value to positivey
+goto IF_TRUEIF0
+label IF_FALSEIF0
+push this 0 //value of x
+push argument 1 //value of destx
+lt
+pop this 8 //bind topmost stack value to positivex
+push this 1 //value of y
+push argument 2 //value of desty
+lt
+pop this 9 //bind topmost stack value to positivey
+label IF_TRUEIF0
+push constant 2 
+push local 1 //value of dy
+call Math.multiply 2
+push local 0 //value of dx
+sub
+pop this 4 //bind topmost stack value to d
+push constant 2 
+push local 1 //value of dy
+call Math.multiply 2
+pop this 5 //bind topmost stack value to straightD
+push constant 2 
+push local 1 //value of dy
+push local 0 //value of dx
+sub
+call Math.multiply 2
+pop this 6 //bind topmost stack value to diagonalD
+push constant 0 
+return
+function Ball.move 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push pointer 0 //Push current object to stack for method call
+call Ball.hide 1
+pop temp 0 //remove return value from stack after do statement
+push this 4 //value of d
+push constant 0 
+lt
+not
+if-goto IF_FALSEIF1
+push this 4 //value of d
+push this 5 //value of straightD
+add
+pop this 4 //bind topmost stack value to d
+goto IF_TRUEIF1
+label IF_FALSEIF1
+push this 4 //value of d
+push this 6 //value of diagonalD
+add
+pop this 4 //bind topmost stack value to d
+push this 9 //value of positivey
+not
+if-goto IF_FALSEIF2
+push this 7 //value of invert
+not
+if-goto IF_FALSEIF3
+push this 0 //value of x
+push constant 4 
+add
+pop this 0 //bind topmost stack value to x
+goto IF_TRUEIF3
+label IF_FALSEIF3
+push this 1 //value of y
+push constant 4 
+add
+pop this 1 //bind topmost stack value to y
+label IF_TRUEIF3
+goto IF_TRUEIF2
+label IF_FALSEIF2
+push this 7 //value of invert
+not
+if-goto IF_FALSEIF4
+push this 0 //value of x
+push constant 4 
+sub
+pop this 0 //bind topmost stack value to x
+goto IF_TRUEIF4
+label IF_FALSEIF4
+push this 1 //value of y
+push constant 4 
+sub
+pop this 1 //bind topmost stack value to y
+label IF_TRUEIF4
+label IF_TRUEIF2
+label IF_TRUEIF1
+push this 8 //value of positivex
+not
+if-goto IF_FALSEIF5
+push this 7 //value of invert
+not
+if-goto IF_FALSEIF6
+push this 1 //value of y
+push constant 4 
+add
+pop this 1 //bind topmost stack value to y
+goto IF_TRUEIF6
+label IF_FALSEIF6
+push this 0 //value of x
+push constant 4 
+add
+pop this 0 //bind topmost stack value to x
+label IF_TRUEIF6
+goto IF_TRUEIF5
+label IF_FALSEIF5
+push this 7 //value of invert
+not
+if-goto IF_FALSEIF7
+push this 1 //value of y
+push constant 4 
+sub
+pop this 1 //bind topmost stack value to y
+goto IF_TRUEIF7
+label IF_FALSEIF7
+push this 0 //value of x
+push constant 4 
+sub
+pop this 0 //bind topmost stack value to x
+label IF_TRUEIF7
+label IF_TRUEIF5
+push this 0 //value of x
+push this 10 //value of leftWall
+gt
+not
+not
+if-goto IF_FALSEIF8
+push constant 1 
+pop this 14 //bind topmost stack value to wall
+push this 10 //value of leftWall
+pop this 0 //bind topmost stack value to x
+goto IF_TRUEIF8
+label IF_FALSEIF8
+label IF_TRUEIF8
+push this 0 //value of x
+push this 11 //value of rightWall
+lt
+not
+not
+if-goto IF_FALSEIF9
+push constant 2 
+pop this 14 //bind topmost stack value to wall
+push this 11 //value of rightWall
+pop this 0 //bind topmost stack value to x
+goto IF_TRUEIF9
+label IF_FALSEIF9
+label IF_TRUEIF9
+push this 1 //value of y
+push this 12 //value of topWall
+gt
+not
+not
+if-goto IF_FALSEIF10
+push constant 3 
+pop this 14 //bind topmost stack value to wall
+push this 12 //value of topWall
+pop this 1 //bind topmost stack value to y
+goto IF_TRUEIF10
+label IF_FALSEIF10
+label IF_TRUEIF10
+push this 1 //value of y
+push this 13 //value of bottomWall
+lt
+not
+not
+if-goto IF_FALSEIF11
+push constant 4 
+pop this 14 //bind topmost stack value to wall
+push this 13 //value of bottomWall
+pop this 1 //bind topmost stack value to y
+goto IF_TRUEIF11
+label IF_FALSEIF11
+label IF_TRUEIF11
+push pointer 0 //Push current object to stack for method call
+call Ball.show 1
+pop temp 0 //remove return value from stack after do statement
+push this 14 //value of wall
+return
+function Ball.bounce 5
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push this 2 //value of lengthx
+push constant 10 
+call Math.divide 2
+pop local 2 //bind topmost stack value to divLengthx
+push this 3 //value of lengthy
+push constant 10 
+call Math.divide 2
+pop local 3 //bind topmost stack value to divLengthy
+push argument 1 //value of bouncingDirection
+push constant 0 
+eq
+not
+if-goto IF_FALSEIF12
+push constant 10 
+pop local 4 //bind topmost stack value to factor
+goto IF_TRUEIF12
+label IF_FALSEIF12
+push this 2 //value of lengthx
+push constant 0 
+lt
+not
+push argument 1 //value of bouncingDirection
+push constant 1 
+eq
+and
+push this 2 //value of lengthx
+push constant 0 
+lt
+push argument 1 //value of bouncingDirection
+push constant 1 
+neg
+eq
+and
+or
+not
+if-goto IF_FALSEIF13
+push constant 20 
+pop local 4 //bind topmost stack value to factor
+goto IF_TRUEIF13
+label IF_FALSEIF13
+push constant 5 
+pop local 4 //bind topmost stack value to factor
+label IF_TRUEIF13
+label IF_TRUEIF12
+push this 14 //value of wall
+push constant 1 
+eq
+not
+if-goto IF_FALSEIF14
+push constant 506 
+pop local 0 //bind topmost stack value to newx
+push local 3 //value of divLengthy
+push constant 50 
+neg
+call Math.multiply 2
+push local 2 //value of divLengthx
+call Math.divide 2
+pop local 1 //bind topmost stack value to newy
+push this 1 //value of y
+push local 1 //value of newy
+push local 4 //value of factor
+call Math.multiply 2
+add
+pop local 1 //bind topmost stack value to newy
+goto IF_TRUEIF14
+label IF_FALSEIF14
+push this 14 //value of wall
+push constant 2 
+eq
+not
+if-goto IF_FALSEIF15
+push constant 0 
+pop local 0 //bind topmost stack value to newx
+push local 3 //value of divLengthy
+push constant 50 
+call Math.multiply 2
+push local 2 //value of divLengthx
+call Math.divide 2
+pop local 1 //bind topmost stack value to newy
+push this 1 //value of y
+push local 1 //value of newy
+push local 4 //value of factor
+call Math.multiply 2
+add
+pop local 1 //bind topmost stack value to newy
+goto IF_TRUEIF15
+label IF_FALSEIF15
+push this 14 //value of wall
+push constant 3 
+eq
+not
+if-goto IF_FALSEIF16
+push constant 250 
+pop local 1 //bind topmost stack value to newy
+push local 2 //value of divLengthx
+push constant 25 
+neg
+call Math.multiply 2
+push local 3 //value of divLengthy
+call Math.divide 2
+pop local 0 //bind topmost stack value to newx
+push this 0 //value of x
+push local 0 //value of newx
+push local 4 //value of factor
+call Math.multiply 2
+add
+pop local 0 //bind topmost stack value to newx
+goto IF_TRUEIF16
+label IF_FALSEIF16
+push constant 0 
+pop local 1 //bind topmost stack value to newy
+push local 2 //value of divLengthx
+push constant 25 
+call Math.multiply 2
+push local 3 //value of divLengthy
+call Math.divide 2
+pop local 0 //bind topmost stack value to newx
+push this 0 //value of x
+push local 0 //value of newx
+push local 4 //value of factor
+call Math.multiply 2
+add
+pop local 0 //bind topmost stack value to newx
+label IF_TRUEIF16
+label IF_TRUEIF15
+label IF_TRUEIF14
+push pointer 0 //Push current object to stack for method call
+push local 0 //value of newx
+push local 1 //value of newy
+call Ball.setDestination 3
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return

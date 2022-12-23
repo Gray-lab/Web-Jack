@@ -1,0 +1,19 @@
+
+class Main {
+
+   function void main() {
+      var int a, b, sum;
+      let a = 8;
+      let b = 9;
+      let sum = addTwo(a, b);
+      do Output.printInt(sum);
+      return; 
+   }
+
+   function int addTwo(int x, int y) {
+      var int res;
+      let res = x + y;
+      return res;
+   }
+
+}

@@ -1,0 +1,1009 @@
+<class>
+	<keyword> class </keyword>
+<identifier>
+	<name> SquareGame SquareGame </name>
+	<type> None None </type>
+	<kind> None None </kind>
+	<index> None </index>
+	<category> className </category>
+	<usage> declaration </usage>
+</identifier>	<symbol> { </symbol>
+<classVarDec>
+	<keyword> field </keyword>
+<identifier>
+	<name> SquareGame Square </name>
+	<type> Square Not in symbol table </type>
+	<kind> field Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> field </category>
+	<usage> declaration </usage>
+</identifier><identifier>
+	<name> square square </name>
+	<type> Square None </type>
+	<kind> field None </kind>
+	<index> None </index>
+	<category> field </category>
+	<usage> declaration </usage>
+</identifier>	<symbol> ; </symbol>
+</classVarDec>
+<classVarDec>
+	<keyword> field </keyword>
+	<keyword> int </keyword>
+<identifier>
+	<name> direction direction </name>
+	<type> int None </type>
+	<kind> field None </kind>
+	<index> None </index>
+	<category> field </category>
+	<usage> declaration </usage>
+</identifier>	<symbol> ; </symbol>
+</classVarDec>
+<subroutineDec>
+	<keyword> constructor </keyword>
+<identifier>
+	<name> direction SquareGame </name>
+	<type> SquareGame None </type>
+	<kind> constructor None </kind>
+	<index> None </index>
+	<category> field </category>
+	<usage> declaration </usage>
+</identifier><identifier>
+	<name> this new </name>
+	<type> SquareGame Not in symbol table </type>
+	<kind> constructor Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this square </name>
+	<type> SquareGame None </type>
+	<kind> constructor None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this Square </name>
+	<type> SquareGame Not in symbol table </type>
+	<kind> constructor Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this new </name>
+	<type> SquareGame Not in symbol table </type>
+	<kind> constructor Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<integerConstant> 0 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+	<integerConstant> 0 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+	<integerConstant> 30 </integerConstant>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this direction </name>
+	<type> SquareGame None </type>
+	<kind> constructor None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<integerConstant> 0 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<returnStatement>
+	<keyword> return </keyword>
+<expression>
+<term>
+	<keyword> this </keyword>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<name> this dispose </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this dispose </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this Memory </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this deAlloc </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> this </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<name> this moveSquare </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this moveUp </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this moveDown </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 3 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this moveLeft </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 4 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this moveRight </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this Sys </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this wait </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<integerConstant> 5 </integerConstant>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<name> this run </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<varDec>
+	<keyword> var </keyword>
+	<keyword> char </keyword>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ; </symbol>
+</varDec>
+<varDec>
+	<keyword> var </keyword>
+	<keyword> boolean </keyword>
+<identifier>
+	<name> this exit </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ; </symbol>
+</varDec>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this exit </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<keyword> false </keyword>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<whileStatement>
+	<keyword> while </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ~ </symbol>
+<term>
+<identifier>
+	<name> this exit </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<whileStatement>
+	<keyword> while </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 0 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this Keyboard </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this keyPressed </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this moveSquare </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</whileStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 81 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this exit </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<keyword> true </keyword>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 90 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this decSize </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 88 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this square </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this incSize </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 131 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 133 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 130 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<integerConstant> 3 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 132 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this direction </name>
+	<type> void None </type>
+	<kind> arg None </kind>
+	<index> None </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+	<integerConstant> 4 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<whileStatement>
+	<keyword> while </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ~ </symbol>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier></term>
+	<symbol> = </symbol>
+<term>
+	<integerConstant> 0 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<name> this key </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<name> this Keyboard </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<name> this keyPressed </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<name> this moveSquare </name>
+	<type> void Not in symbol table </type>
+	<kind> arg Not in symbol table </kind>
+	<index> Not in symbol table </index>
+	<category> subroutine </category>
+	<usage> declared </usage>
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</whileStatement>
+</statements>
+	<symbol> } </symbol>
+</whileStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+	<symbol> } </symbol>
+</class>

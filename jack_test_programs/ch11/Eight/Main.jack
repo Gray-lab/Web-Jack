@@ -1,0 +1,19 @@
+
+class Main {
+   static int y;
+   function void main() {
+      var int x;
+      var boolean truth;
+      let y = 2;
+      let x = 10;
+      do Output.printInt(x + (y * 3));
+      let truth = 10;
+      if (truth > 11) {
+         do Output.printString("truth is true");
+      } else {
+         do Output.printString("truth is false");
+      }
+      return;
+   }
+
+}

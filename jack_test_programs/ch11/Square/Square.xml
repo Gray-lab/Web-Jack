@@ -1,0 +1,2135 @@
+<class>
+	<keyword> class </keyword>
+<identifier>
+	<symbol name: None >	<table name: Square > 
+	<symbol type: None >	<table type: Not in symbol table >
+	<symbol kind: None >	<table kind: Not in symbol table >
+	<table index: Not in symbol table >
+	<category: class definition >
+	<usage: declaration >
+</identifier>	<symbol> { </symbol>
+<classVarDec>
+	<keyword> field </keyword>
+	<keyword> int </keyword>
+<identifier>
+	<symbol name: x >	<table name: x > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: this >	<table kind: this >
+	<table index: 0 >
+	<category: field >
+	<usage: declaration >
+</identifier>	<symbol> , </symbol>
+<identifier>
+	<symbol name: y >	<table name: y > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: this >	<table kind: this >
+	<table index: 1 >
+	<category: field >
+	<usage: declaration >
+</identifier>	<symbol> ; </symbol>
+</classVarDec>
+<classVarDec>
+	<keyword> field </keyword>
+	<keyword> int </keyword>
+<identifier>
+	<symbol name: size >	<table name: size > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: this >	<table kind: this >
+	<table index: 2 >
+	<category: field >
+	<usage: declaration >
+</identifier>	<symbol> ; </symbol>
+</classVarDec>
+<subroutineDec>
+	<keyword> constructor </keyword>
+<identifier>
+	<symbol name: size >	<table name: Square > 
+	<symbol type: Square >	<table type: Not in symbol table >
+	<symbol kind: this >	<table kind: Not in symbol table >
+	<table index: Not in symbol table >
+	<category: constructor >
+	<usage: declaration >
+</identifier><identifier>
+	<symbol name: size >	<table name: new > 
+	<symbol type: Square >	<table type: Not in symbol table >
+	<symbol kind: this >	<table kind: Not in symbol table >
+	<table index: Not in symbol table >
+	<category: constructor >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+	<keyword> int </keyword>
+<identifier>
+	<symbol name: Ax >	<table name: Ax > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: argument >
+	<usage: declaration >
+</identifier>	<symbol> , </symbol>
+	<keyword> int </keyword>
+<identifier>
+	<symbol name: Ay >	<table name: Ay > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 1 >
+	<category: argument >
+	<usage: declaration >
+</identifier>	<symbol> , </symbol>
+	<keyword> int </keyword>
+<identifier>
+	<symbol name: Asize >	<table name: Asize > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 2 >
+	<category: argument >
+	<usage: declaration >
+</identifier></parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: Asize >	<table name: x > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: this >
+	<table index: 0 >
+	<category: argument >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: Asize >	<table name: Ax > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: argument >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: Asize >	<table name: y > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: this >
+	<table index: 1 >
+	<category: argument >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: Asize >	<table name: Ay > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 1 >
+	<category: argument >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: Asize >	<table name: size > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: this >
+	<table index: 2 >
+	<category: argument >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: Asize >	<table name: Asize > 
+	<symbol type: int >	<table type: int >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 2 >
+	<category: argument >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: Asize >	<table name: draw > 
+	<symbol type: int >	<table type: Not in symbol table >
+	<symbol kind: argument >	<table kind: Not in symbol table >
+	<table index: Not in symbol table >
+	<category: argument >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+	<keyword> return </keyword>
+<expression>
+<term>
+	<keyword> this </keyword>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> this </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> true </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> false </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> &lt; </symbol>
+<term>
+	<integerConstant> 254 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> &amp; </symbol>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> &lt; </symbol>
+<term>
+	<integerConstant> 510 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> &gt; </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> &gt; </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> false </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> true </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> &lt; </symbol>
+<term>
+	<integerConstant> 254 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> false </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> true </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> &gt; </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> false </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> true </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+<subroutineDec>
+	<keyword> method </keyword>
+	<keyword> void </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<parameterList>
+</parameterList>
+	<symbol> ) </symbol>
+<subroutineBody>
+	<symbol> { </symbol>
+<statements>
+<ifStatement>
+	<keyword> if </keyword>
+	<symbol> ( </symbol>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> &lt; </symbol>
+<term>
+	<integerConstant> 510 </integerConstant>
+</term>
+</expression>
+	<symbol> ) </symbol>
+	<symbol> { </symbol>
+<statements>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> false </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<letStatement>
+	<keyword> let </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> = </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+	<integerConstant> 2 </integerConstant>
+</term>
+</expression>
+	<symbol> ; </symbol>
+</letStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<keyword> true </keyword>
+</term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+	<keyword> do </keyword>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> . </symbol>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier>	<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+	<symbol> ( </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> ) </symbol>
+</term>
+	<symbol> - </symbol>
+<term>
+	<integerConstant> 1 </integerConstant>
+</term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+	<symbol> , </symbol>
+<expression>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+	<symbol> + </symbol>
+<term>
+<identifier>
+	<symbol name: this >	<table name: this > 
+	<symbol type: void >	<table type: void >
+	<symbol kind: argument >	<table kind: argument >
+	<table index: 0 >
+	<category: method >
+	<usage: declaration >
+</identifier></term>
+</expression>
+</expressionList>
+	<symbol> ) </symbol>
+	<symbol> ; </symbol>
+</doStatement>
+</statements>
+	<symbol> } </symbol>
+</ifStatement>
+<returnStatement>
+	<keyword> return </keyword>
+	<symbol> ; </symbol>
+</returnStatement>
+</statements>
+	<symbol> } </symbol>
+</subroutineBody>
+</subroutineDec>
+	<symbol> } </symbol>
+</class>

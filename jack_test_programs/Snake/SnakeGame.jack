@@ -1,0 +1,72 @@
+
+class SnakeGame {
+  field Snake snake;
+  field int direction;
+  field int gridSize;
+  field int height;
+  field int width;
+  field int h_offset;
+  field int w_offset;
+  field int score;
+  field int score_row, score_column;
+
+  constructor SnakeGame new(int rand) {
+    let gridSize = 4;
+    // board is set to be 41 blocks wide and 29 blocks tall
+    let height = 12 * gridSize;
+    let width = 12 * gridSize;
+    let h_offset = 4 * gridSize;
+    let w_offset = 12 * gridSize;
+
+    let direction = 2;
+    let score = 0;
+    // Score location is based on the character grid of 
+    // 23 rows of 64 columns
+    let score_column = 50;
+    let score_row = 20;
+
+    // Snake is spawned in the center of the screen
+    let snake = Snake.new(height, width, h_offset, w_offset, gridSize, rand);
+
+    return this;
+  }
+
+  method void dispose() {
+    do snake.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void run() {
+    var char key;
+    var boolean exit;
+    var boolean grow;
+    let exit = false;
+    let grow = false;
+
+    while (~exit) {
+      // while waiting for key to be pressed, continue growing in direction
+      while (key = 0) {
+        // This doesn't work perfectly - really need an input buffer so that
+        // rapid keystrokes are not missed
+        let key = Keyboard.keyPressed();
+        do snake.step(direction, grow);
+      }
+
+      if (key = 81) { let exit = true; } // quit on key q
+      if (key = 131) { let direction = 1; } // up arrow
+      if (key = 132) { let direction = 2; } // right arrow
+      if (key = 133) { let direction = 3; } // down arrow
+      if (key = 130) { let direction = 4; } // left arrow
+      // do Output.printInt(key);
+
+      // while waiting for key to be released, continue growing in (new) direction
+      while (~(key=0)) {
+        let key = Keyboard.keyPressed();
+        do snake.step(direction, grow);
+      }
+    }
+    return;
+  }
+}
+      

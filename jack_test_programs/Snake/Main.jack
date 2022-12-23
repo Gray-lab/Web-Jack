@@ -1,0 +1,28 @@
+/** Intializes the Snake and start running the game */
+class Main {
+  function void main() {
+    var SnakeGame game;
+    var int seedCount;
+    var int key;
+    let seedCount = 1;
+    // set message
+    do Output.moveCursor(10, 20);
+    do Output.printString("Press any key to start");
+    while (key = 0) {
+        let key = Keyboard.keyPressed();
+        // count modulo m - 1 to set seed
+        if (seedCount = (1499 - 1)) {
+          let seedCount = 1;
+        }
+        let seedCount = seedCount + 1;
+      }
+    // delete message
+    do Output.moveCursor(10, 20);
+    do Output.printString("                         ");
+    // start game
+    let game = SnakeGame.new(seedCount);
+    do game.run();
+    do game.dispose();
+    return;
+  }
+}

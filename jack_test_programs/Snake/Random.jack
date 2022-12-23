@@ -1,0 +1,30 @@
+class Random {
+  field int m;
+  field int a;
+  field int seed;
+
+  // implement as a Lehmer RNG
+  // seed must be coprime to m to avoid poor behavior
+  // take m = 1499, a = 19. This gives a cycle of 1498
+
+  constructor Random new(int newSeed) {
+    let seed = newSeed;
+    let m = 1499;
+    let a = 19;
+    return this;
+  }
+
+  method int randomRange(int max) {
+    var int value;
+    let value = random();
+    return Mod.mod(value, max); 
+  }
+
+  method int random() {
+    let seed = Mod.mod(a * seed, m);
+    return seed;
+  }
+}
+
+
+

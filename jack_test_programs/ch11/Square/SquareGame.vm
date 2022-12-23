@@ -1,0 +1,190 @@
+function SquareGame.new 0
+push constant 2 //pass num_fields to Memory.alloc for allocation in heap
+call Memory.alloc 1
+pop pointer 0 //Set 'this' to object base address
+push constant 0 
+push constant 0 
+push constant 30 
+call Square.new 3
+pop this 0 //bind topmost stack value to square
+push constant 0 
+pop this 1 //bind topmost stack value to direction
+push pointer 0 //'this'
+return
+function SquareGame.dispose 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push this 0 //pointer to square
+call Square.dispose 1
+pop temp 0 //remove return value from stack after do statement
+push pointer 0 //'this'
+call Memory.deAlloc 1
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return
+function SquareGame.moveSquare 0
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push this 1 //value of direction
+push constant 1 
+eq
+not
+if-goto IF_FALSEIF0
+push this 0 //pointer to square
+call Square.moveUp 1
+pop temp 0 //remove return value from stack after do statement
+goto IF_TRUEIF0
+label IF_FALSEIF0
+label IF_TRUEIF0
+push this 1 //value of direction
+push constant 2 
+eq
+not
+if-goto IF_FALSEIF1
+push this 0 //pointer to square
+call Square.moveDown 1
+pop temp 0 //remove return value from stack after do statement
+goto IF_TRUEIF1
+label IF_FALSEIF1
+label IF_TRUEIF1
+push this 1 //value of direction
+push constant 3 
+eq
+not
+if-goto IF_FALSEIF2
+push this 0 //pointer to square
+call Square.moveLeft 1
+pop temp 0 //remove return value from stack after do statement
+goto IF_TRUEIF2
+label IF_FALSEIF2
+label IF_TRUEIF2
+push this 1 //value of direction
+push constant 4 
+eq
+not
+if-goto IF_FALSEIF3
+push this 0 //pointer to square
+call Square.moveRight 1
+pop temp 0 //remove return value from stack after do statement
+goto IF_TRUEIF3
+label IF_FALSEIF3
+label IF_TRUEIF3
+push constant 5 
+call Sys.wait 1
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return
+function SquareGame.run 2
+push argument 0 //arg 0 holds the pointer to the object
+pop pointer 0 
+push constant 0 //'null' or 'false'
+pop local 1 //bind topmost stack value to exit
+label WHILE0
+push local 1 //value of exit
+not
+not
+if-goto WHILE1
+label WHILE2
+push local 0 //value of key
+push constant 0 
+eq
+not
+if-goto WHILE3
+call Keyboard.keyPressed 0
+pop local 0 //bind topmost stack value to key
+push pointer 0 //Push current object to stack for method call
+call SquareGame.moveSquare 1
+pop temp 0 //remove return value from stack after do statement
+goto WHILE2
+label WHILE3
+push local 0 //value of key
+push constant 81 
+eq
+not
+if-goto IF_FALSEIF4
+push constant 1 
+neg //'true'
+pop local 1 //bind topmost stack value to exit
+goto IF_TRUEIF4
+label IF_FALSEIF4
+label IF_TRUEIF4
+push local 0 //value of key
+push constant 90 
+eq
+not
+if-goto IF_FALSEIF5
+push this 0 //pointer to square
+call Square.decSize 1
+pop temp 0 //remove return value from stack after do statement
+goto IF_TRUEIF5
+label IF_FALSEIF5
+label IF_TRUEIF5
+push local 0 //value of key
+push constant 88 
+eq
+not
+if-goto IF_FALSEIF6
+push this 0 //pointer to square
+call Square.incSize 1
+pop temp 0 //remove return value from stack after do statement
+goto IF_TRUEIF6
+label IF_FALSEIF6
+label IF_TRUEIF6
+push local 0 //value of key
+push constant 131 
+eq
+not
+if-goto IF_FALSEIF7
+push constant 1 
+pop this 1 //bind topmost stack value to direction
+goto IF_TRUEIF7
+label IF_FALSEIF7
+label IF_TRUEIF7
+push local 0 //value of key
+push constant 133 
+eq
+not
+if-goto IF_FALSEIF8
+push constant 2 
+pop this 1 //bind topmost stack value to direction
+goto IF_TRUEIF8
+label IF_FALSEIF8
+label IF_TRUEIF8
+push local 0 //value of key
+push constant 130 
+eq
+not
+if-goto IF_FALSEIF9
+push constant 3 
+pop this 1 //bind topmost stack value to direction
+goto IF_TRUEIF9
+label IF_FALSEIF9
+label IF_TRUEIF9
+push local 0 //value of key
+push constant 132 
+eq
+not
+if-goto IF_FALSEIF10
+push constant 4 
+pop this 1 //bind topmost stack value to direction
+goto IF_TRUEIF10
+label IF_FALSEIF10
+label IF_TRUEIF10
+label WHILE4
+push local 0 //value of key
+push constant 0 
+eq
+not
+not
+if-goto WHILE5
+call Keyboard.keyPressed 0
+pop local 0 //bind topmost stack value to key
+push pointer 0 //Push current object to stack for method call
+call SquareGame.moveSquare 1
+pop temp 0 //remove return value from stack after do statement
+goto WHILE4
+label WHILE5
+goto WHILE0
+label WHILE1
+push constant 0 
+return
