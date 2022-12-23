@@ -1,7 +1,28 @@
 add Option to parser line so that labels and class commands are not generated
-    also fix the way namespacing is handled!
+also fix the way namespacing is handled!
+- done, but kept label commands to keep linespacing sensible. Removing labels breaks the line spacing for 
+- gotos
+
 finish implementing std library
+- done, but there are bugs :(
+
+
 add key mapping in javascript to handle enter, backspace, arrow keys, etc.
+- done
+
 possibly update the display only in changed words?
+
+
 profile rust code to find slow areas
 
+
+overflow bug in Keyboard.readLine(): Keep typing characters - at 82nd character, overflow on display address
+- fixed with a guard against appending to a full string
+
+bug in Keyboard.readLine(): when pressing enter, the key is incorrectly printed (as a blank character) before string is returned, but is not appended to the string
+- fixed by only printing and appending characters with value < 128, thus excluding non-printing characters like arrow keys
+
+bug with arrays: when doing Average test, the resulting value is incorrect
+- to replicate, run Average and try typing in some stuff. Answer is blank or wrong
+
+build a react frontend :D
