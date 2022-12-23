@@ -1,0 +1,121 @@
+class SnakeBoard {
+  field Array board;
+  field int cellsWidth, cellsHeight;
+  field int arraySize;
+  field int gridSize;
+  field int x_offset;
+  field int y_offset;
+  field int max_x;
+  field int min_x;
+  field int max_y;
+  field int min_y;
+  field Random randx;
+  field Random randy;
+  field int score;
+
+  constructor SnakeBoard new(int gridSizeIn, int heightIn, int widthIn, int yoffset, int xoffset, int rand) {
+  
+    let x_offset = xoffset;
+    let y_offset = yoffset;
+    let gridSize = gridSizeIn;
+    let min_x = x_offset;
+    let min_y = y_offset;
+    let max_x = (x_offset + widthIn) - gridSize;
+    let max_y = (y_offset + heightIn) - gridSize;
+    // Build an array to hold the cells of the gameboard
+    let cellsWidth = widthIn / gridSize;
+    //do Output.printInt(cellsWidth);
+    let cellsHeight = heightIn / gridSize;
+    //do Output.printInt(cellsHeight);
+    let arraySize = cellsWidth * cellsHeight;
+    let board = Array.new(arraySize);
+
+    let randx = Random.new(rand);
+    let randy = Random.new(rand);
+
+    let score = 0;
+    do drawScore(0);
+    //do Output.printInt(arraySize);
+    return this;
+  }
+
+  method void drawScore(int add) {
+    let score = score + add;
+    do Output.moveCursor(20, 50);
+    do Output.printString("Score:");
+    do Output.printInt(score);
+    return;
+  }
+
+  method void setBoard() {
+    //set initial board: 0 is a regular square, 1 is a boundary or a snake, 2 is the apple
+    var int i, x, y;
+    let i = 0;
+
+    do Screen.setColor(true);
+    while (i < arraySize) {
+      let x = getX(i);
+      let y = getY(i);
+      // draw boundaries and set board values at boundaries
+      if ((x = min_x) | (x = max_x) | (y = min_y) | (y = max_y)) {
+        let board[i] = 1;
+        do Screen.drawRectangle(x + 1, y + 1, x + gridSize - 1, y + gridSize - 1);
+      } else {
+        let board[i] = 0;
+        do Screen.drawPixel(x ,y);
+      }
+      let i = i+1;
+    }
+    return;
+  }
+
+  method int getBoardVal(int x, int y) {
+    return board[getI(x, y)];
+  }
+
+  method void setBoardVal(int x, int y, int value) {
+    let board[getI(x, y)] = value;
+    return;
+  }
+
+  method void makeApple() {
+    var int x_cell, y_cell, i, x, y;
+    var int boardval;
+    let x_cell = randx.randomRange(cellsWidth);
+    let y_cell = randy.randomRange(cellsHeight);
+    let i = (y_cell * cellsWidth) + x_cell;
+    let x = getX(i);
+    let y = getY(i);
+    // if we try making an apple outside valid spots, try again
+    let boardval = getBoardVal(x, y);
+    do Output.printInt(boardval);
+    do Output.printInt(board[i]);
+    if (board[i] = 0) {
+      do setBoardVal(x, y, 2);
+      do Screen.drawCircle(x + (gridSize / 2), y + (gridSize / 2), gridSize / 3);
+    } else {
+      do makeApple();
+    }
+    return;
+  }
+
+  method int getX(int i) {
+    var int x, y;
+    let y = i / cellsWidth;
+    let x = i - (cellsWidth * y);
+    return (x * gridSize) + x_offset;
+  }
+
+  method int getY(int i) {
+    var int y;
+    let y = i / cellsWidth;
+    return (y * gridSize) + y_offset;
+  }
+
+  method int getI(int x, int y) {
+    var int xraw, yraw;
+    let xraw = (x - x_offset)/gridSize;
+    let yraw = (y - y_offset)/gridSize;
+    return (yraw * cellsWidth) + xraw;
+  }
+}

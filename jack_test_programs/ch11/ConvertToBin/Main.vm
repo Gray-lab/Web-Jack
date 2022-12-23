@@ -1,0 +1,114 @@
+function Main.main 1
+push constant 8000 
+push constant 42 
+call Memory.poke 2
+pop temp 0 //remove return value from stack after do statement
+push constant 8001 
+push constant 16 
+push constant 1 
+neg
+call Main.fillMemory 3
+pop temp 0 //remove return value from stack after do statement
+push constant 8000 
+call Memory.peek 1
+pop local 0 //bind topmost stack value to value
+push local 0 //value of value
+call Main.convert 1
+pop temp 0 //remove return value from stack after do statement
+return
+push constant 0 
+function Main.convert 3
+push constant 1 
+neg //'true'
+pop local 2 //bind topmost stack value to loop
+label WHILE0
+push local 2 //value of loop
+not
+if-goto WHILE1
+push local 1 //value of position
+push constant 1 
+add
+pop local 1 //bind topmost stack value to position
+push local 0 //value of mask
+call Main.nextMask 1
+pop local 0 //bind topmost stack value to mask
+push local 1 //value of position
+push constant 16 
+gt
+not
+not
+if-goto IF0
+push argument 0 //value of value
+push local 0 //value of mask
+and
+push constant 0 
+eq
+not
+not
+if-goto IF2
+push constant 8000 
+push local 1 //value of position
+add
+push constant 1 
+call Memory.poke 2
+pop temp 0 //remove return value from stack after do statement
+call Output.println 0
+pop temp 0 //remove return value from stack after do statement
+goto IF3
+label IF2
+push constant 8000 
+push local 1 //value of position
+add
+push constant 0 
+call Memory.poke 2
+pop temp 0 //remove return value from stack after do statement
+call Output.println 0
+pop temp 0 //remove return value from stack after do statement
+label IF3
+goto IF1
+label IF0
+push constant 0 //'null' or 'false'
+pop local 2 //bind topmost stack value to loop
+label IF1
+goto WHILE0
+label WHILE1
+return
+push constant 0 
+function Main.nextMask 0
+push argument 0 //value of mask
+push constant 0 
+eq
+not
+if-goto IF4
+push constant 1 
+return
+goto IF5
+label IF4
+push argument 0 //value of mask
+push constant 2 
+call Math.multiply 2
+return
+label IF5
+function Main.fillMemory 0
+label WHILE2
+push argument 1 //value of length
+push constant 0 
+gt
+not
+if-goto WHILE3
+push argument 0 //value of startAddress
+push argument 2 //value of value
+call Memory.poke 2
+pop temp 0 //remove return value from stack after do statement
+push argument 1 //value of length
+push constant 1 
+sub
+pop argument 1 //bind topmost stack value to length
+push argument 0 //value of startAddress
+push constant 1 
+add
+pop argument 0 //bind topmost stack value to startAddress
+goto WHILE2
+label WHILE3
+return
+push constant 0 

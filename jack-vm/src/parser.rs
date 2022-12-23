@@ -2,6 +2,7 @@ use crate::memory::WordSize;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
+use wasm_bindgen_test::console_log;
 use web_sys::console;
 
 #[derive(Debug, Clone)]
@@ -40,7 +41,6 @@ pub enum Command {
     Label(LabelName),
     Function(Identifier, NumVars),
     Call(Identifier, NumArgs),
-    Class(Identifier),
     Return,
 }
 
@@ -93,19 +93,11 @@ impl Function {
     }
 }
 
-// Need help figuring out how to send errors back
 pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
-    // We will receive multiple classes in a single text string,
-    // so each time Class... is encountered the previous class
-    // needs to be closed and a new class initialized
-
-    // Initialize class and function to be empty
+    // Initialize program and functions to be empty
     let mut program = Bytecode {
         functions: HashMap::new(),
     };
-
-    // Initialize class to none
-    let mut current_class = "";
 
     // Initialized to bring into scope
     let mut current_function: Option<Rc<RefCell<Function>>> = None;
@@ -129,35 +121,31 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
         let line_words: Vec<&str> = line.trim().split(' ').collect();
         // Check the number of arguments in each line
         let parsed_line = match line_words.len() {
-            1 => {
-                match line_words[0] {
-                    // I bet this could be a macro...
-                    "add" => VMCommand::new(Command::Add, line_num),
-                    "sub" => VMCommand::new(Command::Sub, line_num),
-                    "neg" => VMCommand::new(Command::Neg, line_num),
-                    "eq" => VMCommand::new(Command::Eq, line_num),
-                    "gt" => VMCommand::new(Command::Gt, line_num),
-                    "lt" => VMCommand::new(Command::Lt, line_num),
-                    "and" => VMCommand::new(Command::And, line_num),
-                    "or" => VMCommand::new(Command::Or, line_num),
-                    "not" => VMCommand::new(Command::Not, line_num),
-                    "return" => VMCommand::new(Command::Return, line_num),
-                    otherwise => {
-                        console::log_1(&"Invalid zero argument command".into());
-                        panic!(
-                            "Invalid zero argument command at line {}: {}",
-                            line_num, otherwise
-                        );
-                    }
+            1 => match line_words[0] {
+                "add" => Some(VMCommand::new(Command::Add, line_num)),
+                "sub" => Some(VMCommand::new(Command::Sub, line_num)),
+                "neg" => Some(VMCommand::new(Command::Neg, line_num)),
+                "eq" => Some(VMCommand::new(Command::Eq, line_num)),
+                "gt" => Some(VMCommand::new(Command::Gt, line_num)),
+                "lt" => Some(VMCommand::new(Command::Lt, line_num)),
+                "and" => Some(VMCommand::new(Command::And, line_num)),
+                "or" => Some(VMCommand::new(Command::Or, line_num)),
+                "not" => Some(VMCommand::new(Command::Not, line_num)),
+                "return" => Some(VMCommand::new(Command::Return, line_num)),
+                otherwise => {
+                    console::log_1(&"Invalid zero argument command".into());
+                    panic!(
+                        "Invalid zero argument command at line {}: {}",
+                        line_num, otherwise
+                    );
                 }
-            }
+            },
             2 => match (line_words[0], line_words[1]) {
-                ("class", identifier) => {
-                    current_class = identifier;
-                    VMCommand::new(Command::Class(identifier.to_string()), line_num)
+                ("class", _) => None,
+                ("goto", label) => Some(VMCommand::new(Command::GoTo(label.to_string()), line_num)),
+                ("if-goto", label) => {
+                    Some(VMCommand::new(Command::IfGoTo(label.to_string()), line_num))
                 }
-                ("goto", label) => VMCommand::new(Command::GoTo(label.to_string()), line_num),
-                ("if-goto", label) => VMCommand::new(Command::IfGoTo(label.to_string()), line_num),
                 ("label", label) => {
                     let function = &current_function.clone().unwrap();
                     let label_location: usize = line_num - function.borrow().start_line;
@@ -172,7 +160,7 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                             label, label_location, prev_label_location
                         );
                     }
-                    VMCommand::new(Command::Label(label.to_string()), line_num)
+                    Some(VMCommand::new(Command::Label(label.to_string()), line_num))
                 }
                 (otherwise, _) => {
                     console::log_1(&"Invalid one argument command".into());
@@ -190,12 +178,14 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                         .parse::<WordSize>()
                         .expect("Second argument should be parsable to an i32"),
                 ) {
-                    ("pop", segment, index) => {
-                        VMCommand::new(Command::Pop(parse_segment(segment), index), line_num)
-                    }
-                    ("push", segment, index) => {
-                        VMCommand::new(Command::Push(parse_segment(segment), index), line_num)
-                    }
+                    ("pop", segment, index) => Some(VMCommand::new(
+                        Command::Pop(parse_segment(segment), index),
+                        line_num,
+                    )),
+                    ("push", segment, index) => Some(VMCommand::new(
+                        Command::Push(parse_segment(segment), index),
+                        line_num,
+                    )),
                     ("function", fn_name, var_count) => {
                         // Initialize a new function
                         let f = Rc::new(RefCell::new(Function {
@@ -205,16 +195,18 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                             label_table: HashMap::new(),
                         }));
 
-                        let name = format!("{}.{}", current_class, fn_name);
+                        program.functions.insert(fn_name.to_string(), f);
 
-                        program.functions.insert(name.to_string(), f);
-
-                        current_function = program.functions.get(&name).cloned();
-                        VMCommand::new(Command::Function(name.to_string(), var_count), line_num)
+                        current_function = program.functions.get(fn_name).cloned();
+                        Some(VMCommand::new(
+                            Command::Function(fn_name.to_string(), var_count),
+                            line_num,
+                        ))
                     }
-                    ("call", fn_name, num_args) => {
-                        VMCommand::new(Command::Call(fn_name.to_string(), num_args), line_num)
-                    }
+                    ("call", fn_name, num_args) => Some(VMCommand::new(
+                        Command::Call(fn_name.to_string(), num_args),
+                        line_num,
+                    )),
                     (otherwise, _, _) => {
                         console::log_1(&"Invalid two argument command".into());
                         panic!(
@@ -234,9 +226,10 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
         };
 
         if let Some(f) = &current_function {
-            f.borrow_mut().add_command(parsed_line);
+            if let Some(c) = parsed_line {
+                f.borrow_mut().add_command(c)
+            };
         }
     }
-
     program
 }

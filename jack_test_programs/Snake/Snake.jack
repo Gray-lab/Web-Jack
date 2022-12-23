@@ -1,0 +1,101 @@
+// Represents the user-controlled snake object
+// Needs to have a direction and a length
+// Also controls the rendering of the snake and intersection behaviour
+
+/** Implements a snake for the game snake
+The snake has 4 movement directions
+Can cross across the borders of the screen
+It is able to grow
+And it dies if it intersects itself
+
+An interesting problem is setting this up so that the time at each step
+stays the same even as the snake gets longer! We need to set up the snake so that 
+as many operations as possible are constant time, otherwise the game will slow down
+as the snake gets longer. This is relatively easy to do
+when drawing the snake, but is harder when checking for intersection.
+To make intersection checks constant time, a hash table would have to be used.
+*/
+class Snake {
+  field Segment head; // head of the snake, poiting to null
+  field Segment tail; // tail of the snake, pointing to a Segment towards the head
+  field SnakeBoard board; // a board for the snake to live on
+  field int gridSize; // size of a block of the snake
+  /** Constructs a new snake and a board for the snake*/
+  constructor Snake new(int height, int width, int hoffset, int woffset, int gameGridSize, int rand) {
+    let gridSize = gameGridSize;
+    // spawn in a new board
+    let board = SnakeBoard.new(gridSize, height, width, hoffset, woffset, rand);
+    // draw board
+    do board.setBoard();
+    // spawn in two new segments at the center of the array
+    let head = Segment.new(board.getX(594), board.getY(594));
+    let tail = Segment.new(board.getX(593), board.getY(593));
+    // set prev pointer from tail to head
+    do tail.setPrev(head);
+    // draw both segments
+    do head.draw(gridSize);
+    do tail.draw(gridSize);
+    // create the apple
+    do board.makeApple();
+    return this;
+  }
+
+  method void step(int direction, boolean grow) {
+    var int new_x, new_y;
+    var Segment newSeg;
+    var Segment tempSeg;
+    var Segment next;
+    // 1. get coordinates of new segment
+    if (direction = 1) { let new_x = head.getX(); let new_y = head.getY() - gridSize; }
+    if (direction = 2) { let new_x = head.getX() + gridSize; let new_y = head.getY(); }
+    if (direction = 3) { let new_x = head.getX(); let new_y = head.getY() + gridSize; }
+    if (direction = 4) { let new_x = head.getX() - gridSize; let new_y = head.getY(); }
+    // 2. check for intersection and end game if detected
+    if (board.getBoardVal(new_x, new_y) = 1) {
+      do gameOver();
+    }
+    // 3. add a new segment to the front and draw it
+    let newSeg = Segment.new(new_x, new_y);
+    do head.setPrev(newSeg);
+    let head = newSeg;
+    do head.draw(gridSize);   
+    // 4. if we eat an apple, the snake will grow, otherwise dispose the tail
+    if (~(board.getBoardVal(new_x, new_y) = 2)) {
+      do board.setBoardVal(tail.getX(), tail.getY(), 0);
+      do tail.erase(gridSize);
+      let tempSeg = tail.getPrev();
+      do tail.dispose();
+      let tail = tempSeg;
+    } else {
+    // we got an apple! Reset the board value and make a new apple
+      // do Output.printString("yum!");
+      // this function needs to check that the board value is not 1 when an apple is being made
+      do board.makeApple();
+      do board.drawScore(1);
+    }
+    // set Board val to 1 at the end
+    do board.setBoardVal(new_x, new_y, 1);
+    do Sys.wait(100);
+    return;
+  }
+
+  method void gameOver() {
+    do Output.moveCursor(10, 22);
+    do Output.printString("Game Over");
+    do Sys.halt();
+    return;
+  }
+
+  /** dispose recursively starting with tail */
+  method void dispose() {
+    var Segment prevTail;
+    if (~(tail.getPrev() = null)) {
+      let prevTail = tail.getPrev();
+      do prevTail.dispose();
+    }
+    do Memory.deAlloc(this);
+    return;
+  }
+
+}
+  

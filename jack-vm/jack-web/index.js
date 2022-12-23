@@ -6,129 +6,16 @@ const BIT_OFF_COLOR = "#DFDFDF";
 const WORD_SIZE = 16; //bits
 
 const testProgram = `
-class Main
-function main 0
-push constant 13
-call String.new 1
-push constant 72
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 111
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-push constant 119
-call String.appendChar 2
-push constant 111
-call String.appendChar 2
-push constant 114
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 100
-call String.appendChar 2
-push constant 33
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-call Keyboard.readLine 1
-call Output.printLine 0
-push constant 0
+function Main.main 0
+push constant 1 
+push constant 2 
+push constant 3 
+call Math.multiply 2
+add
+call Output.printInt 1
+pop temp 0 //remove return value from stack after do statement
 return
-
-class Keyboard
-function readChar 2
-call Keyboard.keyPressed 0
-pop local 1
-push local 1
-pop local 0
-push local 1
-push constant 0
-eq
-not
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-label WHILE_EXP0
-push local 1
-push local 0
-eq
-not
-if-goto WHILE_END0
-call Keyboard.keyPressed 0
-pop local 0
-goto WHILE_EXP0
-label WHILE_END0
-label IF_FALSE0
-label WHILE_EXP1
-push local 0
-push constant 0
-eq
-not
-if-goto WHILE_END1
-call Keyboard.keyPressed 0
-pop local 0
-goto WHILE_EXP1
-label WHILE_END1
-label WHILE_EXP2
-call Keyboard.keyPressed 0
-push local 0
-eq
-not
-if-goto WHILE_END2
-goto WHILE_EXP2
-label WHILE_END2
-push local 0
-call Output.printChar 1
-pop temp 0
-push local 0
-return
-function readLine 2
-push argument 0
-call Output.printString 1
-pop temp 0
-push constant 64
-call String.new 1
-pop local 0
-call Keyboard.readChar 0
-pop local 1
-label WHILE_EXP0
-push local 1
-call String.newLine 0
-eq
-not
-not
-if-goto WHILE_END0
-push local 1
-call String.backSpace 0
-eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-call Output.backSpace 0
-pop temp 0
-push local 0
-call String.eraseLastChar 1
-pop temp 0
-goto IF_END0
-label IF_FALSE0
-push local 0
-push local 1
-call String.appendChar 2
-pop temp 0
-label IF_END0
-call Keyboard.readChar 0
-pop local 1
-goto WHILE_EXP0
-label WHILE_END0
-push local 0
-return
-
+push constant 0 
 `;
 
 // set lcl=260 so we can see it near sp at 256
@@ -158,7 +45,10 @@ const displayCanvas = document.getElementById("display-canvas");
 displayCanvas.width = displayWidthPixels * pixelSize;
 displayCanvas.height = displayHeightPixels * pixelSize;
 
-const ctx = displayCanvas.getContext("2d", { willReadFrequently: true });
+const ctx = displayCanvas.getContext("2d", {
+  willReadFrequently: true,
+  alpha: false,
+});
 ctx.scale(pixelSize, pixelSize);
 
 // from rustwasm tutorial
@@ -179,10 +69,18 @@ function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
   for (let i = 0; i < memSize * 16; i++) {
     if (bitIsSet(i, memArray)) {
       // set corresponding virtual pixel to red
-      drawVirtualPixel(pixels, i, pixelSize, widthPixels, 0, 255, 0, 255);
+      const offset = i * 4;
+      pixels[offset] = 0;
+      pixels[offset + 1] = 255;
+      pixels[offset + 2] = 0;
+      // drawVirtualPixel(pixels, i, pixelSize, widthPixels, 0, 255, 0, 255);
     } else {
       // set corresponding virtual pixel to black
-      drawVirtualPixel(pixels, i, pixelSize, widthPixels, 10, 10, 10, 255);
+      // drawVirtualPixel(pixels, i, pixelSize, widthPixels, 10, 10, 10, 255);
+      const offset = i * 4;
+      pixels[offset] = 10;
+      pixels[offset + 1] = 10;
+      pixels[offset + 2] = 10;
     }
   }
 
@@ -226,22 +124,55 @@ function updateRamList(start, end, memSize, memPtr) {
   ramContainer.appendChild(outer);
 }
 
+// Keyboard input listeners
+
+const input_map = {
+  Enter: 128,
+  Backspace: 129,
+  ArrowLeft: 130,
+  ArrowUp: 131,
+  ArrowRight: 132,
+  ArrowDown: 133,
+  Home: 134,
+  End: 135,
+  PageUp: 136,
+  PageDown: 137,
+  Insert: 138,
+  Delete: 139,
+  Escape: 140,
+  F1: 141,
+  F2: 142,
+  F3: 143,
+  F4: 144,
+  F5: 145,
+  F6: 146,
+  F7: 147,
+  F8: 148,
+  F9: 149,
+  F10: 150,
+  F11: 151,
+  F12: 152,
+};
+
 let currentKey = 0;
-let body = document.querySelector("body");
+const body = document.querySelector("body");
 body.addEventListener("keydown", (event) => {
+  console.log(event.key);
   if (event.key.length === 1) {
     currentKey = event.key.charCodeAt(0);
+  } else if (event.key in input_map) {
+    currentKey = input_map[event.key];
   }
 });
 
 body.addEventListener("keyup", (event) => {
-  if (event.key.length === 1) {
+  if (event.key.length === 1 || event.key in input_map) {
     currentKey = 0;
   }
 });
 
-// let i = 0
-// let do_log = true
+let i = 0;
+let do_log = true;
 // setTimeout(() => {
 //     do_log = false
 // }, 10000)
@@ -266,16 +197,17 @@ function renderLoop() {
       displayPtr,
       displaySize
     );
-    updateRamList(256, 270, ramSize, ramPtr);
   }
+  updateRamList(16300, 16383, ramSize, ramPtr);
   //   console.log(`Read key ${currentKey}`);
   // if (i < displaySize) {
   // requestAnimationFrame(renderLoop)
   // }
 
   // if (do_log) {
-  //     console.log(1)
+  // console.log(i)
+  // i ++
   // }
 }
 // requestAnimationFrame(renderLoop)
-setInterval(() => requestAnimationFrame(renderLoop), 0);
+setInterval(() => requestAnimationFrame(renderLoop), 10);

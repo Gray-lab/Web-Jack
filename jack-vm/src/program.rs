@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 use wasm_bindgen_test::console_log;
 
 use crate::jacklib::{self, NativeFunction};
@@ -50,17 +49,170 @@ impl Program {
         let memory = Memory::new(sp, lcl, arg, this, that);
 
         // some library functions are implemented in jack
+        let jack_library_functions = String::from("function Keyboard.readChar 2
+        call Keyboard.keyPressed 0
+        pop local 1
+        push local 1
+        pop local 0
+        push local 1
+        push constant 0
+        eq
+        not
+        if-goto IF_TRUE0
+        goto IF_FALSE0
+        label IF_TRUE0
+        label WHILE_EXP0
+        push local 1
+        push local 0
+        eq
+        not
+        if-goto WHILE_END0
+        call Keyboard.keyPressed 0
+        pop local 0
+        goto WHILE_EXP0
+        label WHILE_END0
+        label IF_FALSE0
+        label WHILE_EXP1
+        push local 0
+        push constant 0
+        eq
+        not
+        if-goto WHILE_END1
+        call Keyboard.keyPressed 0
+        pop local 0
+        goto WHILE_EXP1
+        label WHILE_END1
+        label WHILE_EXP2
+        call Keyboard.keyPressed 0
+        push local 0
+        eq
+        not
+        if-goto WHILE_END2
+        goto WHILE_EXP2
+        label WHILE_END2
+        push local 0
+        push constant 128
+        lt
+        if-goto IF_TRUE1
+        goto IF_FALSE1
+        label IF_TRUE1
+        push local 0
+        call Output.printChar 1
+        pop temp 0
+        label IF_FALSE1
+        push local 0
+        return
+        function Keyboard.readLine 2
+        push argument 0
+        call Output.printString 1
+        pop temp 0
+        push constant 64
+        call String.new 1
+        pop local 0
+        call Keyboard.readChar 0
+        pop local 1
+        label WHILE_EXP0
+        push local 1
+        call String.newLine 0
+        eq
+        if-goto WHILE_END0
+        push local 1
+        call String.backSpace 0
+        eq
+        if-goto IF_TRUE0
+        goto IF_FALSE0
+        label IF_TRUE0
+        call Output.backSpace 0
+        pop temp 0
+        push local 0
+        call String.eraseLastChar 1
+        pop temp 0
+        label IF_FALSE0
+        push local 1
+        push constant 128
+        lt
+        if-goto IF_TRUE1
+        goto IF_FALSE1
+        label IF_TRUE1
+        push local 0
+        push local 1
+        call String.appendChar 2
+        pop temp 0
+        label IF_FALSE1
+        call Keyboard.readChar 0
+        pop local 1
+        goto WHILE_EXP0
+        label WHILE_END0
+        call Output.println 0
+        pop temp 0
+        push local 0
+        return
+        function Keyboard.readInt 2
+        push argument 0
+        call Output.printString 1
+        pop temp 0
+        push constant 64
+        call String.new 1
+        pop local 0
+        call Keyboard.readChar 0
+        pop local 1
+        label WHILE_EXP0
+        push local 1
+        push constant 47
+        gt
+        push local 1
+        push constant 58
+        lt
+        and
+        push local 1
+        push constant 129
+        eq
+        or
+        not
+        if-goto WHILE_END0
+        push local 1
+        push constant 129
+        eq
+        if-goto IF_TRUE0
+        goto IF_FALSE0
+        label IF_TRUE0
+        call Output.backSpace 0
+        pop temp 0
+        push local 0
+        call String.eraseLastChar 1
+        pop temp 0
+        goto IF_END0
+        label IF_FALSE0
+        push local 0
+        push local 1
+        call String.appendChar 2
+        pop temp 0
+        label IF_END0
+        call Keyboard.readChar 0
+        pop local 1
+        goto WHILE_EXP0
+        label WHILE_END0
+        call Output.println 0
+        pop temp 0
+        push local 0
+        call String.intValue 1
+        return        
+        ");
+
         // we append their bytecode to the input
         // Keyboard.readChar
         // Keyboard.readLine
         // Keyboard.readInt
+        let linked_input = format!("{}\n{}", input, jack_library_functions);
+       
+        let code = parse_bytecode(&linked_input);
 
-        let code = parse_bytecode(input);
         // let string = format!("{:?}", code);
-        // console::log_1(&string.into());
+        // console_log!("{}", string);
 
         let mut native_functions: HashMap<String, NativeFunction> = HashMap::new();
         // Populate with standard library fuctions
+  
         // Math library
         native_functions.insert("Math.multiply".into(), jacklib::multiply);
         native_functions.insert("Math.divide".into(), jacklib::divide);
@@ -68,6 +220,7 @@ impl Program {
         native_functions.insert("Math.max".into(), jacklib::jack_max);
         native_functions.insert("Math.sqrt".into(), jacklib::jack_sqrt);
         native_functions.insert("Math.pow".into(), jacklib::jack_pow);
+        native_functions.insert("Mod.mod".into(), jacklib::jack_mod);
 
         // String library
         native_functions.insert("String.new".into(), jacklib::string_new);
@@ -84,6 +237,8 @@ impl Program {
         native_functions.insert("String.newLine".into(), jacklib::new_line);
 
         // Array library
+        native_functions.insert("Array.new".into(), jacklib::array_new);
+        native_functions.insert("Array.dispose".into(), jacklib::array_dispose);
 
         // Output library
         native_functions.insert("Output.moveCursor".into(), jacklib::move_cursor);
@@ -119,9 +274,9 @@ impl Program {
         native_functions.insert("Memory.deAlloc".into(), jacklib::de_alloc);
 
         // System library
-        native_functions.insert("System.wait".into(), jacklib::wait);
-        native_functions.insert("System.halt".into(), jacklib::halt);
-        native_functions.insert("System.error".into(), jacklib::error);
+        native_functions.insert("Sys.wait".into(), jacklib::wait);
+        native_functions.insert("Sys.halt".into(), jacklib::halt);
+        native_functions.insert("Sys.error".into(), jacklib::error);
 
         let main_function = code
             .functions
@@ -151,11 +306,10 @@ impl Program {
             Some(frame) => frame,
             None => return false,
         };
- 
+
         // If there are no more instructions, return false and take no other action
         let length = frame.function.borrow().commands.len();
         if length <= frame.next_line {
-            // console::log_1(&"Ding! Program is finished.".into());
             return false;
         }
         self.memory.display_updated = false;
@@ -169,12 +323,9 @@ impl Program {
         frame.next_line += 1;
 
         // let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
-        // console::log_1(&command_string.into());
+        // console_log!("{}", command_string);
 
         match &current_command.command {
-            Command::Class(_identifier) => {
-                ();
-            }
             Command::Pop(seg, idx) => {
                 self.memory.pop(*seg, *idx);
             }
@@ -261,7 +412,7 @@ impl Program {
                 }
             }
             Command::Label(_) => (),
-            Command::Function(name, num_vars) => {
+            Command::Function(_, num_vars) => {
                 // Push local variables
                 for _i in 0..*num_vars {
                     self.memory.push(Segment::Constant, 0);
@@ -303,24 +454,19 @@ impl Program {
     }
 
     /**
-     * Sets the display to value at memory location display_word
-     */
-    pub fn set_display(&mut self, value: i32, offset: i32) {
-        // let string = format!(
-        //     "Setting display segment {} to {}",
-        //     offset as WordSize, value as WordSize
-        // );
-        // console::log_1(&string.into());
-        self.memory
-            .set_display(value as WordSize, offset as WordSize);
-    }
-
-    /**
      * wrapper for Memory.display_size()
      * returns the length of the display memory array
      */
     pub fn display_size(&self) -> usize {
         Memory::display_size() as usize
+    }
+
+    /**
+     * Sets the display to value at memory location display_word
+     */
+    pub fn set_display(&mut self, value: i32, offset: i32) {
+        self.memory
+            .set_display(value as WordSize, offset as WordSize);
     }
 
     /**

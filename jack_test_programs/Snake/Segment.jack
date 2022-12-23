@@ -1,0 +1,41 @@
+// The pieces of the snake, implemented as a reverse singly-linked listt
+// (liked from tail to head) 
+// New segments get added at the head and removed at the tail
+
+class Segment {
+  field int x, y;
+  field Segment prev;
+
+  constructor Segment new(int Lx, int Ly) {
+    let x = Lx;
+    let y = Ly;
+    let prev = null;
+    return this;
+  }
+
+  /** getters */
+  method int getX() { return x; }
+  method int getY() { return y; }
+  method Segment getPrev() { return prev; }
+  method void setPrev(Segment prevSeg) {
+    let prev = prevSeg; 
+    return;
+  }
+
+  method void draw(int size) {
+    do Screen.setColor(true);
+    do Screen.drawRectangle(x+1, y+1, x + size-1, y + size-1);
+    return;
+  }
+
+  method void erase(int size) {
+    do Screen.setColor(false);
+    do Screen.drawRectangle(x+1, y+1, x + size-1, y + size-1);
+    return;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}

@@ -1,0 +1,11 @@
+function Main.main 1
+call SquareGame.new 0
+pop local 0 //bind topmost stack value to game
+push local 0 //pointer to game
+call SquareGame.run 1
+pop temp 0 //remove return value from stack after do statement
+push local 0 //pointer to game
+call SquareGame.dispose 1
+pop temp 0 //remove return value from stack after do statement
+push constant 0 
+return

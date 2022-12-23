@@ -9,7 +9,6 @@ const LINES: WordSize = 23;
 const COLS: WordSize = 64;
 const VOID: WordSize = 0;
 const CHAR_HEIGHT: WordSize = 11;
-const CHAR_WIDTH: WordSize = 8;
 
 // MATH
 pub fn multiply(memory: &mut Memory, args: WordSize) -> WordSize {
@@ -51,6 +50,13 @@ pub fn jack_pow(memory: &mut Memory, args: WordSize) -> WordSize {
     let a = memory.get_arg(0);
     let b = memory.get_arg(1);
     a.pow(b as u32)
+}
+
+pub fn jack_mod(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 2);
+    let a = memory.get_arg(0);
+    let b = memory.get_arg(1);
+    a % b
 }
 
 // STRING
@@ -129,7 +135,7 @@ pub fn set_char_at(memory: &mut Memory, args: WordSize) -> WordSize {
 }
 
 /**
- * Appends character to end of string
+ * Appends character to end of string. Will not append if string max length would be exceeded.
  * arg0: string pointer
  * arg1: character
  * returns: string pointer
@@ -139,9 +145,15 @@ pub fn append_char(memory: &mut Memory, args: WordSize) -> WordSize {
     let string_pointer = memory.get_arg(0);
     let character = memory.get_arg(1);
     let length = memory.peek(string_pointer).clone();
-    memory.poke(string_pointer + 2 + length, character);
-    memory.poke(string_pointer, length + 1);
-    string_pointer
+    let max_length = memory.peek(string_pointer + 1).clone();
+    if length < max_length {
+        memory.poke(string_pointer + 2 + length, character);
+        memory.poke(string_pointer, length + 1);
+        string_pointer
+    } else {
+        console_log!("Attempted to append to a string at max_length");
+        string_pointer
+    }
 }
 
 /**
@@ -164,8 +176,26 @@ pub fn erase_last_char(memory: &mut Memory, args: WordSize) -> WordSize {
  */
 pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
+    // Get integer value
     let string_pointer = memory.get_arg(0);
-    panic!("not implemented");
+    let len = memory.peek(string_pointer);
+    let mut string = String::from("");
+    for i in (string_pointer + 2)..(string_pointer + 2 + len) {
+        string.push(*memory.peek(i) as u8 as char)
+    }
+    console_log!("{}", string);
+
+    //parse the string into an integer
+    //https://stackoverflow.com/questions/65601579/parse-an-integer-ignoring-any-non-numeric-suffix
+    let number = string
+        .chars()
+        .map(|c| c.to_digit(10))
+        .take_while(|opt| opt.is_some())
+        .fold(0, |acc, digit| acc * 10 + digit.unwrap());
+
+    console_log!("{}", number);
+
+    number as WordSize
 }
 
 /**
@@ -177,36 +207,71 @@ pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
 pub fn set_int(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 2);
     let string_pointer = memory.get_arg(0);
-    panic!("not implemented");
+    // Get integer value
+    let mut value = memory.get_arg(1);
+    // Start at third position in String
+    let mut position = 2;
+    // Fill with value
+    while value != 0 {
+        memory.poke(string_pointer + position, value % 10);
+        value = value / 10;
+        position += 1;
+    }
+
     VOID
 }
 
 /**
  * returns backspace character (129)
  */
-pub fn string_backspace(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn string_backspace(_memory: &mut Memory, _args: WordSize) -> WordSize {
     129
 }
 
 /**
  * returns double quote character (34)
  */
-pub fn double_quote(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn double_quote(_memory: &mut Memory, _args: WordSize) -> WordSize {
     34
 }
 
 /**
  * returns newline character (128)
  */
-pub fn new_line(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn new_line(_memory: &mut Memory, _args: WordSize) -> WordSize {
     128
 }
 
+// ARRAY
+
+/**
+ * Allocates a new array of size
+ * arg0: size
+ * returns: pointer to array
+ */
+pub fn array_new(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
+    let size = memory.get_arg(0);
+    memory.alloc(size)
+}
+
+/**
+ * Deallocates array at pointer
+ * arg0: pointer
+ * returns: VOID
+ */
+pub fn array_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
+    let pointer = memory.get_arg(0);
+    memory.de_alloc(pointer);
+    VOID
+}
 
 // OUTPUT
 // The screen is mapped to 24 rows of 64 characters, with each character
 // being 8 pixels wide and 11 pixels high, including margins
 fn print_char_helper(memory: &mut Memory, character: &WordSize) {
+    console_log!("in print_char_helper({})", character);
     let bitmap = memory.char_map.get_bitmap(character).clone();
     // 32 words in a display line
     // each cursor line covers 11 display lines
@@ -242,6 +307,15 @@ fn step_cursor_helper(memory: &mut Memory) {
 }
 
 /**
+ * moves cursor to start of new line
+ * returns: void
+ */
+fn newline_helper(memory: &mut Memory) {
+    memory.cursor_line = (memory.cursor_line + 1) % (LINES - 1);
+    memory.cursor_col = 0;
+}
+
+/**
  * Moves cursor to line and col specified
  * arg0: line
  * arg1: col
@@ -265,6 +339,7 @@ pub fn move_cursor(memory: &mut Memory, args: WordSize) -> WordSize {
 pub fn print_char(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let c = &memory.get_arg(0);
+    console_log!("in print_char({})", c);
     print_char_helper(memory, c);
     step_cursor_helper(memory);
     VOID
@@ -284,12 +359,32 @@ pub fn print_string(memory: &mut Memory, args: WordSize) -> WordSize {
         let character = memory.peek(character_pointer).clone();
         print_char_helper(memory, &character);
         step_cursor_helper(memory);
-    };
+    }
     VOID
 }
 
+/**
+ * Prints integer value
+ * arg0: int
+ * returns: VOID
+ */
 pub fn print_int(memory: &mut Memory, args: WordSize) -> WordSize {
-    todo!()
+    assert!(args == 1);
+    let mut i = memory.get_arg(0);
+    let mut digits = vec!();
+
+    while i != 0 {
+        digits.push((i % 10) + 48);
+        i /= 10;
+    }
+
+    for d in digits.iter().rev() {
+        print_char_helper(memory, d);
+        step_cursor_helper(memory);
+    };
+    // print newline
+    newline_helper(memory);
+    VOID
 }
 
 /**
@@ -298,8 +393,7 @@ pub fn print_int(memory: &mut Memory, args: WordSize) -> WordSize {
  */
 pub fn println(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
-    memory.cursor_line = (memory.cursor_line + 1) % (LINES - 1);
-    memory.cursor_col = 0;
+    newline_helper(memory);
     VOID
 }
 
@@ -532,38 +626,37 @@ pub fn key_pressed(memory: &mut Memory, args: WordSize) -> WordSize {
     memory.keyboard
 }
 
-/**								
+/**
  * Waits until a key is pressed on the keyboard and released,
- * then echoes the key to the screen, and returns the character 
+ * then echoes the key to the screen, and returns the character
  * of the pressed key.
  */
-pub fn read_char(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn read_char(_memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
     panic!("readChar is implemented as a jack function, so don't look here for it")
 }
 
-/**								
+/**
  * Displays the message on the screen, reads from the keyboard the entered
  * text until a newline character is detected, echoes the text to the screen,
  * and returns its value. Also handles user backspaces.
  */
-pub fn read_line(memory: &mut Memory, args: WordSize) -> WordSize {
-    assert!(args == 0);
+pub fn read_line(_memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
     panic!("readLine is implemented as a jack function, so don't look here for it")
 }
 
-/**								
+/**
  * Displays the message on the screen, reads from the keyboard the entered
  * text until a newline character is detected, echoes the text to the screen,
  * and returns its integer value (until the first non-digit character in the
- * entered text is detected). Also handles user backspaces. 
+ * entered text is detected). Also handles user backspaces.
  */
-pub fn read_int(memory: &mut Memory, args: WordSize) -> WordSize {
-    assert!(args == 0);
+pub fn read_int(_memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
     panic!("readInt is implemented as a jack function, so don't look here for it")
 }
 
-// MEMORY
 /**
  * Returns a reference to the value of memory at the index, using the HACK computer memory mapping
  * ram: 0-16383
@@ -613,7 +706,7 @@ pub fn de_alloc(memory: &mut Memory, args: WordSize) -> WordSize {
 }
 
 // SYS
-pub fn wait(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn wait(_memory: &mut Memory, _args: WordSize) -> WordSize {
     // Doesn't wait - this VM is pretty slow already. :P
     // rust wasm also doesn't have access to clocks
     // Could either implement a JS binding or set up a system configuration by benchmarking a basic loop
@@ -621,12 +714,12 @@ pub fn wait(memory: &mut Memory, args: WordSize) -> WordSize {
     VOID
 }
 
-pub fn halt(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn halt(_memory: &mut Memory, _args: WordSize) -> WordSize {
     panic!("halt is not implemented");
     VOID
 }
 
-pub fn error(memory: &mut Memory, args: WordSize) -> WordSize {
+pub fn error(_memory: &mut Memory, _args: WordSize) -> WordSize {
     panic!("error is not implemented");
     VOID
 }
