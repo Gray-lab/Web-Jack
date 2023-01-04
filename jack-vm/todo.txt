@@ -6,14 +6,12 @@ also fix the way namespacing is handled!
 finish implementing std library
 - done, but there are bugs :(
 
-
 add key mapping in javascript to handle enter, backspace, arrow keys, etc.
 - done
 
-possibly update the display only in changed words?
+link display directly to web-sys canvas
 
-
-profile rust code to find slow areas
+profile rust code to find and optimize slow areas
 
 
 overflow bug in Keyboard.readLine(): Keep typing characters - at 82nd character, overflow on display address
@@ -25,4 +23,38 @@ bug in Keyboard.readLine(): when pressing enter, the key is incorrectly printed 
 bug with arrays: when doing Average test, the resulting value is incorrect
 - to replicate, run Average and try typing in some stuff. Answer is blank or wrong
 
+Memory leak in readInt and readLine. Dispose input string before returning.
+
+When calling readInt and readLine, don't use a string literal because it leaks memory. 
+Pass in a string argument and dispose after
+
+library tests:
+array:      OK
+keyboard:   OK
+math:       OK
+memory:     OK
+output:     OK
+screen:     OK
+string:     OK
+sys:        Not tested
+
+
 build a react frontend :D
+1. install react app
+2. install craco
+3. add craco config
+4. install wasm-loader using npm and use to load wasm module
+5. copy wasm package to react app root, and add package to package.json as dependency
+6. use file: notation to import wasm package in package.json
+7. run npm install
+8. change run/build scripts to craco instead of react-scripts
+9. load wasm app asynchronously and test with greet() function
+
+
+Other to-dos (in no particular order):
+1. Link ram display to wasm to improve performance
+2. Implement a way to terminate VM program
+3. Implement reset of VM program
+4. Implement a way to communicate to front end that program is finished running
+5. Implement Sys.wait
+6. Implement Sys.exit
