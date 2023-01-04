@@ -1,0 +1,33 @@
+function Random.new 0
+push constant 3
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 2
+push constant 1499
+pop this 0
+push constant 19
+pop this 1
+push pointer 0
+return
+function Random.randomRange 1
+push argument 0
+pop pointer 0
+push pointer 0
+call Random.random 1
+pop local 0
+push local 0
+push argument 1
+call Mod.mod 2
+return
+function Random.random 0
+push argument 0
+pop pointer 0
+push this 1
+push this 2
+call Math.multiply 2
+push this 0
+call Mod.mod 2
+pop this 2
+push this 2
+return

@@ -13,16 +13,14 @@ class Main {
       var int length;
       var int a, b, sum;
 
-      let length = Keyboard.readInt("Enter 2: ");
-      //let a = Array.new(length); // constructs the array
-      
-      let a = Keyboard.readInt("Enter a number: ");
-      let b = Keyboard.readInt("Enter a number: ");
-      // something breaks here
-      do Output.printString(a);
-      do Output.ln();
-      do Output.printString(b);
+      let length = Keyboard.readInt("How many values: ");
 
+      let sum = 0;
+      let i = 0;
+      while (i < length) {
+         let sum += Keyboard.readInt("Enter a number: ");
+         let i = i + 1;
+      }
       let sum = a + b;
      
       do Output.printString("The average is ");
