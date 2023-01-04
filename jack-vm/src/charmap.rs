@@ -3,14 +3,14 @@ use std::collections::HashMap;
 use crate::memory::WordSize;
 
 struct Char {
-    glyph: char,
+    _glyph: char,
     bitmap: Vec<u8>
 }
 
 impl Char {
-    fn new(glyph: char, bitmap: Vec<u8>) -> Char {
+    fn new(_glyph: char, bitmap: Vec<u8>) -> Char {
         Char {
-            glyph,
+            _glyph,
             bitmap,
         }
     }
@@ -58,7 +58,7 @@ impl CharMap {
         cmap.insert(62, Char::new('>', vec![0,0,3,6,12,24,12,6,3,0,0]));       
         cmap.insert(64, Char::new('@', vec![30,51,51,59,59,59,27,3,30,0,0]));  
         cmap.insert(63, Char::new('?', vec![30,51,51,24,12,12,0,12,12,0,0]));  
-        cmap.insert(65, Char::new('A', vec![0,0,0,0,0,0,0,0,0,0,0]));         
+        cmap.insert(65, Char::new('A', vec![12,30,51,51,63,51,51,51,51,0,0]));         
         cmap.insert(66, Char::new('B', vec![31,51,51,51,31,51,51,51,31,0,0])); 
         cmap.insert(67, Char::new('C', vec![28,54,35,3,3,3,35,54,28,0,0]));    
         cmap.insert(68, Char::new('D', vec![15,27,51,51,51,51,51,27,15,0,0])); 
