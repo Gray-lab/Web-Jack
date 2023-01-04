@@ -1,5 +1,3 @@
-use wasm_bindgen_test::console_log;
-
 use crate::{
     charmap::CharMap, 
     parser::{Offset, Segment},
@@ -88,10 +86,6 @@ struct MemoryVec(Vec<WordSize>);
 impl MemoryVec {
     fn new(vector: Vec<WordSize>) -> MemoryVec {
         MemoryVec(vector)
-    }
-
-    fn len(&self) -> WordSize {
-        self.0.len() as WordSize
     }
 
     fn as_ptr(&self) -> *const WordSize {
@@ -227,11 +221,6 @@ impl Memory {
 
     pub fn get_value_by_pointer(&self, pointer: WordSize, offset: WordSize) -> WordSize {
         self.ram[self.ram[pointer] + offset]
-    }
-
-    pub fn set_value_by_pointer(&mut self, pointer: WordSize, offset: WordSize, value: WordSize) {
-        let address = self.ram[pointer] + offset;
-        self.ram[address] = value;
     }
 
     /**
