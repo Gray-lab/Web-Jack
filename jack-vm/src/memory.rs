@@ -1,3 +1,5 @@
+use wasm_bindgen_test::console_log;
+
 use crate::{
     charmap::CharMap,
     parser::{Offset, Segment},
@@ -123,7 +125,6 @@ impl Memory {
     ) -> Memory {
         let mut ram = MemoryVec::new(vec![0; Memory::ram_size() as usize]);
         let display = MemoryVec::new(vec![0; Memory::display_size() as usize]);
-
         ram[SP] = sp;
         ram[LCL] = local;
         ram[ARG] = arg;
@@ -163,9 +164,8 @@ impl Memory {
             Segment::Static => self.get_value_by_pointer(STATIC, offset),
             Segment::This => self.get_value_by_pointer(THIS, offset),
             Segment::That => self.get_value_by_pointer(THAT, offset),
-            Segment::Temp => self.get_value_by_pointer(TEMP, offset),
+            Segment::Temp => *self.peek(TEMP + offset),
         };
-
         let stack_pointer = self.get_pointer(SP);
         // Set value to stack and increment SP
         self.ram[stack_pointer] = value;
@@ -368,6 +368,7 @@ impl Memory {
             .filter(|a| a.status == MemoryStatus::Free && a.size >= requested_size)
         {
             allocation.status = MemoryStatus::Used;
+            // console_log!("Alloc returning reused block with address of {}", allocation.pointer);
             return allocation.pointer;
         }
 
@@ -380,6 +381,7 @@ impl Memory {
         let new_pointer = next_free - requested_size;
         self.heap_alloc
             .push(HeapAllocation::new(new_pointer, requested_size));
+        // console_log!("Alloc returning new block with address of {}",new_pointer);
         new_pointer
     }
 
@@ -387,6 +389,7 @@ impl Memory {
      * Frees block of memory pointed to by 'pointer'
      */
     pub(crate) fn de_alloc(&mut self, pointer: WordSize) {
+        // console_log!("de_alloc attempting to de-allocate block with address {}", pointer);
         match self.heap_alloc.iter_mut().find(|a| a.pointer == pointer) {
             Some(a) => match a.status {
                 MemoryStatus::Used => a.status = MemoryStatus::Free,

@@ -3,7 +3,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen_test::console_log;
-use web_sys::console;
 
 #[derive(Debug, Clone)]
 pub struct VMCommand {
@@ -68,7 +67,6 @@ fn parse_segment(seg_name: &str) -> Segment {
         "that" => Segment::That,
         "temp" => Segment::Temp,
         otherwise => {
-            console::log_2(&otherwise.into(), &" is an invalid segment name".into());
             panic!("{} is not a valid segment name", otherwise);
         }
     }
@@ -133,7 +131,6 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                 "not" => Some(VMCommand::new(Command::Not, line_num)),
                 "return" => Some(VMCommand::new(Command::Return, line_num)),
                 otherwise => {
-                    console::log_1(&"Invalid zero argument command".into());
                     panic!(
                         "Invalid zero argument command at line {}: {}",
                         line_num, otherwise
@@ -154,7 +151,6 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                         .label_table
                         .insert(label.to_string(), label_location)
                     {
-                        console::log_1(&"Duplicate label {}".into());
                         panic!(
                             "Duplicate label {} encountered on lines {} and {}",
                             label, label_location, prev_label_location
@@ -163,7 +159,6 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                     Some(VMCommand::new(Command::Label(label.to_string()), line_num))
                 }
                 (otherwise, _) => {
-                    console::log_1(&"Invalid one argument command".into());
                     panic!(
                         "Invalid one argument command at line {}: {}",
                         line_num, otherwise
@@ -208,7 +203,6 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                         line_num,
                     )),
                     (otherwise, _, _) => {
-                        console::log_1(&"Invalid two argument command".into());
                         panic!(
                             "Invalid two argument command at line {}: {}",
                             line_num, otherwise
@@ -217,7 +211,6 @@ pub(crate) fn parse_bytecode(text: &str) -> Bytecode {
                 }
             }
             otherwise => {
-                console::log_2(&"Invalid syntax at line:".into(), &line_num.into());
                 panic!(
                     "Invalid syntax at line {}. Expecting 0, 1, or two arguments, but was given {}",
                     line_num, otherwise
