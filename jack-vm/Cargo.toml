@@ -1,5 +1,5 @@
 [package]
-name = "jack-web"
+name = "jack-vm"
 version = "0.1.0"
 authors = ["Martin Grym <martin.grym@gmail.com>"]
 edition = "2021"
@@ -23,7 +23,7 @@ console_error_panic_hook = { version = "0.1.6", optional = true }
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
 # compared to the default allocator's ~10K. It is slower than the default
 # allocator, however.
-wee_alloc = { version = "0.4.5", optional = true }
+# wee_alloc = { version = "0.4.5", optional = true }
 
 [dependencies.web-sys]
 version = "0.3"
@@ -36,5 +36,4 @@ wasm-bindgen-test = "0.3.13"
 opt-level = 0
 
 [profile.release]
-# Tell `rustc` to optimize for small code size.
 opt-level = 3
