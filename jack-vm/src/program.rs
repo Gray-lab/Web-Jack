@@ -353,6 +353,7 @@ impl Program {
         let current_command = &frame.function.borrow().commands[frame.next_line].clone();
         frame.next_line += 1;
 
+        // This prints the current command to the web console for debugging
         // let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
         // console_log!("{}", command_string);
 
