@@ -1,7 +1,7 @@
 use wasm_bindgen_test::console_log;
 
 use crate::{
-    charmap::CharMap,
+    charmap::CharMap, 
     parser::{Offset, Segment},
 };
 use std::ops::{Index, IndexMut};
@@ -22,6 +22,7 @@ pub(crate) const LCL: WordSize = 1;
 pub(crate) const ARG: WordSize = 2;
 pub(crate) const THIS: WordSize = 3;
 pub(crate) const THAT: WordSize = 4;
+// Static and temp register locations
 const STATIC: WordSize = 15;
 const STATIC_MAX: WordSize = 255;
 const TEMP: WordSize = 5;
@@ -137,7 +138,7 @@ impl Memory {
             keyboard: 0,
             cursor_line: 0,
             cursor_col: 0,
-            screen_color: 0,
+            screen_color: 1,
             char_map: CharMap::new(),
             heap_alloc: Vec::new(),
             display_updated: false,

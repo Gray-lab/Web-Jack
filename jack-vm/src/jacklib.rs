@@ -191,8 +191,7 @@ pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
     for i in (string_pointer + 2)..(string_pointer + 2 + len) {
         string.push(*memory.peek(i) as u8 as char)
     }
-    console_log!("{}", string);
-
+    // Check for a negative value
     let sign = if string.starts_with('-') { -1 } else { 1 };
     if sign == -1 {
         // Remove the '-'
@@ -207,7 +206,6 @@ pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
         .take_while(|opt| opt.is_some())
         .fold(0, |acc, digit| acc * 10 + digit.unwrap());
 
-    console_log!("{}", number);
     (number as i32 * sign) as WordSize
 }
 
@@ -726,10 +724,7 @@ pub fn de_alloc(memory: &mut Memory, args: WordSize) -> WordSize {
 
 // SYS
 pub fn wait(_memory: &mut Memory, _args: WordSize) -> WordSize {
-    // Doesn't wait - this VM is pretty slow already. :P
-    // rust wasm also doesn't have access to clocks
-    // Could either implement a JS binding or set up a system configuration by benchmarking a basic loop
-    // and the using that loop to implement wait.
+
     VOID
 }
 
