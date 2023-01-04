@@ -162,7 +162,7 @@ impl Memory {
             Segment::Constant => offset.to_owned(),
             Segment::Local => self.get_value_by_pointer(LCL, offset),
             Segment::Argument => self.get_value_by_pointer(ARG, offset),
-            Segment::Static => self.get_value_by_pointer(STATIC, offset),
+            Segment::Static => *self.peek(STATIC + offset),
             Segment::This => self.get_value_by_pointer(THIS, offset),
             Segment::That => self.get_value_by_pointer(THAT, offset),
             Segment::Temp => *self.peek(TEMP + offset),
