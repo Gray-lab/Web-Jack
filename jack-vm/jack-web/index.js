@@ -6,162 +6,267 @@ const BIT_OFF_COLOR = "#DFDFDF";
 const WORD_SIZE = 16; //bits
 
 const testProgram = `
-function Main.main 4
-push constant 18 
+function Main.main 1
+push constant 1
 call String.new 1
-push constant 72 
+pop local 0
+push local 0
+call String.doubleQuote 0
 call String.appendChar 2
-push constant 111 
-call String.appendChar 2
-push constant 119 
-call String.appendChar 2
-push constant 32 
-call String.appendChar 2
-push constant 109 
-call String.appendChar 2
-push constant 97 
-call String.appendChar 2
-push constant 110 
-call String.appendChar 2
-push constant 121 
-call String.appendChar 2
-push constant 32 
-call String.appendChar 2
-push constant 110 
-call String.appendChar 2
-push constant 117 
-call String.appendChar 2
-push constant 109 
-call String.appendChar 2
-push constant 98 
-call String.appendChar 2
-push constant 101 
-call String.appendChar 2
-push constant 114 
-call String.appendChar 2
-push constant 115 
-call String.appendChar 2
-push constant 63 
-call String.appendChar 2
-push constant 32 
-call String.appendChar 2
-call Keyboard.readInt 1
-pop local 1 //bind topmost stack value to length
-push local 1 //value of length
-call Array.new 1
-pop local 0 //bind topmost stack value to a
-push constant 0 
-pop local 2 //bind topmost stack value to i
-label WHILE0
-push local 2 //value of i
-push local 1 //value of length
-lt
-not
-if-goto WHILE1
-push local 0 //a
-push local 2 //value of i
-add
-push constant 16 
+pop temp 0
+push constant 0
+push constant 63
+call Output.moveCursor 2
+pop temp 0
+push constant 66
+call Output.printChar 1
+pop temp 0
+push constant 22
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 67
+call Output.printChar 1
+pop temp 0
+push constant 22
+push constant 63
+call Output.moveCursor 2
+pop temp 0
+push constant 68
+call Output.printChar 1
+pop temp 0
+push constant 65
+call Output.printChar 1
+pop temp 0
+push constant 2
+push constant 0
+call Output.moveCursor 2
+pop temp 0
+push constant 10
 call String.new 1
-push constant 69 
+push constant 48
 call String.appendChar 2
-push constant 110 
+push constant 49
 call String.appendChar 2
-push constant 116 
+push constant 50
 call String.appendChar 2
-push constant 101 
+push constant 51
 call String.appendChar 2
-push constant 114 
+push constant 52
 call String.appendChar 2
-push constant 32 
+push constant 53
 call String.appendChar 2
-push constant 97 
+push constant 54
 call String.appendChar 2
-push constant 32 
+push constant 55
 call String.appendChar 2
-push constant 110 
+push constant 56
 call String.appendChar 2
-push constant 117 
-call String.appendChar 2
-push constant 109 
-call String.appendChar 2
-push constant 98 
-call String.appendChar 2
-push constant 101 
-call String.appendChar 2
-push constant 114 
-call String.appendChar 2
-push constant 58 
-call String.appendChar 2
-push constant 32 
-call String.appendChar 2
-call Keyboard.readInt 1
-pop temp 0 //save expression result to temp location
-pop pointer 1 //set pointer to array+exp
-push temp 0 //get stored value
-pop that 0 //set array location to that value
-push local 3 //value of sum
-push local 0 //pointer to a
-push local 2 //value of i
-add
-pop pointer 1 
-push that 0 //value of a[exp]
-add
-pop local 3 //bind topmost stack value to sum
-push local 2 //value of i
-push constant 1 
-add
-pop local 2 //bind topmost stack value to i
-goto WHILE0
-label WHILE1
-push constant 15 
-call String.new 1
-push constant 84 
-call String.appendChar 2
-push constant 104 
-call String.appendChar 2
-push constant 101 
-call String.appendChar 2
-push constant 32 
-call String.appendChar 2
-push constant 97 
-call String.appendChar 2
-push constant 118 
-call String.appendChar 2
-push constant 101 
-call String.appendChar 2
-push constant 114 
-call String.appendChar 2
-push constant 97 
-call String.appendChar 2
-push constant 103 
-call String.appendChar 2
-push constant 101 
-call String.appendChar 2
-push constant 32 
-call String.appendChar 2
-push constant 105 
-call String.appendChar 2
-push constant 115 
-call String.appendChar 2
-push constant 32 
+push constant 57
 call String.appendChar 2
 call Output.printString 1
-pop temp 0 //remove return value from stack after do statement
-push local 3 //value of sum
-push local 1 //value of length
-call Math.divide 2
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 53
+call String.new 1
+push constant 65
+call String.appendChar 2
+push constant 66
+call String.appendChar 2
+push constant 67
+call String.appendChar 2
+push constant 68
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 70
+call String.appendChar 2
+push constant 71
+call String.appendChar 2
+push constant 72
+call String.appendChar 2
+push constant 73
+call String.appendChar 2
+push constant 74
+call String.appendChar 2
+push constant 75
+call String.appendChar 2
+push constant 76
+call String.appendChar 2
+push constant 77
+call String.appendChar 2
+push constant 78
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 80
+call String.appendChar 2
+push constant 81
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+push constant 83
+call String.appendChar 2
+push constant 84
+call String.appendChar 2
+push constant 85
+call String.appendChar 2
+push constant 86
+call String.appendChar 2
+push constant 87
+call String.appendChar 2
+push constant 88
+call String.appendChar 2
+push constant 89
+call String.appendChar 2
+push constant 90
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 98
+call String.appendChar 2
+push constant 99
+call String.appendChar 2
+push constant 100
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 102
+call String.appendChar 2
+push constant 103
+call String.appendChar 2
+push constant 104
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 106
+call String.appendChar 2
+push constant 107
+call String.appendChar 2
+push constant 108
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 110
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 112
+call String.appendChar 2
+push constant 113
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 115
+call String.appendChar 2
+push constant 116
+call String.appendChar 2
+push constant 117
+call String.appendChar 2
+push constant 118
+call String.appendChar 2
+push constant 119
+call String.appendChar 2
+push constant 120
+call String.appendChar 2
+push constant 121
+call String.appendChar 2
+push constant 122
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 30
+call String.new 1
+push constant 33
+call String.appendChar 2
+push constant 35
+call String.appendChar 2
+push constant 36
+call String.appendChar 2
+push constant 37
+call String.appendChar 2
+push constant 38
+call String.appendChar 2
+push constant 39
+call String.appendChar 2
+push constant 40
+call String.appendChar 2
+push constant 41
+call String.appendChar 2
+push constant 42
+call String.appendChar 2
+push constant 43
+call String.appendChar 2
+push constant 44
+call String.appendChar 2
+push constant 45
+call String.appendChar 2
+push constant 46
+call String.appendChar 2
+push constant 47
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 59
+call String.appendChar 2
+push constant 60
+call String.appendChar 2
+push constant 61
+call String.appendChar 2
+push constant 62
+call String.appendChar 2
+push constant 63
+call String.appendChar 2
+push constant 64
+call String.appendChar 2
+push constant 91
+call String.appendChar 2
+push constant 93
+call String.appendChar 2
+push constant 94
+call String.appendChar 2
+push constant 95
+call String.appendChar 2
+push constant 96
+call String.appendChar 2
+push constant 123
+call String.appendChar 2
+push constant 124
+call String.appendChar 2
+push constant 125
+call String.appendChar 2
+push constant 126
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push local 0
+call Output.printString 1
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 12345
+neg
 call Output.printInt 1
-pop temp 0 //remove return value from stack after do statement
+pop temp 0
+call Output.backSpace 0
+pop temp 0
+push constant 6789
+call Output.printInt 1
+pop temp 0
+push constant 0
 return
-push constant 0 
+
 `;
 
 const program = new Program(testProgram);
 
 // total memory size can be shown on a 768 x 512 grid.
 // If each memory cell is represented as a 2x2 pixel on a grid, it might even be legible!
-console.log("before program");
 const displaySize = program.display_size();
 const displayPtr = program.display();
 
@@ -173,8 +278,8 @@ const displayWidthPixels = 512;
 const displayHeightPixels = 256;
 const pixelSize = 1; // size of each virtual pixel in real pixels
 
-console.log(`memory size: ${displaySize}`);
-console.log(`display ptr: ${displayPtr}`);
+// console.log(`memory size: ${displaySize}`);
+// console.log(`display ptr: ${displayPtr}`);
 // console.log(`height in rows: ${height}`);
 // console.log(`width in columns: ${width}`);
 // console.log(`width in blocks: ${width_blocks}`);
@@ -198,9 +303,6 @@ function bitIsSet(n, arr) {
 }
 
 function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
-  console.log(memSize)
-  console.log(memory.buffer)
-  console.log(memPtr)
   const memArray = new Uint16Array(memory.buffer, memPtr, memSize);
   // pull pixels out of the canvas
   const id = ctx.getImageData(0, 0, displayCanvas.width, displayCanvas.height);
@@ -250,14 +352,14 @@ function drawVirtualPixel(pixels, index, pixelSize, widthPixels, r, g, b, a) {
   }
 }
 
-function updateRamList(start, end, memSize, memPtr) {
-  const ramContainer = document.getElementById("ram-container");
-  if (document.getElementById("ram-list")) {
-    document.getElementById("ram-list").remove();
+function updateRam(id, start, end, memSize, memPtr) {
+  const ramContainer = document.getElementById(id);
+  if (document.getElementById(id + "ram")) {
+    document.getElementById(id + "ram").remove();
   }
   const outer = document.createElement("div");
   const memArray = new Int16Array(memory.buffer, memPtr, memSize);
-  outer.setAttribute("id", "ram-list");
+  outer.setAttribute("id", id + "ram");
   for (let i = start; i <= end; i++) {
     const inner = document.createElement("div");
     inner.innerHTML = `ram[${i}]:\t ${memArray[i]}`;
@@ -267,7 +369,6 @@ function updateRamList(start, end, memSize, memPtr) {
 }
 
 // Keyboard input listeners
-
 const input_map = {
   Enter: 128,
   Backspace: 129,
@@ -313,12 +414,18 @@ body.addEventListener("keyup", (event) => {
   }
 });
 
-let i = 0;
-let do_log = true;
-// setTimeout(() => {
-//     do_log = false
-// }, 10000)
+// Button listeners
+const stepButton = document.getElementById("step-button");
+stepButton.addEventListener("click", (event) => {
+  renderLoop();
+});
 
+const runButton = document.getElementById("run-button");
+runButton.addEventListener("click", (event) => {
+  setInterval(() => requestAnimationFrame(renderLoop), 0);
+});
+
+// Render the starting state
 drawMemory(
   displayWidthPixels,
   displayHeightPixels,
@@ -326,11 +433,11 @@ drawMemory(
   displayPtr,
   displaySize
 );
-updateRamList(256, 270, ramSize, ramPtr);
+updateRam("pointers", 0, 45, ramSize, ramPtr);
+updateRam("global-stack", 256, 350, ramSize, ramPtr);
+updateRam("heap", 16000, 16383, ramSize, ramPtr);
 
 function renderLoop() {
-  // program.set_display(i, i)
-  // i++
   if (program.step(currentKey)) {
     drawMemory(
       displayWidthPixels,
@@ -340,16 +447,7 @@ function renderLoop() {
       displaySize
     );
   }
-  updateRamList(16300, 16383, ramSize, ramPtr);
-  //   console.log(`Read key ${currentKey}`);
-  // if (i < displaySize) {
-  // requestAnimationFrame(renderLoop)
-  // }
-
-  // if (do_log) {
-  // console.log(i)
-  // i ++
-  // }
+  updateRam("pointers", 0, 45, ramSize, ramPtr);
+  updateRam("global-stack", 256, 350, ramSize, ramPtr);
+  updateRam("heap", 16000, 16383, ramSize, ramPtr);
 }
-// requestAnimationFrame(renderLoop)
-setInterval(() => requestAnimationFrame(renderLoop), 10);

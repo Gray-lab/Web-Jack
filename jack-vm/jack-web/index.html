@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Hello Jack VM!</title>
-  <style>
-    body {
-      background-color: rgb(223, 223, 223);
-      color: rgb(46, 46, 46);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+  <head>
+    <meta charset="utf-8" />
+    <title>Hello Jack VM!</title>
+    <style>
+      body {
+        background-color: rgb(223, 223, 223);
+        color: rgb(46, 46, 46);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 12px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
 
-  </style>
-</head>
+      #container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
 
-<body tabindex="-1">
-  <canvas id="display-canvas"></canvas>
-  <script src='./bootstrap.js'></script>
-  <div id="ram-container">
-    <div id="global-stack">
-    </div>
-    <div id="lcl">
-    </div>
-    <div id="arg">
-    </div>
-    <div id="this">
-    </div>
-    <div id="that">
-    </div>
-    <div id="call-stack">
-    </div>
-  </div>
-</body>
+      .ram {
+        height: 75%;
+        width: 150px;
+        overflow: scroll;
+      }
+    </style>
+  </head>
 
+  <body tabindex="-1">
+    <script src="./bootstrap.js"></script>
+    <div id="container">
+      <div>
+        <canvas id="display-canvas"></canvas>
+        <br>
+        <button id="step-button" type="button">Step</button>
+        <button id="run-button" type="button">Run</button>
+      </div>
+      <div class="ram" id="pointers"></div>
+      <div class="ram" id="global-stack"></div>
+      <div class="ram" id="heap"></div>
+    </div>
+  </body>
 </html>
