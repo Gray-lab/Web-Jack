@@ -49,6 +49,9 @@ impl Program {
         let memory = Memory::new(sp, lcl, arg, this, that);
 
         // some library functions are implemented in jack
+        // Keyboard.readChar
+        // Keyboard.readLine
+        // Keyboard.readInt
         let jack_library_functions = String::from("function Keyboard.readChar 2
         call Keyboard.keyPressed 0
         pop local 1
@@ -199,10 +202,7 @@ impl Program {
         return        
         ");
 
-        // we append their bytecode to the input
-        // Keyboard.readChar
-        // Keyboard.readLine
-        // Keyboard.readInt
+        // their bytecode is appended to the input file
         let linked_input = format!("{}\n{}", input, jack_library_functions);
        
         let code = parse_bytecode(&linked_input);
@@ -210,8 +210,8 @@ impl Program {
         // let string = format!("{:?}", code);
         // console_log!("{}", string);
 
-        let mut native_functions: HashMap<String, NativeFunction> = HashMap::new();
         // Populate with standard library fuctions
+        let mut native_functions: HashMap<String, NativeFunction> = HashMap::new();
   
         // Math library
         native_functions.insert("Math.multiply".into(), jacklib::multiply);
@@ -220,7 +220,9 @@ impl Program {
         native_functions.insert("Math.max".into(), jacklib::jack_max);
         native_functions.insert("Math.sqrt".into(), jacklib::jack_sqrt);
         native_functions.insert("Math.pow".into(), jacklib::jack_pow);
+        native_functions.insert("Math.abs".into(), jacklib::jack_abs);
         native_functions.insert("Mod.mod".into(), jacklib::jack_mod);
+
 
         // String library
         native_functions.insert("String.new".into(), jacklib::string_new);
@@ -298,8 +300,8 @@ impl Program {
     }
 
     /**
-     * Steps though code in Program,
-     * Returns true at a successful step and false if no more commands are available
+     * Execute next bytecode command.
+     * Returns true if display was updated, otherwise returns false.
      */
     pub fn step(&mut self, key: WordSize) -> bool {
         let mut frame = match self.call_stack.last_mut() {
@@ -312,9 +314,8 @@ impl Program {
         if length <= frame.next_line {
             return false;
         }
-        self.memory.display_updated = false;
 
-        // console_log!("key: {}", key);
+        self.memory.display_updated = false;
         self.memory.keyboard = key;
 
         // The current command is cloned so that the stack frame can later be mutated
@@ -322,8 +323,8 @@ impl Program {
         let current_command = &frame.function.borrow().commands[frame.next_line].clone();
         frame.next_line += 1;
 
-        // let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
-        // console_log!("{}", command_string);
+        let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
+        console_log!("{}", command_string);
 
         match &current_command.command {
             Command::Pop(seg, idx) => {
