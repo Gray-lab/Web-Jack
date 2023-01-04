@@ -193,6 +193,12 @@ pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
     }
     console_log!("{}", string);
 
+    let sign = if string.starts_with('-') { -1 } else { 1 };
+    if sign == -1 {
+        // Remove the '-'
+        string.remove(0);
+    }
+
     //parse the string into an integer
     //https://stackoverflow.com/questions/65601579/parse-an-integer-ignoring-any-non-numeric-suffix
     let number = string
@@ -202,8 +208,7 @@ pub fn int_value(memory: &mut Memory, args: WordSize) -> WordSize {
         .fold(0, |acc, digit| acc * 10 + digit.unwrap());
 
     console_log!("{}", number);
-
-    number as WordSize
+    (number as i32 * sign) as WordSize
 }
 
 /**
@@ -382,6 +387,7 @@ pub fn print_int(memory: &mut Memory, args: WordSize) -> WordSize {
     let mut digits = vec![];
     let sign: WordSize = if i < 0 { -1 } else { 1 };
 
+    console_log!("In print in with value {}", i);
     i = i * sign;
     while i != 0 {
         digits.push((i % 10) + 48); /* value 48 corresponds to a 0 character in the character bitmap */

@@ -53,153 +53,183 @@ impl Program {
         // Keyboard.readLine
         // Keyboard.readInt
         let jack_library_functions = String::from("function Keyboard.readChar 2
-        call Keyboard.keyPressed 0
-        pop local 1
-        push local 1
-        pop local 0
-        push local 1
-        push constant 0
-        eq
-        not
-        if-goto IF_TRUE0
-        goto IF_FALSE0
-        label IF_TRUE0
-        label WHILE_EXP0
-        push local 1
-        push local 0
-        eq
-        not
-        if-goto WHILE_END0
-        call Keyboard.keyPressed 0
-        pop local 0
-        goto WHILE_EXP0
-        label WHILE_END0
-        label IF_FALSE0
-        label WHILE_EXP1
-        push local 0
-        push constant 0
-        eq
-        not
-        if-goto WHILE_END1
-        call Keyboard.keyPressed 0
-        pop local 0
-        goto WHILE_EXP1
-        label WHILE_END1
-        label WHILE_EXP2
-        call Keyboard.keyPressed 0
-        push local 0
-        eq
-        not
-        if-goto WHILE_END2
-        goto WHILE_EXP2
-        label WHILE_END2
-        push local 0
-        push constant 128
-        lt
-        if-goto IF_TRUE1
-        goto IF_FALSE1
-        label IF_TRUE1
-        push local 0
-        call Output.printChar 1
-        pop temp 0
-        label IF_FALSE1
-        push local 0
-        return
-        function Keyboard.readLine 2
-        push argument 0
-        call Output.printString 1
-        pop temp 0
-        push constant 64
-        call String.new 1
-        pop local 0
-        call Keyboard.readChar 0
-        pop local 1
-        label WHILE_EXP0
-        push local 1
-        call String.newLine 0
-        eq
-        if-goto WHILE_END0
-        push local 1
-        call String.backSpace 0
-        eq
-        if-goto IF_TRUE0
-        goto IF_FALSE0
-        label IF_TRUE0
-        call Output.backSpace 0
-        pop temp 0
-        push local 0
-        call String.eraseLastChar 1
-        pop temp 0
-        label IF_FALSE0
-        push local 1
-        push constant 128
-        lt
-        if-goto IF_TRUE1
-        goto IF_FALSE1
-        label IF_TRUE1
-        push local 0
-        push local 1
-        call String.appendChar 2
-        pop temp 0
-        label IF_FALSE1
-        call Keyboard.readChar 0
-        pop local 1
-        goto WHILE_EXP0
-        label WHILE_END0
-        call Output.println 0
-        pop temp 0
-        push local 0
-        return
-        function Keyboard.readInt 2
-        push argument 0
-        call Output.printString 1
-        pop temp 0
-        push constant 64
-        call String.new 1
-        pop local 0
-        call Keyboard.readChar 0
-        pop local 1
-        label WHILE_EXP0
-        push local 1
-        push constant 47
-        gt
-        push local 1
-        push constant 58
-        lt
-        and
-        push local 1
-        push constant 129
-        eq
-        or
-        not
-        if-goto WHILE_END0
-        push local 1
-        push constant 129
-        eq
-        if-goto IF_TRUE0
-        goto IF_FALSE0
-        label IF_TRUE0
-        call Output.backSpace 0
-        pop temp 0
-        push local 0
-        call String.eraseLastChar 1
-        pop temp 0
-        goto IF_END0
-        label IF_FALSE0
-        push local 0
-        push local 1
-        call String.appendChar 2
-        pop temp 0
-        label IF_END0
-        call Keyboard.readChar 0
-        pop local 1
-        goto WHILE_EXP0
-        label WHILE_END0
-        call Output.println 0
-        pop temp 0
-        push local 0
-        call String.intValue 1
-        return        
+            call Keyboard.keyPressed 0
+            pop local 1
+            push local 1
+            pop local 0
+            push local 1
+            push constant 0
+            eq
+            not
+            if-goto IF_TRUE0
+            goto IF_FALSE0
+            label IF_TRUE0
+            label WHILE_EXP0
+            push local 1
+            push local 0
+            eq
+            not
+            if-goto WHILE_END0
+            call Keyboard.keyPressed 0
+            pop local 0
+            goto WHILE_EXP0
+            label WHILE_END0
+            label IF_FALSE0
+            label WHILE_EXP1
+            push local 0
+            push constant 0
+            eq
+            not
+            if-goto WHILE_END1
+            call Keyboard.keyPressed 0
+            pop local 0
+            goto WHILE_EXP1
+            label WHILE_END1
+            label WHILE_EXP2
+            call Keyboard.keyPressed 0
+            push local 0
+            eq
+            not
+            if-goto WHILE_END2
+            goto WHILE_EXP2
+            label WHILE_END2
+            push local 0
+            push constant 128
+            lt
+            if-goto IF_TRUE1
+            goto IF_FALSE1
+            label IF_TRUE1
+            push local 0
+            call Output.printChar 1
+            pop temp 0
+            label IF_FALSE1
+            push local 0
+            return
+            function Keyboard.readLine 2
+            push argument 0
+            call Output.printString 1
+            pop temp 0
+            push constant 64
+            call String.new 1
+            pop local 0
+            call Keyboard.readChar 0
+            pop local 1
+            label WHILE_EXP0
+            push local 1
+            call String.newLine 0
+            eq
+            if-goto WHILE_END0
+            push local 1
+            call String.backSpace 0
+            eq
+            if-goto IF_TRUE0
+            goto IF_FALSE0
+            label IF_TRUE0
+            call Output.backSpace 0
+            pop temp 0
+            push local 0
+            call String.eraseLastChar 1
+            pop temp 0
+            label IF_FALSE0
+            push local 1
+            push constant 128
+            lt
+            if-goto IF_TRUE1
+            goto IF_FALSE1
+            label IF_TRUE1
+            push local 0
+            push local 1
+            call String.appendChar 2
+            pop temp 0
+            label IF_FALSE1
+            call Keyboard.readChar 0
+            pop local 1
+            goto WHILE_EXP0
+            label WHILE_END0
+            call Output.println 0
+            pop temp 0
+            push local 0
+            return
+            function Keyboard.readInt 3
+            push constant 0
+            pop local 2
+            push argument 0
+            call Output.printString 1
+            pop temp 0
+            push constant 64
+            call String.new 1
+            pop local 0
+            call Keyboard.readChar 0
+            pop local 1
+            label WHILE_EXP0
+            push local 1
+            push constant 45
+            eq
+            push local 2
+            push constant 0
+            eq
+            and
+            push local 1
+            push constant 47
+            gt
+            push local 1
+            push constant 58
+            lt
+            and
+            or
+            push local 1
+            push constant 129
+            eq
+            or
+            not
+            if-goto WHILE_END0
+            push local 1
+            push constant 129
+            eq
+            if-goto IF_TRUE0
+            goto IF_FALSE0
+            label IF_TRUE0
+            call Output.backSpace 0
+            pop temp 0
+            push local 0
+            call String.eraseLastChar 1
+            pop temp 0
+            push local 2
+            push constant 0
+            gt
+            if-goto IF_TRUE1
+            goto IF_FALSE1
+            label IF_TRUE1
+            push local 2
+            push constant 1
+            sub
+            pop local 2
+            label IF_FALSE1
+            goto IF_END0
+            label IF_FALSE0
+            push local 0
+            push local 1
+            call String.appendChar 2
+            pop temp 0
+            push local 2
+            push constant 1
+            add
+            pop local 2
+            label IF_END0
+            call Keyboard.readChar 0
+            pop local 1
+            goto WHILE_EXP0
+            label WHILE_END0
+            call Output.println 0
+            pop temp 0
+            push local 0
+            call String.intValue 1
+            pop local 2
+            push local 0
+            call String.dispose 1
+            pop temp 0
+            push local 2
+            return
         ");
 
         // their bytecode is appended to the input file
@@ -323,8 +353,8 @@ impl Program {
         let current_command = &frame.function.borrow().commands[frame.next_line].clone();
         frame.next_line += 1;
 
-        let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
-        console_log!("{}", command_string);
+        // let command_string = format!("Executing {}:{:?}", frame.next_line - 1, current_command);
+        // console_log!("{}", command_string);
 
         match &current_command.command {
             Command::Pop(seg, idx) => {

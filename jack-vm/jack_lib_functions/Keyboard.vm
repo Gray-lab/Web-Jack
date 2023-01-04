@@ -64,6 +64,8 @@ label WHILE_EXP0
 push local 1
 call String.newLine 0
 eq
+not
+not
 if-goto WHILE_END0
 push local 1
 call String.backSpace 0
@@ -96,7 +98,9 @@ call Output.println 0
 pop temp 0
 push local 0
 return
-function Keyboard.readInt 2
+function Keyboard.readInt 3
+push constant 0
+pop local 2
 push argument 0
 call Output.printString 1
 pop temp 0
@@ -107,12 +111,20 @@ call Keyboard.readChar 0
 pop local 1
 label WHILE_EXP0
 push local 1
+push constant 45
+eq
+push local 2
+push constant 0
+eq
+and
+push local 1
 push constant 47
 gt
 push local 1
 push constant 58
 lt
 and
+or
 push local 1
 push constant 129
 eq
@@ -130,12 +142,27 @@ pop temp 0
 push local 0
 call String.eraseLastChar 1
 pop temp 0
+push local 2
+push constant 0
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 2
+push constant 1
+sub
+pop local 2
+label IF_FALSE1
 goto IF_END0
 label IF_FALSE0
 push local 0
 push local 1
 call String.appendChar 2
 pop temp 0
+push local 2
+push constant 1
+add
+pop local 2
 label IF_END0
 call Keyboard.readChar 0
 pop local 1
@@ -145,4 +172,9 @@ call Output.println 0
 pop temp 0
 push local 0
 call String.intValue 1
+pop local 2
+push local 0
+call String.dispose 1
+pop temp 0
+push local 2
 return

@@ -10,7 +10,6 @@ class Keyboard {
 //        while (~(Keyboard.keyPressed() = 0)) { }
 //        do Output.backSpace();
 //        do Output.printChar(captured);
-
         var char startKey;
         let startKey = Keyboard.keyPressed();
         let captured = startKey;
@@ -55,20 +54,32 @@ class Keyboard {
     function int readInt(String message) {
         var String input;
         var char currentChar;
+        var int count;
+        let count = 0;
         do Output.printString(message);
         // todo: Accepts up to 64 characters
         let input = String.new(64);
         let currentChar = Keyboard.readChar();
-        while (((currentChar > 47) & (currentChar < 58)) | (currentChar = 129)) {
+        // Checks for '-'(43) at the beginning of the input. 
+        // Accepts chars between '0'(48) and '9'(57), as well as backspace(129)
+        while (((currentChar = 45) & (count = 0)) | ((currentChar > 47) & (currentChar < 58)) | (currentChar = 129)) {
             if (currentChar = 129) {
                 do Output.backSpace();
                 do input.eraseLastChar();
+                if (count > 0) {
+                    let count = count - 1;
+                }
             } else {
                 do input.appendChar(currentChar);
+                let count = count + 1;
             }
             let currentChar = Keyboard.readChar();
         }
         do Output.println();
-        return String.intValue(input);
+        // Reuse count variable for return value
+        let count = String.intValue(input);
+        // Dispose the input string before returning
+        do input.dispose();
+        return count;
     }
 }
