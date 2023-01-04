@@ -52,6 +52,12 @@ pub fn jack_pow(memory: &mut Memory, args: WordSize) -> WordSize {
     a.pow(b as u32)
 }
 
+pub fn jack_abs(memory: &mut Memory, args: WordSize) -> WordSize {
+    assert!(args == 1);
+    let a = memory.get_arg(0);
+    i16::abs(a)
+}
+
 pub fn jack_mod(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 2);
     let a = memory.get_arg(0);
@@ -73,6 +79,7 @@ pub fn string_new(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let max_length = memory.get_arg(0);
     let req_size = max_length + 2;
+    // console_log!("Requesting allocation for string of size {}", req_size);
     let string_pointer = memory.alloc(req_size);
     // set length to 0
     memory.poke(string_pointer, 0);
@@ -89,6 +96,7 @@ pub fn string_new(memory: &mut Memory, args: WordSize) -> WordSize {
 pub fn string_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let string_pointer = memory.get_arg(0);
+    // console_log!("Requesting de-allocation for string with pointer {}", string_pointer);
     memory.de_alloc(string_pointer);
     VOID
 }
@@ -243,7 +251,6 @@ pub fn new_line(_memory: &mut Memory, _args: WordSize) -> WordSize {
 }
 
 // ARRAY
-
 /**
  * Allocates a new array of size
  * arg0: size
@@ -252,6 +259,7 @@ pub fn new_line(_memory: &mut Memory, _args: WordSize) -> WordSize {
 pub fn array_new(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let size = memory.get_arg(0);
+    // console_log!("Requesting allocation for array of size {}", size);
     memory.alloc(size)
 }
 
@@ -263,6 +271,7 @@ pub fn array_new(memory: &mut Memory, args: WordSize) -> WordSize {
 pub fn array_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let pointer = memory.get_arg(0);
+    // console_log!("Requesting de-allocation for array with pointer {}", pointer);
     memory.de_alloc(pointer);
     VOID
 }
@@ -271,7 +280,6 @@ pub fn array_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
 // The screen is mapped to 24 rows of 64 characters, with each character
 // being 8 pixels wide and 11 pixels high, including margins
 fn print_char_helper(memory: &mut Memory, character: &WordSize) {
-    console_log!("in print_char_helper({})", character);
     let bitmap = memory.char_map.get_bitmap(character).clone();
     // 32 words in a display line
     // each cursor line covers 11 display lines
@@ -300,7 +308,7 @@ fn print_char_helper(memory: &mut Memory, character: &WordSize) {
 fn step_cursor_helper(memory: &mut Memory) {
     if memory.cursor_col == COLS - 1 {
         memory.cursor_col = 0;
-        memory.cursor_line = (memory.cursor_line + 1) % (LINES - 1);
+        memory.cursor_line = (memory.cursor_line + 1) % (LINES);
     } else {
         memory.cursor_col += 1;
     }
@@ -364,26 +372,31 @@ pub fn print_string(memory: &mut Memory, args: WordSize) -> WordSize {
 }
 
 /**
- * Prints integer value
+ * Prints integer value. Handles positive and negative values.
  * arg0: int
  * returns: VOID
  */
 pub fn print_int(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
     let mut i = memory.get_arg(0);
-    let mut digits = vec!();
+    let mut digits = vec![];
+    let sign: WordSize = if i < 0 { -1 } else { 1 };
 
+    i = i * sign;
     while i != 0 {
-        digits.push((i % 10) + 48);
+        digits.push((i % 10) + 48); /* value 48 corresponds to a 0 character in the character bitmap */
         i /= 10;
+    }
+    if sign == -1 {
+        // Print minus sign
+        print_char_helper(memory, &(45 as WordSize));
+        step_cursor_helper(memory);
     }
 
     for d in digits.iter().rev() {
         print_char_helper(memory, d);
         step_cursor_helper(memory);
-    };
-    // print newline
-    newline_helper(memory);
+    }
     VOID
 }
 
