@@ -1,5 +1,5 @@
 [package]
-name = "jack-vm"
+name = "jack-web"
 version = "0.1.0"
 authors = ["Martin Grym <martin.grym@gmail.com>"]
 edition = "2021"

@@ -283,6 +283,7 @@ pub fn array_dispose(memory: &mut Memory, args: WordSize) -> WordSize {
 // The screen is mapped to 24 rows of 64 characters, with each character
 // being 8 pixels wide and 11 pixels high, including margins
 fn print_char_helper(memory: &mut Memory, character: &WordSize) {
+    console_log!("in print_char_helper({})", character);
     let bitmap = memory.char_map.get_bitmap(character).clone();
     // 32 words in a display line
     // each cursor line covers 11 display lines
@@ -724,7 +725,6 @@ pub fn de_alloc(memory: &mut Memory, args: WordSize) -> WordSize {
 
 // SYS
 pub fn wait(_memory: &mut Memory, _args: WordSize) -> WordSize {
-
     VOID
 }
 

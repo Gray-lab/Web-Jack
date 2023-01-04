@@ -64,8 +64,6 @@ label WHILE_EXP0
 push local 1
 call String.newLine 0
 eq
-not
-not
 if-goto WHILE_END0
 push local 1
 call String.backSpace 0
