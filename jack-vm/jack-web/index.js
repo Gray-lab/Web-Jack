@@ -127,12 +127,6 @@ const displayWidthPixels = 512;
 const displayHeightPixels = 256;
 const pixelSize = 1; // size of each virtual pixel in real pixels
 
-// console.log(`memory size: ${displaySize}`);
-// console.log(`display ptr: ${displayPtr}`);
-// console.log(`height in rows: ${height}`);
-// console.log(`width in columns: ${width}`);
-// console.log(`width in blocks: ${width_blocks}`);
-
 // set display canvas size
 const displayCanvas = document.getElementById("display-canvas");
 displayCanvas.width = displayWidthPixels * pixelSize;
@@ -142,7 +136,6 @@ const ctx = displayCanvas.getContext("2d", {
   willReadFrequently: true,
   alpha: false,
 });
-ctx.scale(pixelSize, pixelSize);
 
 // from rustwasm tutorial
 function bitIsSet(n, arr) {
@@ -151,56 +144,32 @@ function bitIsSet(n, arr) {
   return (arr[word] & mask) === mask;
 }
 
+const displayArray = new Uint16Array(memory.buffer, displayPtr, displaySize);
 
-
-function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
-  const memArray = new Uint16Array(memory.buffer, memPtr, memSize);
+function drawMemory() {
   // pull pixels out of the canvas
   const id = ctx.getImageData(0, 0, displayCanvas.width, displayCanvas.height);
   // pixels is a Uint8ClampedArray, each pixel being 4 consecutive Uint8 values
   // representing r, g, b, and a respectively
   const pixels = id.data;
 
-  for (let i = 0; i < memSize * 16; i++) {
-    if (bitIsSet(i, memArray)) {
+  for (let i = 0; i < displaySize * 16; i++) {
+    if (bitIsSet(i, displayArray)) {
       // set corresponding virtual pixel to green
       const offset = i * 4;
       pixels[offset] = 0;
       pixels[offset + 1] = 255;
       pixels[offset + 2] = 0;
-      // drawVirtualPixel(pixels, i, pixelSize, widthPixels, 0, 255, 0, 255);
     } else {
       // set corresponding virtual pixel to black
-      // drawVirtualPixel(pixels, i, pixelSize, widthPixels, 10, 10, 10, 255);
       const offset = i * 4;
       pixels[offset] = 10;
       pixels[offset + 1] = 10;
       pixels[offset + 2] = 10;
     }
   }
-
   // place pixels back in the canvas
   ctx.putImageData(id, 0, 0);
-}
-
-function drawVirtualPixel(pixels, index, pixelSize, widthPixels, r, g, b, a) {
-  // index 0 ->
-  for (let y = 0; y < pixelSize; y++) {
-    for (let x = 0; x < pixelSize; x++) {
-      const x_shift = x * 4;
-      const y_shift =
-        Math.floor(index / widthPixels) *
-          widthPixels *
-          4 *
-          (pixelSize == 1 ? 0 : pixelSize) +
-        y * widthPixels * 4 * pixelSize;
-      const offset = index * 4 * pixelSize + x_shift + y_shift; // 4 values per pixel
-      pixels[offset] = r;
-      pixels[offset + 1] = g;
-      pixels[offset + 2] = b;
-      pixels[offset + 3] = a;
-    }
-  }
 }
 
 function updateRam(id, start, end, memSize, memPtr) {
@@ -265,6 +234,7 @@ body.addEventListener("keyup", (event) => {
   }
 });
 
+
 // Button listeners
 const stepButton = document.getElementById("step-button");
 stepButton.addEventListener("click", (event) => {
@@ -277,28 +247,25 @@ runButton.addEventListener("click", (event) => {
 });
 
 // Render the starting state
-// drawMemory(
-//   displayWidthPixels,
-//   displayHeightPixels,
-//   pixelSize,
-//   displayPtr,
-//   displaySize
-// );
+drawMemory(
+  displayWidthPixels,
+  displayHeightPixels,
+  pixelSize,
+  displayPtr,
+  displaySize
+);
 // updateRam("pointers", 0, 45, ramSize, ramPtr);
 // updateRam("global-stack", 256, 350, ramSize, ramPtr);
 // updateRam("heap", 16000, 16383, ramSize, ramPtr);
 
 function renderLoop() {
-  if (program.step(currentKey)) {
-  //   drawMemory(
-  //     displayWidthPixels,
-  //     displayHeightPixels,
-  //     pixelSize,
-  //     displayPtr,
-  //     displaySize
-  //   );
+  for (let i = 0; i<20; i++) {
+    program.step(currentKey)
   }
+  drawMemory();
   // updateRam("pointers", 0, 45, ramSize, ramPtr);
   // updateRam("global-stack", 256, 350, ramSize, ramPtr);
   // updateRam("heap", 16000, 16383, ramSize, ramPtr);
 }
+
+
