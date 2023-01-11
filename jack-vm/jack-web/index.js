@@ -6,261 +6,110 @@ const BIT_OFF_COLOR = "#DFDFDF";
 const WORD_SIZE = 16; //bits
 
 const testProgram = `
-function Main.main 1
-push constant 1
-call String.new 1
-pop local 0
-push local 0
-call String.doubleQuote 0
-call String.appendChar 2
-pop temp 0
+function Main.main 0
 push constant 0
-push constant 63
-call Output.moveCursor 2
+push constant 220
+push constant 511
+push constant 220
+call Screen.drawLine 4
 pop temp 0
-push constant 66
-call Output.printChar 1
-pop temp 0
-push constant 22
-push constant 0
-call Output.moveCursor 2
-pop temp 0
-push constant 67
-call Output.printChar 1
-pop temp 0
-push constant 22
-push constant 63
-call Output.moveCursor 2
-pop temp 0
-push constant 68
-call Output.printChar 1
-pop temp 0
-push constant 65
-call Output.printChar 1
-pop temp 0
-push constant 2
-push constant 0
-call Output.moveCursor 2
-pop temp 0
-push constant 10
-call String.new 1
-push constant 48
-call String.appendChar 2
-push constant 49
-call String.appendChar 2
-push constant 50
-call String.appendChar 2
-push constant 51
-call String.appendChar 2
-push constant 52
-call String.appendChar 2
-push constant 53
-call String.appendChar 2
-push constant 54
-call String.appendChar 2
-push constant 55
-call String.appendChar 2
-push constant 56
-call String.appendChar 2
-push constant 57
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
-call Output.println 0
-pop temp 0
-push constant 53
-call String.new 1
-push constant 65
-call String.appendChar 2
-push constant 66
-call String.appendChar 2
-push constant 67
-call String.appendChar 2
-push constant 68
-call String.appendChar 2
-push constant 69
-call String.appendChar 2
-push constant 70
-call String.appendChar 2
-push constant 71
-call String.appendChar 2
-push constant 72
-call String.appendChar 2
-push constant 73
-call String.appendChar 2
-push constant 74
-call String.appendChar 2
-push constant 75
-call String.appendChar 2
-push constant 76
-call String.appendChar 2
-push constant 77
-call String.appendChar 2
-push constant 78
-call String.appendChar 2
-push constant 79
-call String.appendChar 2
-push constant 80
-call String.appendChar 2
-push constant 81
-call String.appendChar 2
-push constant 82
-call String.appendChar 2
-push constant 83
-call String.appendChar 2
-push constant 84
-call String.appendChar 2
-push constant 85
-call String.appendChar 2
-push constant 86
-call String.appendChar 2
-push constant 87
-call String.appendChar 2
-push constant 88
-call String.appendChar 2
-push constant 89
-call String.appendChar 2
+push constant 280
 push constant 90
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-push constant 97
-call String.appendChar 2
-push constant 98
-call String.appendChar 2
-push constant 99
-call String.appendChar 2
-push constant 100
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 102
-call String.appendChar 2
-push constant 103
-call String.appendChar 2
-push constant 104
-call String.appendChar 2
-push constant 105
-call String.appendChar 2
-push constant 106
-call String.appendChar 2
-push constant 107
-call String.appendChar 2
-push constant 108
-call String.appendChar 2
-push constant 109
-call String.appendChar 2
-push constant 110
-call String.appendChar 2
-push constant 111
-call String.appendChar 2
-push constant 112
-call String.appendChar 2
-push constant 113
-call String.appendChar 2
-push constant 114
-call String.appendChar 2
-push constant 115
-call String.appendChar 2
-push constant 116
-call String.appendChar 2
-push constant 117
-call String.appendChar 2
-push constant 118
-call String.appendChar 2
-push constant 119
-call String.appendChar 2
+push constant 410
+push constant 220
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push constant 350
 push constant 120
-call String.appendChar 2
-push constant 121
-call String.appendChar 2
-push constant 122
-call String.appendChar 2
-call Output.printString 1
+push constant 390
+push constant 219
+call Screen.drawRectangle 4
 pop temp 0
-call Output.println 0
+push constant 292
+push constant 120
+push constant 332
+push constant 150
+call Screen.drawRectangle 4
 pop temp 0
-push constant 30
-call String.new 1
-push constant 33
-call String.appendChar 2
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 360
+push constant 170
+push constant 3
+call Screen.drawCircle 3
+pop temp 0
+push constant 280
+push constant 90
+push constant 345
 push constant 35
-call String.appendChar 2
-push constant 36
-call String.appendChar 2
-push constant 37
-call String.appendChar 2
-push constant 38
-call String.appendChar 2
-push constant 39
-call String.appendChar 2
-push constant 40
-call String.appendChar 2
-push constant 41
-call String.appendChar 2
-push constant 42
-call String.appendChar 2
-push constant 43
-call String.appendChar 2
-push constant 44
-call String.appendChar 2
-push constant 45
-call String.appendChar 2
-push constant 46
-call String.appendChar 2
-push constant 47
-call String.appendChar 2
-push constant 58
-call String.appendChar 2
-push constant 59
-call String.appendChar 2
+call Screen.drawLine 4
+pop temp 0
+push constant 345
+push constant 35
+push constant 410
+push constant 90
+call Screen.drawLine 4
+pop temp 0
+push constant 140
 push constant 60
-call String.appendChar 2
-push constant 61
-call String.appendChar 2
-push constant 62
-call String.appendChar 2
-push constant 63
-call String.appendChar 2
-push constant 64
-call String.appendChar 2
-push constant 91
-call String.appendChar 2
-push constant 93
-call String.appendChar 2
+push constant 30
+call Screen.drawCircle 3
+pop temp 0
+push constant 140
+push constant 26
+push constant 140
+push constant 6
+call Screen.drawLine 4
+pop temp 0
+push constant 163
+push constant 35
+push constant 178
+push constant 20
+call Screen.drawLine 4
+pop temp 0
+push constant 174
+push constant 60
+push constant 194
+push constant 60
+call Screen.drawLine 4
+pop temp 0
+push constant 163
+push constant 85
+push constant 178
+push constant 100
+call Screen.drawLine 4
+pop temp 0
+push constant 140
 push constant 94
-call String.appendChar 2
-push constant 95
-call String.appendChar 2
-push constant 96
-call String.appendChar 2
-push constant 123
-call String.appendChar 2
-push constant 124
-call String.appendChar 2
-push constant 125
-call String.appendChar 2
-push constant 126
-call String.appendChar 2
-call Output.printString 1
+push constant 140
+push constant 114
+call Screen.drawLine 4
 pop temp 0
-push local 0
-call Output.printString 1
+push constant 117
+push constant 85
+push constant 102
+push constant 100
+call Screen.drawLine 4
 pop temp 0
-call Output.println 0
+push constant 106
+push constant 60
+push constant 86
+push constant 60
+call Screen.drawLine 4
 pop temp 0
-push constant 12345
-neg
-call Output.printInt 1
-pop temp 0
-call Output.backSpace 0
-pop temp 0
-push constant 6789
-call Output.printInt 1
+push constant 117
+push constant 35
+push constant 102
+push constant 20
+call Screen.drawLine 4
 pop temp 0
 push constant 0
 return
-
 `;
 
 const program = new Program(testProgram);
@@ -302,6 +151,8 @@ function bitIsSet(n, arr) {
   return (arr[word] & mask) === mask;
 }
 
+
+
 function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
   const memArray = new Uint16Array(memory.buffer, memPtr, memSize);
   // pull pixels out of the canvas
@@ -312,7 +163,7 @@ function drawMemory(widthPixels, heightPixels, pixelSize, memPtr, memSize) {
 
   for (let i = 0; i < memSize * 16; i++) {
     if (bitIsSet(i, memArray)) {
-      // set corresponding virtual pixel to red
+      // set corresponding virtual pixel to green
       const offset = i * 4;
       pixels[offset] = 0;
       pixels[offset + 1] = 255;
@@ -426,28 +277,28 @@ runButton.addEventListener("click", (event) => {
 });
 
 // Render the starting state
-drawMemory(
-  displayWidthPixels,
-  displayHeightPixels,
-  pixelSize,
-  displayPtr,
-  displaySize
-);
-updateRam("pointers", 0, 45, ramSize, ramPtr);
-updateRam("global-stack", 256, 350, ramSize, ramPtr);
-updateRam("heap", 16000, 16383, ramSize, ramPtr);
+// drawMemory(
+//   displayWidthPixels,
+//   displayHeightPixels,
+//   pixelSize,
+//   displayPtr,
+//   displaySize
+// );
+// updateRam("pointers", 0, 45, ramSize, ramPtr);
+// updateRam("global-stack", 256, 350, ramSize, ramPtr);
+// updateRam("heap", 16000, 16383, ramSize, ramPtr);
 
 function renderLoop() {
   if (program.step(currentKey)) {
-    drawMemory(
-      displayWidthPixels,
-      displayHeightPixels,
-      pixelSize,
-      displayPtr,
-      displaySize
-    );
+  //   drawMemory(
+  //     displayWidthPixels,
+  //     displayHeightPixels,
+  //     pixelSize,
+  //     displayPtr,
+  //     displaySize
+  //   );
   }
-  updateRam("pointers", 0, 45, ramSize, ramPtr);
-  updateRam("global-stack", 256, 350, ramSize, ramPtr);
-  updateRam("heap", 16000, 16383, ramSize, ramPtr);
+  // updateRam("pointers", 0, 45, ramSize, ramPtr);
+  // updateRam("global-stack", 256, 350, ramSize, ramPtr);
+  // updateRam("heap", 16000, 16383, ramSize, ramPtr);
 }

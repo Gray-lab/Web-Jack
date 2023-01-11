@@ -9,11 +9,6 @@ finish implementing std library
 add key mapping in javascript to handle enter, backspace, arrow keys, etc.
 - done
 
-link display directly to web-sys canvas
-
-profile rust code to find and optimize slow areas
-
-
 overflow bug in Keyboard.readLine(): Keep typing characters - at 82nd character, overflow on display address
 - fixed with a guard against appending to a full string
 
@@ -21,7 +16,9 @@ bug in Keyboard.readLine(): when pressing enter, the key is incorrectly printed 
 - fixed by only printing and appending characters with value < 128, thus excluding non-printing characters like arrow keys
 
 bug with arrays: when doing Average test, the resulting value is incorrect
-- to replicate, run Average and try typing in some stuff. Answer is blank or wrong
+to replicate, run Average and try typing in some stuff. Answer is blank or wrong
+- fixed by correcting error in memory that treated values in temp registers as pointers
+- analogous error corrected for static memory
 
 Memory leak in readInt and readLine. Dispose input string before returning.
 
@@ -52,6 +49,9 @@ build a react frontend :D
 
 
 Other to-dos (in no particular order):
+0. Fix local mapping for main - currently stays mapped at 300, should map at 256.
+0. Profile rust code to find and optimize slow areas
+0. Link display to wasm to improve performance
 1. Link ram display to wasm to improve performance
 2. Implement a way to terminate VM program
 3. Implement reset of VM program
