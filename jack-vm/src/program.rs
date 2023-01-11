@@ -42,7 +42,7 @@ impl Program {
 
         // intialize segment pointers for the main stack frame
         let sp = 256;
-        let lcl = 300;
+        let lcl = 256; // when main gets called, SP moves and LCL should be set to 256
         let arg = 400;
         let this = 3000;
         let that = 4000;
@@ -252,7 +252,6 @@ impl Program {
         native_functions.insert("Math.pow".into(), jacklib::jack_pow);
         native_functions.insert("Math.abs".into(), jacklib::jack_abs);
         native_functions.insert("Mod.mod".into(), jacklib::jack_mod);
-
 
         // String library
         native_functions.insert("String.new".into(), jacklib::string_new);
