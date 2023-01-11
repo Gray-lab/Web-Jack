@@ -75,8 +75,8 @@ impl HeapAllocation {
 pub struct Memory {
     ram: MemoryVec,
     display: MemoryVec,
-    pub canvas: web_sys::HtmlCanvasElement,
-    pub canvas_context: CanvasRenderingContext2d,
+    // pub canvas: web_sys::HtmlCanvasElement,
+    // pub canvas_context: CanvasRenderingContext2d,
     pub keyboard: WordSize,
     pub cursor_line: WordSize,
     pub cursor_col: WordSize,
@@ -131,27 +131,27 @@ impl Memory {
         ram[THIS] = this;
         ram[THAT] = that;
 
-        let document = web_sys::window().unwrap().document().unwrap();
-        let canvas = document.get_element_by_id("display-canvas").unwrap();
-        let canvas: web_sys::HtmlCanvasElement = canvas
-            .dyn_into::<web_sys::HtmlCanvasElement>()
-            .map_err(|_| ())
-            .unwrap();
+        // let document = web_sys::window().unwrap().document().unwrap();
+        // let canvas = document.get_element_by_id("display-canvas").unwrap();
+        // let canvas: web_sys::HtmlCanvasElement = canvas
+        //     .dyn_into::<web_sys::HtmlCanvasElement>()
+        //     .map_err(|_| ())
+        //     .unwrap();
         
-        let canvas_context = canvas
-            .get_context("2d")
-            .unwrap()
-            .unwrap()
-            .dyn_into::<web_sys::CanvasRenderingContext2d>()
-            .unwrap();
+        // let canvas_context = canvas
+        //     .get_context("2d")
+        //     .unwrap()
+        //     .unwrap()
+        //     .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        //     .unwrap();
 
-        canvas_context.set_line_width(1.into());
+        // canvas_context.set_line_width(1.into());
 
         Memory {
             ram,
             display,
-            canvas,
-            canvas_context,
+            // canvas,
+            // canvas_context,
             keyboard: 0,
             cursor_line: 0,
             cursor_col: 0,
