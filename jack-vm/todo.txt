@@ -36,7 +36,7 @@ string:     OK
 sys:        Not tested
 
 
-build a react frontend :D
+build a react frontend :D  (or maybe svelte?)
 1. install react app
 2. install craco
 3. add craco config
@@ -49,8 +49,8 @@ build a react frontend :D
 
 
 Other to-dos (in no particular order):
-0. Fix local mapping for main - currently stays mapped at 300, should map at 256.
-0. Profile rust code to find and optimize slow areas
+0. Done - Fix local mapping for main - currently stays mapped at 300, should map at 256.
+0. Done - Profile rust code to find and optimize slow areas
 0. Link display to wasm to improve performance
 1. Link ram display to wasm to improve performance
 2. Implement a way to terminate VM program
@@ -58,3 +58,4 @@ Other to-dos (in no particular order):
 4. Implement a way to communicate to front end that program is finished running
 5. Implement Sys.wait
 6. Implement Sys.exit
+7. Write compiler in Rust - run as webworker?

@@ -28,6 +28,9 @@ const STATIC: WordSize = 15;
 const STATIC_MAX: WordSize = 255;
 const TEMP: WordSize = 5;
 const TEMP_MAX: WordSize = 12;
+// Display canvas constants
+pub const FILL_COLOR: &str = "rgb(0, 255, 0)";
+pub const EMPTY_COLOR: &str = "rgb(10, 10, 10)";
 
 struct HeapAllocation {
     pointer: WordSize,
@@ -75,8 +78,8 @@ impl HeapAllocation {
 pub struct Memory {
     ram: MemoryVec,
     display: MemoryVec,
-    // pub canvas: web_sys::HtmlCanvasElement,
-    // pub canvas_context: CanvasRenderingContext2d,
+    pub canvas: web_sys::HtmlCanvasElement,
+    pub canvas_context: CanvasRenderingContext2d,
     pub keyboard: WordSize,
     pub cursor_line: WordSize,
     pub cursor_col: WordSize,
@@ -131,27 +134,30 @@ impl Memory {
         ram[THIS] = this;
         ram[THAT] = that;
 
-        // let document = web_sys::window().unwrap().document().unwrap();
-        // let canvas = document.get_element_by_id("display-canvas").unwrap();
-        // let canvas: web_sys::HtmlCanvasElement = canvas
-        //     .dyn_into::<web_sys::HtmlCanvasElement>()
-        //     .map_err(|_| ())
-        //     .unwrap();
+        // Initialize display canvas
+        let document = web_sys::window().unwrap().document().unwrap();
+        let canvas = document.get_element_by_id("display-canvas").unwrap();
+        let canvas: web_sys::HtmlCanvasElement = canvas
+            .dyn_into::<web_sys::HtmlCanvasElement>()
+            .map_err(|_| ())
+            .unwrap();
         
-        // let canvas_context = canvas
-        //     .get_context("2d")
-        //     .unwrap()
-        //     .unwrap()
-        //     .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        //     .unwrap();
+        let canvas_context = canvas
+            .get_context("2d")
+            .unwrap()
+            .unwrap()
+            .dyn_into::<web_sys::CanvasRenderingContext2d>()
+            .unwrap();
 
-        // canvas_context.set_line_width(1.into());
+        canvas_context.set_line_width(1.into());
+        canvas_context.set_fill_style(&FILL_COLOR.into());
+        canvas_context.set_stroke_style(&FILL_COLOR.into());
 
         Memory {
             ram,
             display,
-            // canvas,
-            // canvas_context,
+            canvas,
+            canvas_context,
             keyboard: 0,
             cursor_line: 0,
             cursor_col: 0,
@@ -225,7 +231,7 @@ impl Memory {
                 if TEMP + offset <= TEMP_MAX {
                     TEMP + offset
                 } else {
-                    panic!("Static memory segment overflow.")
+                    panic!("Temp memory segment overflow.")
                 }
             }
         };

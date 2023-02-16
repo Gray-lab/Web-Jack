@@ -4,8 +4,10 @@ mod program;
 mod utils;
 mod jacklib;
 mod charmap;
+mod compiler;
 
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::console_log;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -19,11 +21,6 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn add(a: i32, b: i32) -> i32 {
-    a + b
-}
-
-#[test]
-fn add_test() {
-    assert_eq!(1 + 1, add(1, 1));
+pub fn greet() {
+    console_log!("Hi there!");
 }

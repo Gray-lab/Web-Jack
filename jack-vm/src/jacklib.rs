@@ -2,7 +2,7 @@ use std::cmp::{max, min};
 use wasm_bindgen_test::console_log;
 // use web_sys::CanvasRenderingContext2d;
 
-use crate::memory::{Memory, WordSize, DISPLAY_HEIGHT, DISPLAY_WIDTH, WORDSIZE};
+use crate::memory::{Memory, WordSize, DISPLAY_HEIGHT, DISPLAY_WIDTH, WORDSIZE, FILL_COLOR, EMPTY_COLOR};
 
 pub type NativeFunction = fn(&mut Memory, WordSize) -> WordSize;
 
@@ -10,8 +10,6 @@ const LINES: WordSize = 23;
 const COLS: WordSize = 64;
 const VOID: WordSize = 0;
 const CHAR_HEIGHT: WordSize = 11;
-// const FILL_COLOR: &str = "rgb(0, 255, 0)";
-// const EMPTY_COLOR: &str = "rgb(10, 10, 10)";
 
 // MATH
 pub fn multiply(memory: &mut Memory, args: WordSize) -> WordSize {
@@ -306,6 +304,9 @@ fn print_char_helper(memory: &mut Memory, character: &WordSize) {
             memory.set_display_word(address, new_value);
         }
     }
+
+    // Add canvas update for characters
+    
 }
 
 /**
@@ -486,7 +487,7 @@ fn draw_line_helper(memory: &mut Memory, x1: WordSize, y1: WordSize, x2: WordSiz
 pub fn clear_screen(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 0);
     memory.clear_display();
-    // memory.canvas_context.clear_rect(0.into(), 0.into(),  memory.canvas.width().into(), memory.canvas.height().into());
+    memory.canvas_context.clear_rect(0.into(), 0.into(),  memory.canvas.width().into(), memory.canvas.height().into());
     VOID
 }
 
@@ -500,10 +501,10 @@ pub fn fill_screen(memory: &mut Memory, args: WordSize) -> WordSize {
 
     // checking if the current fill_style is filled is hard, so we just save the current
     // fill_style, fill the screen, and revert to the original fill_style
-    // let saved_fill_style = memory.canvas_context.fill_style();
-    // memory.canvas_context.set_fill_style(&FILL_COLOR.into());
-    // memory.canvas_context.fill_rect(0.into(), 0.into(), memory.canvas.width().into(), memory.canvas.height().into());
-    // memory.canvas_context.set_fill_style(&saved_fill_style);
+    let saved_fill_style = memory.canvas_context.fill_style();
+    memory.canvas_context.set_fill_style(&FILL_COLOR.into());
+    memory.canvas_context.fill_rect(0.into(), 0.into(), memory.canvas.width().into(), memory.canvas.height().into());
+    memory.canvas_context.set_fill_style(&saved_fill_style);
     VOID
 }
 
@@ -518,13 +519,14 @@ pub fn set_color(memory: &mut Memory, args: WordSize) -> WordSize {
     memory.screen_color = color;
 
     // set canvas context fill style
-    // let value;
-    // if color == 0 {
-    //     value = EMPTY_COLOR
-    // } else {
-    //     value = FILL_COLOR
-    // }
-    // memory.canvas_context.set_fill_style(&value.into());
+    let value;
+    if color == 0 {
+        value = EMPTY_COLOR
+    } else {
+        value = FILL_COLOR
+    }
+    memory.canvas_context.set_fill_style(&value.into());
+    memory.canvas_context.set_stroke_style(&value.into());
     VOID
 }
 
@@ -540,7 +542,7 @@ pub fn draw_pixel(memory: &mut Memory, args: WordSize) -> WordSize {
     let y = memory.get_arg(1);
     memory.set_display_xy(x, y);
 
-    // memory.canvas_context.fill_rect(x.into(), y.into(), 1.into(), 1.into());
+    memory.canvas_context.fill_rect(x.into(), y.into(), 1.into(), 1.into());
     VOID
 }
 
@@ -561,9 +563,10 @@ pub fn draw_line(memory: &mut Memory, args: WordSize) -> WordSize {
     draw_line_helper(memory, x1, y1, x2, y2);
 
     // draw in canvas
-    // memory.canvas_context.move_to(x1.into(), y1.into());
-    // memory.canvas_context.line_to(x2.into(), y2.into());
-    // memory.canvas_context.stroke();
+    memory.canvas_context.begin_path();
+    memory.canvas_context.move_to(x1.into(), y1.into());
+    memory.canvas_context.line_to(x2.into(), y2.into());
+    memory.canvas_context.stroke();
     VOID
 }
 
@@ -586,8 +589,9 @@ pub fn draw_rectangle_outline(memory: &mut Memory, args: WordSize) -> WordSize {
     draw_line_helper(memory, x1, y2, x2, y2);
 
     // draw in canvas
-    // memory.canvas_context.rect(x1.into(), y1.into(), (x2-x1).into(), (y2-y1).into());
-    // memory.canvas_context.stroke();
+    memory.canvas_context.begin_path();
+    memory.canvas_context.rect(x1.into(), y1.into(), (x2-x1).into(), (y2-y1).into());
+    memory.canvas_context.stroke();
     VOID
 }
 
@@ -614,7 +618,9 @@ pub fn draw_rectangle(memory: &mut Memory, args: WordSize) -> WordSize {
     }
 
     // draw in canvas
-    // memory.canvas_context.fill_rect(x1.into(), y1.into(), (x2-x1).into(), (y2-y1).into());
+    memory.canvas_context.begin_path();
+    memory.canvas_context.rect(x1.into(), y1.into(), (x2-x1).into(), (y2-y1).into());
+    memory.canvas_context.fill();
     VOID
 }
 
@@ -651,14 +657,19 @@ pub fn draw_circle(memory: &mut Memory, args: WordSize) -> WordSize {
     }
 
     // draw in canvas
-    // memory.canvas_context.ellipse(
-    //     x1.into(), 
-    //     y1.into(), 
-    //     r.into(), 
-    //     r.into(), 
-    //     0.into(), 
-    //     0.into(),
-    //     (std::f32::consts::PI * 2.0).into());
+    memory.canvas_context.begin_path();
+    if memory.canvas_context.ellipse(
+        x1.into(), 
+        y1.into(), 
+        r.into(), 
+        r.into(), 
+        0.into(), 
+        0.into(),
+        (std::f32::consts::PI * 2.0).into()).is_err() {
+            console_log!("Error drawing ellipse")
+        };
+    memory.canvas_context.stroke();
+    memory.canvas_context.fill();
     VOID
 }
 
