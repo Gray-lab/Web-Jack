@@ -928,8 +928,6 @@ push constant 0
 pop local 2
 label WHILE_EXP0
 push local 1
-not
-not
 if-goto WHILE_END0
 label WHILE_EXP1
 push local 0
@@ -996,8 +994,6 @@ label WHILE_EXP2
 push local 0
 push constant 0
 eq
-not
-not
 if-goto WHILE_END2
 call Keyboard.keyPressed 0
 pop local 0
@@ -1012,8 +1008,6 @@ goto WHILE_EXP0
 label WHILE_END0
 push constant 0
 return
-
-
 `;
 
 const program = new Program(testProgram);
@@ -1169,18 +1163,20 @@ drawMemory(
   displayPtr,
   displaySize
 );
-// updateRam("pointers", 0, 45, ramSize, ramPtr);
-// updateRam("global-stack", 256, 350, ramSize, ramPtr);
-// updateRam("heap", 16000, 16383, ramSize, ramPtr);
+updateRam("pointers", 0, 45, ramSize, ramPtr);
+updateRam("global-stack", 256, 350, ramSize, ramPtr);
+updateRam("heap", 16000, 16383, ramSize, ramPtr);
+
+// There is some weird bug here with text not displaying if updateRam and drawMemory are disabled
 
 function renderLoop() {
   for (let i = 0; i<15; i++) {
     program.step(currentKey)
   }
   // drawMemory();
-  // updateRam("pointers", 0, 45, ramSize, ramPtr);
-  // updateRam("global-stack", 256, 350, ramSize, ramPtr);
-  // updateRam("heap", 16000, 16383, ramSize, ramPtr);
+  updateRam("pointers", 0, 45, ramSize, ramPtr);
+  updateRam("global-stack", 256, 350, ramSize, ramPtr);
+  updateRam("heap", 16000, 16383, ramSize, ramPtr);
 }
 
 

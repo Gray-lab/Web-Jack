@@ -51,7 +51,8 @@ build a react frontend :D  (or maybe svelte?)
 Other to-dos (in no particular order):
 0. Done - Fix local mapping for main - currently stays mapped at 300, should map at 256.
 0. Done - Profile rust code to find and optimize slow areas
-0. Link display to wasm to improve performance
+0. Partially done - Link display to wasm to improve performance
+    TODO: add character printing!
 1. Link ram display to wasm to improve performance
 2. Implement a way to terminate VM program
 3. Implement reset of VM program
