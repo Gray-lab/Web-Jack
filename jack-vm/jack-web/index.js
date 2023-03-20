@@ -1057,7 +1057,6 @@ function drawMemory() {
   // pixels is a Uint8ClampedArray, each pixel being 4 consecutive Uint8 values
   // representing r, g, b, and a respectively
 
-  
   const pixels = id.data;
 
   for (let i = 0; i < displaySize * 16; i++) {
@@ -1143,7 +1142,6 @@ body.addEventListener("keyup", (event) => {
   }
 });
 
-
 // Button listeners
 const stepButton = document.getElementById("step-button");
 stepButton.addEventListener("click", (event) => {
@@ -1167,16 +1165,15 @@ updateRam("pointers", 0, 45, ramSize, ramPtr);
 updateRam("global-stack", 256, 350, ramSize, ramPtr);
 updateRam("heap", 16000, 16383, ramSize, ramPtr);
 
-// There is some weird bug here with text not displaying if updateRam and drawMemory are disabled
+// If drawMemory is disabled, fonts will not be rendered! 
+// font printing has not been implemented for the wasm canvas
 
 function renderLoop() {
-  for (let i = 0; i<15; i++) {
-    program.step(currentKey)
+  for (let i = 0; i < 15; i++) {
+    program.step(currentKey);
   }
   // drawMemory();
   updateRam("pointers", 0, 45, ramSize, ramPtr);
   updateRam("global-stack", 256, 350, ramSize, ramPtr);
   updateRam("heap", 16000, 16383, ramSize, ramPtr);
 }
-
-
