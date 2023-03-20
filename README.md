@@ -8,7 +8,7 @@ This program was inspired while I was working through the nand2tetris course. Th
 Toward the second half of my time at Recurse Center I decided to kill two birds with one stone and build this vm in Rust, compiling to webassembly to make it runnable in a browser. The memory and registers are faithfully emulated as specified in the nand2tetris course and the core Jack library has been implemented in a combination of Rust and Jack. 
 
 ---
-Memory values displayed while running a version of pong
+Memory values displayed while running a version of pong, showing the registers, stack, and heap. 
 ![pong and memory](./img/pong.png)
 
 The display was originally also implemented as a linear memory array that was then read into a canvas component on the website, but updating the canvas in this way was too slow. The canvas is instead now updated directly in the wasm code when any draw or output functions are called. 
