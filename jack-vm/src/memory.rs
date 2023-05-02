@@ -5,7 +5,7 @@ use crate::{
     charmap::CharMap,
     parser::{Offset, Segment},
 };
-use std::ops::{Index, IndexMut};
+use std::{ops::{Index, IndexMut}, vec};
 
 pub type WordSize = i16;
 
@@ -31,6 +31,8 @@ const TEMP_MAX: WordSize = 12;
 // Display canvas constants
 pub const FILL_COLOR: &str = "rgb(0, 255, 0)";
 pub const EMPTY_COLOR: &str = "rgb(10, 10, 10)";
+pub const FILL_COLOR_ARR: [u8; 4] = [0, 255, 0, 255];
+pub const EMPTY_COLOR_ARR: [u8; 4] = [10, 10, 10, 255];
 
 struct HeapAllocation {
     pointer: WordSize,
@@ -87,6 +89,7 @@ pub struct Memory {
     pub char_map: CharMap,
     heap_alloc: Vec<HeapAllocation>,
     pub display_updated: bool,
+    pub finished: bool,
 }
 
 struct MemoryVec(Vec<WordSize>);
@@ -141,6 +144,9 @@ impl Memory {
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .map_err(|_| ())
             .unwrap();
+
+        canvas.set_width(DISPLAY_WIDTH as u32);
+        canvas.set_height(DISPLAY_HEIGHT as u32);
         
         let canvas_context = canvas
             .get_context("2d")
@@ -152,6 +158,7 @@ impl Memory {
         canvas_context.set_line_width(1.into());
         canvas_context.set_fill_style(&FILL_COLOR.into());
         canvas_context.set_stroke_style(&FILL_COLOR.into());
+
 
         Memory {
             ram,
@@ -165,6 +172,7 @@ impl Memory {
             char_map: CharMap::new(),
             heap_alloc: Vec::new(),
             display_updated: false,
+            finished: false,
         }
     }
 

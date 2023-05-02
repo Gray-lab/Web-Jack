@@ -4,7 +4,7 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::console_log;
 
-use crate::jacklib::{self, NativeFunction};
+use crate::jacklib::{self, NativeFunction, clear_screen};
 use crate::memory::{Memory, WordSize};
 use crate::parser::{parse_bytecode, Bytecode, Command, Function, Segment};
 
@@ -28,6 +28,7 @@ pub struct Program {
     native_functions: HashMap<String, NativeFunction>,
     memory: Memory,
     call_stack: Vec<StackFrame>,
+    pub finished: bool,
 }
 
 #[wasm_bindgen]
@@ -46,7 +47,10 @@ impl Program {
         let arg = 400;
         let this = 3000;
         let that = 4000;
-        let memory = Memory::new(sp, lcl, arg, this, that);
+        let mut memory = Memory::new(sp, lcl, arg, this, that);
+
+        // Fill canvas at init
+        clear_screen(&mut memory, 0);
 
         // some library functions are implemented in jack
         // Keyboard.readChar
@@ -325,23 +329,42 @@ impl Program {
             native_functions,
             memory,
             call_stack,
+            finished: false,
         }
     }
 
+    /** 
+     * Populates the function map with the standard library functions
+     */
+    fn populate_std_lib(&mut self) {
+
+    }
     /**
      * Execute next bytecode command.
      * Returns true if display was updated, otherwise returns false.
      */
     pub fn step(&mut self, key: WordSize) -> bool {
+        // if the call stack is empty, we are done
         let mut frame = match self.call_stack.last_mut() {
             Some(frame) => frame,
-            None => return false,
+            None => {
+                self.memory.finished = true;
+                self.finished = true;
+                return false;
+            },
         };
 
-        // If there are no more instructions, return false and take no other action
+        // If there are no more instructions, set memory finished bit
         let length = frame.function.borrow().commands.len();
         if length <= frame.next_line {
-            return false;
+            self.memory.finished = true;
+        }
+
+        // check for finished bit (gosh, this is pretty ugly at this point)
+        if self.memory.finished {
+            self.finished = true;
+            console_log!("Program completed.");
+            return false
         }
 
         self.memory.display_updated = false;
@@ -522,5 +545,9 @@ impl Program {
      */
     pub fn keyboard(&self) -> WordSize {
         self.memory.keyboard()
+    }
+
+    pub fn end(&mut self) {
+        self.memory.finished = true;
     }
 }
