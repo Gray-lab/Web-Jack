@@ -5,7 +5,10 @@ use crate::{
     charmap::CharMap,
     parser::{Offset, Segment},
 };
-use std::{ops::{Index, IndexMut}, vec};
+use std::{
+    ops::{Index, IndexMut},
+    vec,
+};
 
 pub type WordSize = i16;
 
@@ -147,7 +150,7 @@ impl Memory {
 
         canvas.set_width(DISPLAY_WIDTH as u32);
         canvas.set_height(DISPLAY_HEIGHT as u32);
-        
+
         let canvas_context = canvas
             .get_context("2d")
             .unwrap()
@@ -158,7 +161,6 @@ impl Memory {
         canvas_context.set_line_width(1.into());
         canvas_context.set_fill_style(&FILL_COLOR.into());
         canvas_context.set_stroke_style(&FILL_COLOR.into());
-
 
         Memory {
             ram,
@@ -348,7 +350,7 @@ impl Memory {
         } else {
             // or with mask
             self.display[display_word] |= mask;
-        }    
+        }
     }
 
     pub fn set_display_word(&mut self, index: WordSize, value: WordSize) {

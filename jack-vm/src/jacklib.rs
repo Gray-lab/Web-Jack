@@ -5,7 +5,8 @@ use web_sys::ImageData;
 // use web_sys::CanvasRenderingContext2d;
 
 use crate::memory::{
-    Memory, WordSize, DISPLAY_HEIGHT, DISPLAY_WIDTH, EMPTY_COLOR, FILL_COLOR, EMPTY_COLOR_ARR, FILL_COLOR_ARR, WORDSIZE,
+    Memory, WordSize, DISPLAY_HEIGHT, DISPLAY_WIDTH, EMPTY_COLOR, EMPTY_COLOR_ARR, FILL_COLOR,
+    FILL_COLOR_ARR, WORDSIZE,
 };
 
 pub type NativeFunction = fn(&mut Memory, WordSize) -> WordSize;
@@ -315,8 +316,16 @@ fn print_char_helper(memory: &mut Memory, character: &WordSize) {
     }
 
     let slice_data = Clamped(&pixel_data[..]);
-    let pixel_row = ImageData::new_with_u8_clamped_array(slice_data, CHAR_WIDTH as u32).expect("Error creating ImageData");
-    memory.canvas_context.put_image_data(&pixel_row, (memory.cursor_col * CHAR_WIDTH).into(), (memory.cursor_line * CHAR_HEIGHT).into()).expect("Error when placing char into canvas");
+    let pixel_row = ImageData::new_with_u8_clamped_array(slice_data, CHAR_WIDTH as u32)
+        .expect("Error creating ImageData");
+    memory
+        .canvas_context
+        .put_image_data(
+            &pixel_row,
+            (memory.cursor_col * CHAR_WIDTH).into(),
+            (memory.cursor_line * CHAR_HEIGHT).into(),
+        )
+        .expect("Error when placing char into canvas");
 
     // set the memory value in the display mapped memory
     for char_row in 0..11 {
