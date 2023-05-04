@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import CodeMirror, { basicSetup } from "./CodeMirror.svelte";
 
   export let bindings;
   let { memory, Program } = bindings;
@@ -10,34 +11,34 @@
   let count = 0;
 
   const testProgram = `
-  function Main.main 0
-  push constant 1
-  call Screen.setColor 1
-  pop temp 0
-  push constant 400
-  push constant 100
-  push constant 450
-  push constant 120
-  call Screen.drawRectangleOutline 4
-  pop temp 0
-  push constant 400
-  push constant 130
-  push constant 450
-  push constant 150
-  call Screen.drawRectangle 4
-  pop temp 0
-  push constant 20
-  push constant 20
-  push constant 15
-  call Screen.drawCircle 3
-  pop temp 0
-  push constant 500
-  push constant 250
-  push constant 200
-  call Screen.drawCircle 3
-  pop temp 0
-  label END
-  goto END`;
+    function Main.main 0
+    push constant 1
+    call Screen.setColor 1
+    pop temp 0
+    push constant 400
+    push constant 100
+    push constant 450
+    push constant 120
+    call Screen.drawRectangleOutline 4
+    pop temp 0
+    push constant 400
+    push constant 130
+    push constant 450
+    push constant 150
+    call Screen.drawRectangle 4
+    pop temp 0
+    push constant 20
+    push constant 20
+    push constant 15
+    call Screen.drawCircle 3
+    pop temp 0
+    push constant 500
+    push constant 250
+    push constant 200
+    call Screen.drawCircle 3
+    pop temp 0
+    label END
+    goto END`;
 
   let canvas;
   let ctx;
@@ -47,11 +48,17 @@
   const height = 256;
   const pixelRatio = 1; // size of each virtual pixel in real pixels
 
+  let bytecode = "hi there";
+  let jackcode = "hello jack";
+
+  function changeHandler({ detail: { tr } }) {
+    console.log("change", tr.changes.toJSON());
+  }
+
   function renderLoop() {
     for (let i = 0; i < 5; i++) {
       program.step(0);
     }
-    // drawMemory();
     //   updateRam("pointers", 0, 45, ramSize, ramPtr);
     //   updateRam("global-stack", 256, 350, ramSize, ramPtr);
     //   updateRam("heap", 16000, 16383, ramSize, ramPtr);
@@ -108,51 +115,6 @@
     const ramPtr = program.ram();
   });
 
-  // // from rustwasm tutorial
-  // function bitIsSet(n, arr) {
-  //   const word = Math.floor(n / 16);
-  //   const mask = 1 << n % 16;
-  //   return (arr[word] & mask) === mask;
-  // }
-
-  // const displayArray = new Uint16Array(memory.buffer, displayPtr, displaySize);
-
-  // function drawMemory() {
-  //   // pull pixels out of the canvas
-  //   // const id = ctx.getImageData(0, 0, displayCanvas.width, displayCanvas.height);
-
-  //   // console.log(id.data)
-
-  //   const id = ctx.createImageData(displayCanvas.width, displayCanvas.height);
-
-  //   // console.log(id_create.data)
-
-  //   // pixels is a Uint8ClampedArray, each pixel being 4 consecutive Uint8 values
-  //   // representing r, g, b, and a respectively
-
-  //   const pixels = id.data;
-
-  //   for (let i = 0; i < displaySize * 16; i++) {
-  //     if (bitIsSet(i, displayArray)) {
-  //       // set corresponding virtual pixel to green
-  //       const offset = i * 4;
-  //       pixels[offset] = 0;
-  //       pixels[offset + 1] = 255;
-  //       pixels[offset + 2] = 0;
-  //       pixels[offset + 3] = 255;
-  //     } else {
-  //       // set corresponding virtual pixel to black
-  //       const offset = i * 4;
-  //       pixels[offset] = 10;
-  //       pixels[offset + 1] = 10;
-  //       pixels[offset + 2] = 10;
-  //       pixels[offset + 3] = 255;
-  //     }
-  //   }
-  //   // place pixels back in the canvas
-  //   ctx.putImageData(id, 0, 0);
-  // }
-
   // function updateRam(id, start, end, memSize, memPtr) {
   //   const ramContainer = document.getElementById(id);
   //   if (document.getElementById(id + "ram")) {
@@ -197,46 +159,143 @@
   //   setInterval(() => requestAnimationFrame(renderLoop), 0);
   // });
 
-  // // // Render the starting state
-  // drawMemory(
-  //   displayWidthPixels,
-  //   displayHeightPixels,
-  //   pixelSize,
-  //   displayPtr,
-  //   displaySize
-  // );
   // updateRam("pointers", 0, 45, ramSize, ramPtr);
   // updateRam("global-stack", 256, 350, ramSize, ramPtr);
   // updateRam("heap", 16000, 16383, ramSize, ramPtr);
-
-  // // // There is some weird bug here with text not displaying if updateRam and drawMemory are disabled
 </script>
 
-<h1>Hello {name}!</h1>
-<input bind:value={name} />
-
-<button on:click={() => (count += 1)}>
-  Clicks: {count}
-</button>
-
-<div id="container">
+<!-- <div id="container">
   <div>
-    <canvas
-      bind:this={canvas}
-      width={width * pixelRatio}
-      height={height * pixelRatio}
-      style="width: {width}px; height: {height}px;"
-    />
     <br />
-    <button on:click={() => renderLoop()}>Step</button>
-    <button
-      on:click={() => setInterval(() => requestAnimationFrame(renderLoop), 0)}
-      >Run</button
-    >
   </div>
   <div class="ram" id="pointers" />
   <div class="ram" id="global-stack" />
   <div class="ram" id="heap" />
-</div>
+</div> -->
 
-<svelte:window on:keydown|preventDefault={onKeyDown} />
+<title>Hi</title>
+<body>
+  <div class="container">
+    <div class="top">
+      <div class="left_top">
+        <p>Web_Jack</p>
+      </div>
+      <div class="right_top">
+        <canvas
+          bind:this={canvas}
+          width={width * pixelRatio}
+          height={height * pixelRatio}
+          style="width: {width}px; height: {height}px;"
+        />
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="cm-container">
+        <div class="cm">
+          <CodeMirror
+            doc={"Edit me!\nAnd here is the second line!!"}
+            bind:docStore={jackcode}
+            extensions={basicSetup}
+            on:change={changeHandler}
+          />
+        </div>
+        <div class="btn-container">
+          <button class="btn">Button 1</button>
+          <button class="btn">Button 2</button>
+          <button class="btn">Button 3</button>
+        </div>
+      </div>
+      <div class="cm-container">
+        <div class="cm">
+          <CodeMirror
+            doc={testProgram}
+            bind:docStore={bytecode}
+            extensions={basicSetup}
+            on:change={changeHandler}
+          />
+        </div>
+        <div class="btn-container">
+          <button class="btn" on:click={() => renderLoop()}>Step</button>
+          <button
+            class="btn"
+            on:click={() =>
+              setInterval(() => requestAnimationFrame(renderLoop), 0)}
+            >Run</button
+          >
+        </div>
+      </div>
+      <div class="empty" />
+      <div class="empty" />
+    </div>
+  </div>
+</body>
+<!-- <svelte:window on:keydown|preventDefault={onKeyDown} /> -->
+
+<style>
+  body {
+    height: 100%;
+    margin: 5;
+    padding: 5;
+    background-color: #616161;
+  }
+  .container {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 280px;
+    grid-template-columns: 100%;
+  }
+  .top {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .bottom {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    grid-row: 2;
+    grid-column: 1;
+  }
+  .left_top {
+    flex: 1;
+    background-color: #eee;
+    padding: 10px;
+  }
+  .right_top {
+    flex: 0 0 512px;
+    background-color: #ddd;
+    padding: 10px;
+  }
+  .cm-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  .cm {
+    flex: 1;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  .btn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+  }
+  .btn {
+    margin-right: 10px;
+    background-color: #323232;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .empty {
+    flex: 1;
+    background-color: #eee;
+    padding: 10px;
+  }
+</style>
