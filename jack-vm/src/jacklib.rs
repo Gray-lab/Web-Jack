@@ -1,3 +1,13 @@
+/* This module contains implementations for the Jack standard library functions
+ * Some things to note:
+ *  1. readInt(), readChar(), and readLine() are implemented directly in Jack Bytecode, located in the jack_lib_functions directory
+ *  2. error(s) logs the output to console.log via the wasm macro
+ *  3. halt() sets the finished bit in the memory module
+ *  4. wait(n) waits for the time it takes n to count down in a while loop - the exact time is architecture dependent
+ *  5. draw functions update both the canvas and the memory array corresponding to the display
+ * */
+
+
 use std::cmp::{max, min};
 use wasm_bindgen::Clamped;
 use wasm_bindgen_test::console_log;
@@ -842,8 +852,11 @@ pub fn de_alloc(memory: &mut Memory, args: WordSize) -> WordSize {
 // SYS
 pub fn wait(memory: &mut Memory, args: WordSize) -> WordSize {
     assert!(args == 1);
-    let _wait_time = memory.get_arg(0);
+    let mut _wait_time = memory.get_arg(0);
     console_log!("Waiting for {}", _wait_time);
+    while _wait_time > 0 {
+        _wait_time -= 1;
+    }
     VOID
 }
 

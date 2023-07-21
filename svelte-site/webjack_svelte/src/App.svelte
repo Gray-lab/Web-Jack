@@ -7,9 +7,6 @@
   console.log(Program);
   console.log(memory);
 
-  let name = "world";
-  let count = 0;
-
   const testProgram = `
     function Main.main 0
     push constant 1
@@ -40,7 +37,8 @@
     label END
     goto END`;
 
-  let canvas;
+  
+    let canvas;
   let ctx;
   let program;
   // display dimensions in virtual pixels
@@ -97,6 +95,10 @@
     console.log(e.key);
   }
 
+  function onKeyUp(e) {
+    
+  }
+
   onMount(() => {
     ctx = canvas.getContext("2d", {
       willReadFrequently: true,
@@ -131,22 +133,22 @@
   //   ramContainer.appendChild(outer);
   // }
 
-  // let currentKey = 0;
-  // const body = document.querySelector("body");
-  // body.addEventListener("keydown", (event) => {
-  //   console.log(event.key);
-  //   if (event.key.length === 1) {
-  //     currentKey = event.key.charCodeAt(0);
-  //   } else if (event.key in input_map) {
-  //     currentKey = input_map[event.key];
-  //   }
-  // });
+  let currentKey = 0;
+  const body = document.querySelector("body");
+  body.addEventListener("keydown", (event) => {
+    console.log(event.key);
+    if (event.key.length === 1) {
+      currentKey = event.key.charCodeAt(0);
+    } else if (event.key in input_map) {
+      currentKey = input_map[event.key];
+    }
+  });
 
-  // body.addEventListener("keyup", (event) => {
-  //   if (event.key.length === 1 || event.key in input_map) {
-  //     currentKey = 0;
-  //   }
-  // });
+  body.addEventListener("keyup", (event) => {
+    if (event.key.length === 1 || event.key in input_map) {
+      currentKey = 0;
+    }
+  });
 
   // // Button listeners
   // const stepButton = document.getElementById("step-button");
